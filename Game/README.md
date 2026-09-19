@@ -26,3 +26,5 @@
 - `Design/UI/Dotexe_UI_Concepts.html` — 실제 화면 형태의 UI 방향 3안 비교 프로토타입
 
 - `Design/UI/Dotexe_UI_B_Revisions.html` — B 계측 장비 패널 기반 수정안 3종(B-1/B-2/B-3). Galmuri11, 사각 픽셀 세포, 미니멀 재화 HUD, 간헐 글리치 포함.
+
+- `Design/UI/Dotexe_UI_B1_refined.html` — 현재 선택된 B-1 최신 수정안. 프로토콜 드롭다운, 흰색 사각 세포, 더 작은 초록 영양 픽셀, 자유 이동, 강화된 CRT 곡률/비네팅 반영.

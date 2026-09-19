@@ -607,7 +607,7 @@ Net Metabolic Output
  ┌────────────────────┐
  │                    │
  ▼                    ▼
-Cell Internal Energy  SYSTEM ENERGY
+Cell Internal Energy  ENERGY
 ```
 
 ## 13.2 별도 관리 값
@@ -623,22 +623,22 @@ systemHarvestRatio
 
 ## 13.3 생존 우선 규칙
 
-세포 내부 에너지가 `survivalReserve`보다 낮으면 SYSTEM ENERGY 회수를 중단한다.
+세포 내부 에너지가 `survivalReserve`보다 낮으면 ENERGY 회수를 중단한다.
 
 ```text
 Cell Energy < survivalReserve
 → 순생산 100%를 세포 내부에 배정
 
 Cell Energy >= survivalReserve
-→ 순생산 일부를 내부 저장, 일부를 SYSTEM ENERGY로 배정
+→ 순생산 일부를 내부 저장, 일부를 ENERGY로 배정
 ```
 
-`Energy Storage` 연구는 `maximumStorage`만 증가시킨다. SYSTEM ENERGY 회수 기준이나 회수 비율을 직접 올리지 않는다.
+`Energy Storage` 연구는 `maximumStorage`만 증가시킨다. ENERGY 회수 기준이나 회수 비율을 직접 올리지 않는다.
 
 ## 13.4 경계 경우
 
 - 내부 에너지가 `maximumStorage`에 찬 세포도 섭취와 대사를 계속한다.
-- 저장하지 못한 내부 몫은 버린다. SYSTEM ENERGY로 돌리지 않는다. 돌리면 "넘친 만큼 회수" 방식이 되살아나 Energy Storage 구매가 SYSTEM ENERGY 생산을 깎는 문제가 생긴다.
+- 저장하지 못한 내부 몫은 버린다. ENERGY로 돌리지 않는다. 돌리면 "넘친 만큼 회수" 방식이 되살아나 Energy Storage 구매가 ENERGY 생산을 깎는 문제가 생긴다.
 - 순생산이 음수면 내부 에너지에서 뺀다.
 - Trait 변경으로 `maximumStorage`가 줄면 넘는 몫은 바로 사라진다.
 
@@ -913,7 +913,7 @@ Trait Loadout 변경은 `Running` 상태에서만 거부한다. 그 밖의 상�
 
 ```ts
 export interface ResourceState {
-  systemEnergy: number;
+  energy: number;
   data: number;
   nutrientReserve: number;
 }
@@ -1504,9 +1504,9 @@ O(n²) 근접 탐색은 금지한다.
 ## 에너지
 
 - 최초 세포가 지속 분열해도 첫 유료 연구에 도달할 수 있다.
-- Energy Storage 구매가 SYSTEM ENERGY 생산을 부자연스럽게 막지 않는다.
+- Energy Storage 구매가 ENERGY 생산을 부자연스럽게 막지 않는다.
 - 굶주리는 세포가 연구 자원을 계속 생산하지 않는다.
-- 저장량이 가득 찬 세포의 넘친 몫이 SYSTEM ENERGY로 들어가지 않는다.
+- 저장량이 가득 찬 세포의 넘친 몫이 ENERGY로 들어가지 않는다.
 - 내부 에너지가 0인 세포는 Health가 줄고, 에너지를 되찾으면 회복한다.
 
 ## Movement
@@ -2133,7 +2133,7 @@ Chemotaxis를 처음부터 켠 프로토타입만으로 Milestone 1을 통과할
 MVP는 다음으로 제한한다.
 
 - 세포 최대 300
-- 자원 3종: SYSTEM ENERGY, DATA, NUTRIENT RESERVE
+- 자원 3종: ENERGY, DATA, NUTRIENT RESERVE
 - Field 3종: nutrient, toxin, signal(Alarm Signal 전용)
 - 기본 이동, 배양 공간 경계
 - 분열

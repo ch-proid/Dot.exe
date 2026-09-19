@@ -19,3 +19,7 @@
 - `Docs/current/DEVELOPMENT_PIPELINE.html` — 개발 단계와 관문
 
 과거 검토와 결정 이력은 `Docs/history/`에 있으며 구현 기준으로 사용하지 않는다.
+
+## UI 시안
+
+- `Design/UI/Dotexe_UI_Concepts.html` — 실제 화면 형태의 UI 방향 3안 비교 프로토타입

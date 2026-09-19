@@ -1552,3 +1552,110 @@ CRT:
 그 다음 큰 작업은 사용자가 이미 예고한 대로:
 
 **MVP 이후 스토리 / 캠페인 / 전체 시스템 메일 / Emergence 경로를 함께 닫는 것**이다.
+
+
+---
+
+# 36. 세션 체크포인트 — 2026-09-19
+
+이 지점까지의 프로젝트 맥락을 재개 기준으로 고정한다.
+
+## 36.1 현재 GitHub 상태
+
+- 작업 브랜치: `docs/project-normalization`
+- PR: #1 `Normalize Dot.exe project structure and core mobile UX rules`
+- 체크포인트 직전 branch/PR head: `c8839ea00b56e117f2a37945daf7bafafe24b286`
+- PR은 체크포인트 직전 기준 `mergeable: true`
+- main보다 앞서 있으며, 작업은 아직 main에 merge하지 않은 상태다.
+
+## 36.2 현재까지 확정된 핵심 방향
+
+- 모바일 세로 고정
+- 기준 디자인 1080×1920
+- 논리 픽셀 화면 216×384
+- 게임명과 극중 시스템명 모두 `Dot.exe`
+- `.agents/`는 Luna 전용, `Game/`은 게임 프로젝트 전용
+- 현행 문서는 `Game/Docs/current/`, 과거 검토 기록은 `Game/Docs/history/`
+- 전역 연구 자원명은 `SYSTEM ENERGY`가 아니라 `ENERGY`
+- 한국어판은 실제 UI/연구/프로토콜/메일을 한국어로 표시
+- 한국어 번역 검토 파일:
+  - `Game/Docs/current/LOCALIZATION_KO_REFERENCE.md`
+  - `Game/Locale/ko.reference.json`
+- 프로토콜 흐름은 `Briefing → Preparing → Running`
+- Briefing은 무제한 읽기, Preparing은 제한시간 live planning
+- P-01과 프로토타입은 Chemotaxis OFF로 시작하고 P-01 완료 후 ON되는 흐름으로 일치
+- 저장 UX는 Campaign 1개 + Rolling Autosave 3세대 + Protocol Checkpoint + ProfileData 구조
+
+## 36.3 현재 UI 선택 상태
+
+초기 A/B/C 3안 이후 B 계측 장비 패널을 선호했고, B-1/B-2/B-3 재설계 중 최종적으로 **B-1 Silent Instrument**를 기본 방향으로 선택했다.
+
+최신 검토 파일:
+
+`Game/Design/UI/Dotexe_UI_B1_refined.html`
+
+최신 요구사항 반영 내용:
+
+- 좌측 최상단:
+  `프로토콜 P-02 00:43 ▼`
+- 화살표 터치 시 프로토콜 목표/예상 위협/현재 준비 내용 펼침
+- 세포 = 하얀색 정사각 픽셀
+- 영양분 = 세포보다 작은 초록색 정사각 픽셀
+- 픽셀 모양이지만 이동은 연속 좌표 기반의 부드러운 자유 이동
+- Galmuri11 사용
+- CRT 외곽 곡률과 가장자리 왜곡 강화
+- 낡은 화면 느낌의 비네팅 추가
+- 전체 화면 밝기는 이전 B-1보다 소폭 상향
+- 디지털 지직은 짧고 드물게만 발생
+
+B-1 최신 HTML 최초 게시 커밋:
+
+`92dc692d0aae955b08492b4b7b789e26f70d3ff1`
+
+이후 README / PROJECT_CONTEXT / PR 설명까지 현재 상태로 갱신되었다.
+
+## 36.4 작업 과정에서 반드시 기억할 교훈
+
+GitHub 작업 가능 여부는 sandbox의 `git`/`gh` CLI 존재 여부로 판단하지 않는다.
+
+실제로 이 세션에서 GitHub Connector가 연결되어 있는데도 `gh` CLI가 없다는 이유로 직접 업로드가 불가능하다고 잘못 판단한 일이 반복되었다.
+
+따라서 앞으로 GitHub 작업 전에는:
+
+```text
+Connector profile/branch/file read
+→ 연결 확인
+→ Connector로 write
+→ exact branch/file/PR 상태 재조회
+→ 완료 보고
+```
+
+순서를 따른다.
+
+또한:
+
+- sandbox local file
+- GitHub branch file
+- PR에 포함된 file
+- main에 merge된 file
+
+상태를 서로 구분한다.
+
+## 36.5 다음 재개 지점
+
+가장 가까운 다음 작업은 **사용자가 최신 B-1 HTML을 검토한 뒤 UI 수정사항을 이어서 반영하는 것**이다.
+
+B-1이 승인되면 동일한 디자인 언어로 다음 화면을 확장한다.
+
+- Research
+- Briefing
+- Mail
+- Analysis
+- System
+- Game Over
+
+그 다음 큰 설계 작업은 이미 합의한 대로:
+
+**MVP 이후 전체 스토리 / 캠페인 / 시스템 메일 / Emergence 경로를 함께 닫는 것**이다.
+
+이 세션 체크포인트 이후 새 채팅에서 작업을 시작한다면, 이 절을 포함해 `PROJECT_CONTEXT.md` 전체를 먼저 읽고 이어간다.

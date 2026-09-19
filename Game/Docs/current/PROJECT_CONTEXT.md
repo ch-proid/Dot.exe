@@ -1224,7 +1224,250 @@ PR에는 지금까지:
 
 ---
 
-# 33. 이 맥락 파일의 유지 규칙
+# 33. 작업 중 발생한 실수와 교훈
+
+이 절은 프로젝트 설계의 실패 기록이 아니라 **작업 과정에서 실제로 발생한 오류와 재발 방지 규칙**을 기록한다.
+
+새 채팅이나 새 에이전트는 프로젝트 맥락을 읽을 때 이 절도 함께 확인한다.  
+같은 실수를 반복하지 않는 것이 목적이며, 문제가 해결되었다고 해서 기록을 지우지 않는다.
+
+## 33.1 GitHub CLI 부재를 GitHub 연결 부재로 잘못 판단
+
+### 실제로 있었던 일
+
+이 대화에서 이미 GitHub 커넥터를 통해 다음 작업을 직접 수행하고 있었다.
+
+- 브랜치 생성
+- 파일 생성/수정
+- commit
+- PR 생성과 수정
+- branch/PR SHA 확인
+
+그런데 B-1 수정 HTML을 만든 뒤 sandbox에서 `gh` CLI를 확인했을 때 설치되어 있지 않았고, 환경 변수에도 GitHub token이 보이지 않았다.
+
+이를 근거로 잘못 다음과 같이 판단했다.
+
+> “지금 이 대화 세션에서는 GitHub 커넥터가 제 쪽에 실제로 열려 있지 않아서 직접 푸시까지는 못 합니다.”
+
+이 판단은 틀렸다.
+
+실제로는 **GitHub Plugin/Connector가 계속 연결되어 있었고**, 이전과 동일하게 `functions.exec` 안의 GitHub 도구를 사용해 repository를 직접 수정할 수 있었다.
+
+### 원인
+
+다음 두 실행 경로를 혼동했다.
+
+```text
+sandbox의 git / gh CLI / 환경 변수
+≠
+ChatGPT에 연결된 GitHub Plugin/Connector
+```
+
+sandbox 안에 `gh` 명령이 없다는 사실은 GitHub connector의 인증 상태와 아무 관계가 없다.
+
+### 교훈
+
+**로컬 CLI 능력과 연결 앱 능력을 별개로 판단한다.**
+
+GitHub 작업 가능 여부를 판단할 때:
+
+1. sandbox의 `git` / `gh`만 보고 결론 내리지 않는다.
+2. 사용 가능한 GitHub connector 도구를 먼저 확인한다.
+3. 이전 대화에서 connector를 사용했다면 현재 branch/profile에 읽기 호출을 한 번 수행해 실제 연결 상태를 검증한다.
+4. 연결된 connector가 정상이라면 파일 생성/수정/commit/PR 작업은 connector를 통해 수행한다.
+5. connector 호출이 실제로 실패한 뒤에만 “직접 GitHub 조작이 불가능하다”고 말한다.
+
+### 재발 방지 확인 절차
+
+GitHub 작업 요청을 받았는데 가용성에 의문이 들면 먼저 다음 중 하나를 실행한다.
+
+```text
+GitHub profile 조회
+또는
+target branch 조회
+또는
+target repository file 조회
+```
+
+성공하면 GitHub 연결은 살아 있는 것이다.
+
+**금지:** `gh: command not found`만 보고 GitHub connector가 없다고 결론 내리는 것.
+
+---
+
+## 33.2 한 번의 GitHub 작업에서 너무 많은 connector 호출을 묶음
+
+### 실제로 있었던 일
+
+문서 구조를 대대적으로 정리하면서 한 번의 Code Mode 실행 안에서 많은 blob 생성과 tree 작업을 모두 처리하려 했다.
+
+결과:
+
+```text
+Code Mode exceeded the maximum number of tool calls
+```
+
+오류가 발생했다.
+
+### 당시 대응
+
+오류 뒤 branch head를 다시 확인해 실제 branch가 아직 기존 SHA에 있음을 검증했고, 작업을 여러 묶음으로 나누어 다시 진행했다.
+
+### 교훈
+
+큰 repository 변경은 **작고 검증 가능한 묶음**으로 나눈다.
+
+권장:
+
+```text
+핵심 문서 수정
+→ branch head 확인
+
+구조/경로 이동
+→ branch head 확인
+
+README/AGENTS 연결
+→ branch head 확인
+
+PR 갱신
+→ 최종 head 확인
+```
+
+connector 호출 제한에 걸렸을 때 부분 반영 여부를 추측하지 않는다.
+
+항상 exact branch SHA를 다시 조회한다.
+
+---
+
+## 33.3 이미지 파일을 텍스트 API로 읽으려 함
+
+### 실제로 있었던 일
+
+`Game/Ref/*.jpg`, `*.png`를 GitHub의 텍스트 파일 조회 경로로 읽으려 했고 다음 오류가 났다.
+
+```text
+UnicodeDecodeError
+GitHub Fetch only accepts UTF-8 text
+```
+
+### 문제점
+
+GitHub connector의 `fetch_file` / 일반 text fetch가 UTF-8 문서를 위한 경로인데 binary image를 그대로 읽으려 한 것이다.
+
+### 교훈
+
+이미지에 대해서는 목적을 구분한다.
+
+#### 파일 이동만 필요한 경우
+
+이미지 내용을 해석할 필요가 없다.
+
+기존 Git blob SHA를 그대로 새 경로에 재사용하면 binary를 다시 인코딩하지 않고 정확하게 이동할 수 있다.
+
+실제로 `Ref/` → `Game/Ref/` 이동은 이 방식으로 처리했다.
+
+#### 시각 검토가 필요한 경우
+
+실제 픽셀을 볼 수 있는 이미지 입력이 필요하다.
+
+- 사용자가 채팅에 첨부한 이미지
+- sandbox/container에서 접근 가능한 이미지
+- 실제 binary를 제공하는 지원 경로
+
+중 하나를 사용한다.
+
+**텍스트 문서의 이미지 설명만 읽고 실제 이미지를 보았다고 주장하지 않는다.**
+
+---
+
+## 33.4 로컬에서 생성된 파일과 GitHub에 게시된 파일의 상태를 혼동
+
+### 실제로 있었던 일
+
+최신 B-1 UI 수정본을 sandbox에:
+
+```text
+/mnt/data/Dotexe_UI_B1_refined.html
+```
+
+로 생성했다.
+
+이 시점에는 GitHub에 아직 게시되지 않았다.
+
+그 뒤 GitHub 연결을 잘못 판단하면서 수동 commit 명령을 사용자에게 안내했다.
+
+### 교훈
+
+파일 상태를 반드시 다음처럼 분리해서 말한다.
+
+```text
+sandbox local artifact
+GitHub branch artifact
+PR에 포함된 artifact
+main에 merge된 artifact
+```
+
+“만들었다”와 “GitHub에 올렸다”는 같은 상태가 아니다.
+
+GitHub 게시를 완료했다고 말하기 전에 반드시:
+
+- target path를 connector로 다시 fetch하거나
+- branch tree에서 path를 확인하거나
+- PR changed files에서 확인
+
+한다.
+
+반대로 connector가 살아 있는데 sandbox 파일만 있다는 이유로 “직접 업로드할 수 없다”고 말하지 않는다.
+
+---
+
+## 33.5 중요한 작업 후 exact source truth를 다시 확인하는 습관
+
+이번 세션에서 잘 작동했던 대응도 재사용한다.
+
+- mutable branch 이름만 믿지 않고 최신 commit SHA를 다시 조회
+- PR 생성 후 `mergeable` 상태 재조회
+- 대규모 구조 이동 후 recursive tree 확인
+- 용어 변경 후 현행 문서 전체에서 구 명칭 검색
+- `SYSTEM ENERGY`, `SYS ENERGY`, `systemEnergy`, `CULTURE//SYS` 잔존 여부 검사
+- binary reference 이동 시 기존 blob SHA가 그대로인지 확인
+
+이 방식은 앞으로도 유지한다.
+
+### 공통 원칙
+
+작업 완료 보고는 “내가 실행했다고 생각하는 것”이 아니라 **검증한 durable GitHub state**를 기준으로 한다.
+
+```text
+의도
+→ 실행
+→ exact state 재조회
+→ 검증
+→ 완료 보고
+```
+
+---
+
+## 33.6 이 절에 새 실수를 기록하는 기준
+
+앞으로 다음 유형의 실수가 발생하면 이 절에 추가한다.
+
+- 사용 가능한 도구나 권한을 잘못 판단
+- repository state를 잘못 추정
+- 현행/과거 문서를 혼동
+- 구현 완료와 로컬 초안을 혼동
+- 사용자에게 이미 확정된 결정을 다시 묻거나 반대로 미확정 사항을 확정으로 취급
+- 파일/경로/브랜치/PR을 잘못 대상으로 작업
+- 시각 자료를 실제로 확인하지 않고 확인했다고 전제
+- 개발 방식 때문에 같은 종류의 오류가 반복될 가능성이 높은 경우
+
+단순 typo나 일회성 문구 수정은 기록하지 않는다.
+
+이 절의 목표는 책임 추궁이 아니라 **프로젝트 작업 품질을 누적해서 높이는 것**이다.
+
+---
+
+# 34. 이 맥락 파일의 유지 규칙
 
 이 파일은 앞으로 지속적으로 갱신한다.
 
@@ -1256,7 +1499,7 @@ PR에는 지금까지:
 
 ---
 
-# 34. 다음 재개 지점
+# 35. 다음 재개 지점
 
 **가장 가까운 미완료 작업:**
 

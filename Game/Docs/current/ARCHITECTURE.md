@@ -69,7 +69,7 @@ Cell 상태는 `LifeMode`(Active/Dividing/Dormant/Dead), `Health`(0~1), `Infecti
 | DeathSystem | PendingDeath 표시와 사망 확정을 한 곳에서 순서대로 처리, 사망 원인 기록, `cell:died` 발행 | Narrative/통계를 직접 갱신(이벤트 구독으로 위임)(#15) |
 | ResearchService | 연구 해금 조건·비용 검증, `PROTOCOL_RUNNING` 등 거부 사유 반환, 프로토콜 보상을 통한 연구 지급 처리 | 세포 행동 구현(#19) |
 | TraitLoadoutService | 전역 Trait Loadout 변경 검증(Hard Limit 초과만 거부), Running 중 변경 거부 | Safe Limit 초과 거부(패널티만 적용)(#20) |
-| ResourceService | `systemEnergy`/`data`/`nutrientReserve` 값을 `trySpend`/`add`로만 변경, reason 기록 | 외부의 직접 값 수정 허용(#21) |
+| ResourceService | `energy`/`data`/`nutrientReserve` 값을 `trySpend`/`add`로만 변경, reason 기록 | 외부의 직접 값 수정 허용(#21) |
 | ProtocolService / ProtocolRunner | Idle→Preparing→Running→Completed 상태 전환, phase/action 실행, objective 판정, 수동·자동 시작 모두 `transitionToRunning` 사용 | 체크포인트 저장 형식 자체 관리(#22, #23) |
 | CheckpointService | Preparing 진입 시 정확히 한 번 체크포인트 생성(SaveData와 같은 형식), 실패 시 전체 복원 | 일반 저장(SaveService)과 슬롯 공유(#22.2) |
 | MailService | 수신 메일 관리, 읽음 상태, 신규 메일 이벤트, 정렬 | 스토리 조건 판정(#25) |

@@ -4,6 +4,12 @@
 
 Dot.exe 관련 작업을 시작할 때는 먼저 `Game/Docs/current/PROJECT_CONTEXT.md`를 읽어 현재 프로젝트 맥락과 최근 재개 지점을 파악한다. 특히 `작업 중 발생한 실수와 교훈` 절을 함께 확인해 이미 발생한 작업 오류를 반복하지 않는다. 그 다음 코드 작업 전에 `Game/Docs/current/ARCHITECTURE.md`를 읽는다. 게임 규칙의 정본은 `Game/Docs/current/CORE_GAME_RULES.md`, 구현 기준은 `Game/Docs/current/DEVELOPMENT_SPEC.md`, 경험과 서사 방향은 `Game/Docs/current/GAME_DESIGN.md`다. `PROJECT_CONTEXT.md`는 이 문서들을 대체하지 않고, 결정의 이유·현재 진행 상태·미확정 항목을 이어 주는 지속 맥락 문서다.
 
+## 간단한 작업의 병렬 처리
+
+- 지침을 그대로 따르면 되고 별도 추론이 필요 없는 문서 작업, 간단한 코딩 작업, 서로 겹치지 않는 간단한 작업은 Luna High(`gpt-5.6-luna`, `high`) 에이전트 여러 개에 나눠 동시에 진행한다.
+- 에이전트마다 맡을 범위와 완료 기준을 분명히 정하고, 같은 파일을 동시에 수정하지 않게 한다.
+- 담당 에이전트는 결과를 모아 변경 사항과 필요한 검사를 확인한다. 작업끼리 의존하거나 설계·규칙 판단이 필요하면 병렬로 나누지 않는다.
+
 ## 코드
 
 - 기존 public interface, 이벤트 이름, ID, 저장 형식을 임의로 바꾸지 않는다.

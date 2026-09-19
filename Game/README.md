@@ -12,6 +12,7 @@
 ## 문서
 
 현행 문서:
+- `Docs/current/PROJECT_CONTEXT.md` — 프로젝트 맥락·최근 결정·다음 재개 지점
 - `Docs/current/CORE_GAME_RULES.md` — 게임 규칙 정본
 - `Docs/current/ARCHITECTURE.md` — 시스템 책임과 의존 구조
 - `Docs/current/GAME_DESIGN.md` — 게임 경험·기획·서사 방향

@@ -2,7 +2,7 @@
 
 이 파일은 `Game/` 아래의 게임 작업에만 적용한다. Luna Chat Coder 자체의 동작 규칙은 저장소 루트 `.agents/`에 있으며 서로 섞지 않는다.
 
-코드 작업 전에 `Game/Docs/current/ARCHITECTURE.md`를 읽는다. 게임 규칙의 정본은 `Game/Docs/current/CORE_GAME_RULES.md`, 구현 기준은 `Game/Docs/current/DEVELOPMENT_SPEC.md`, 경험과 서사 방향은 `Game/Docs/current/GAME_DESIGN.md`다.
+Dot.exe 관련 작업을 시작할 때는 먼저 `Game/Docs/current/PROJECT_CONTEXT.md`를 읽어 현재 프로젝트 맥락과 최근 재개 지점을 파악한다. 그 다음 코드 작업 전에 `Game/Docs/current/ARCHITECTURE.md`를 읽는다. 게임 규칙의 정본은 `Game/Docs/current/CORE_GAME_RULES.md`, 구현 기준은 `Game/Docs/current/DEVELOPMENT_SPEC.md`, 경험과 서사 방향은 `Game/Docs/current/GAME_DESIGN.md`다. `PROJECT_CONTEXT.md`는 이 문서들을 대체하지 않고, 결정의 이유·현재 진행 상태·미확정 항목을 이어 주는 지속 맥락 문서다.
 
 ## 코드
 
@@ -35,3 +35,8 @@
 ## 단계 진행
 
 `Game/Docs/current/DEVELOPMENT_PIPELINE.html`의 단계를 하나씩 밟는다. 에이전트 배속 → 브라우저 배속 → 사람 테스트를 거치며, 사람 테스트 체크리스트는 `Game/Docs/tests/`에 둔다.
+
+
+## 지속 맥락 관리
+
+프로젝트의 방향, 시스템 의미, UI 최종 선택, 스토리 구조, 개발 단계처럼 이후 판단을 바꿀 수 있는 중요한 결정이 생기면 `Game/Docs/current/PROJECT_CONTEXT.md`를 함께 갱신한다. 단순 오탈자나 작은 밸런스 조정은 기록하지 않는다.

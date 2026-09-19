@@ -9,6 +9,7 @@
 3. `GAME_DESIGN.md` — 경험·콘텐츠 방향
 4. `ARCHITECTURE.md` — 코드 구조와 의존 방향
 5. `DEVELOPMENT_PIPELINE.html` — 단계별 개발·검증 절차
+6. `LOCALIZATION_KO_REFERENCE.md` — 한국어 용어·UI·연구명 검토표
 
 문서가 충돌하면 `CORE_GAME_RULES.md`의 우선순위를 따른다.
 

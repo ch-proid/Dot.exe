@@ -1,6 +1,6 @@
 # Dot.exe 개발 명세서
 
-> 버전: 0.3 (정본 `CORE_GAME_RULES.md` v1.3 반영)  
+> 버전: 0.3 (정본 `CORE_GAME_RULES.md` v1.4 반영)  
 > 대상: TypeScript 기반 구현 (Vite, Vitest)  
 > 출시 대상: Google Play · App Store. 개발 중에는 데스크톱 브라우저에서 실행하고 출시할 때 Capacitor로 감싼다. 세로 고정, 터치 입력(마우스도 같은 경로). (정본 30절)  
 > 렌더링: 기준 디자인 1080×1920, 논리 화면 216×384. PixelCanvas → ResponsiveShell(safe area/화면비) → CrtDisplay(WebGL) 순서로 표시하며 터치는 역변환해 논리 좌표로 보낸다.

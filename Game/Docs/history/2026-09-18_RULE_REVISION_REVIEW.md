@@ -1,3 +1,6 @@
+> **HISTORICAL RECORD — 구현 기준으로 사용하지 않음.**  
+> 이 문서는 당시 검토와 결정 과정을 보존한다. 현행 기준은 `Game/Docs/current/CORE_GAME_RULES.md`, `DEVELOPMENT_SPEC.md`, `GAME_DESIGN.md`다. 명칭과 화면 방향 표기는 현재 정책(Dot.exe 통합, 세로 고정)에 맞춰 정규화했다.
+
 # Dot.exe 규칙 수정안 재검토
 
 검토일: 2026-09-18
@@ -12,7 +15,7 @@
 
 **우선 보완 · 수정안 04, 14**
 
-[수정안 146줄](<C:/Users/chpro/.codex/attachments/c807d293-9aac-4e0c-94f6-2491d4eb9dc4/pasted-text.txt:146>)은 필요한 내부 저장량을 넘긴 에너지만 SYSTEM ENERGY로 회수한다. 동시에 분열은 내부 에너지를 소비하고 부모·자식에게 나눈다.
+[수정안 146줄](<C:/Users/chpro/.codex/attachments/c807d293-9aac-4e0c-94f6-2491d4eb9dc4/pasted-text.txt:146>)은 필요한 내부 저장량을 넘긴 에너지만 ENERGY로 회수한다. 동시에 분열은 내부 에너지를 소비하고 부모·자식에게 나눈다.
 
 예를 들어 회수 기준이 100, 분열 기준이 60이고 나이·공간 조건을 이미 충족했다면, 세포가 60에 도달할 때마다 분열해 100까지 축적하지 못하는 설정이 가능하다. 세포 수는 늘지만 연구 자원은 나오지 않는다. 과밀 때문에 분열이 멈춘 뒤에야 연구가 가능해진다면, 처음 의도한 성장 흐름과 달라질 수 있다. 이 숫자는 문제를 설명하기 위한 가정이며 제안된 밸런스 수치가 아니다.
 
@@ -94,11 +97,11 @@ Alarm Signal 때문에 별도 연구 노드를 반드시 늘릴 필요는 없다
 
 **우선 보완 · 수정안 14, 기존 DivisionRule**
 
-[수정안 737줄](<C:/Users/chpro/.codex/attachments/c807d293-9aac-4e0c-94f6-2491d4eb9dc4/pasted-text.txt:737>)은 부모 나이를 유지한다. 기존 [DivisionRule.minAge](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:510>)만 다음 분열의 시간 조건으로 사용하면, 한 번 성숙한 부모는 이후 에너지가 찰 때마다 최소 성장 시간을 건너뛸 수 있다. 분열 자체의 소요 시간은 있어도 분열 사이의 준비 시간이 보장되는 것은 아니다.
+[수정안 737줄](<C:/Users/chpro/.codex/attachments/c807d293-9aac-4e0c-94f6-2491d4eb9dc4/pasted-text.txt:737>)은 부모 나이를 유지한다. 기존 [DivisionRule.minAge](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:510>)만 다음 분열의 시간 조건으로 사용하면, 한 번 성숙한 부모는 이후 에너지가 찰 때마다 최소 성장 시간을 건너뛸 수 있다. 분열 자체의 소요 시간은 있어도 분열 사이의 준비 시간이 보장되는 것은 아니다.
 
 **필요한 결정:** 최초 성숙에 쓰는 생애 나이와 마지막 분열 이후의 준비 시간을 구분한다. Accelerated Mitosis가 어느 시간을 줄이는지도 정한다. 분열 비용을 시작 시 낼지 완료 시 낼지, 중도 취소 시 반환할지, 감염을 자식에게 전달할지는 같은 생애 규칙에 포함한다.
 
-Health를 분리하는 방향은 타당하다. 다만 수정안이 근거로 든 ‘휴면 중 감염’은 기존 명세도 [독립 InfectionState](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:361>)로 이미 지원한다. 변경 이유는 휴면·분열 중 **손상과 회복을 함께 표현하기 위해서**라고 쓰는 편이 정확하다.
+Health를 분리하는 방향은 타당하다. 다만 수정안이 근거로 든 ‘휴면 중 감염’은 기존 명세도 [독립 InfectionState](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:361>)로 이미 지원한다. 변경 이유는 휴면·분열 중 **손상과 회복을 함께 표현하기 위해서**라고 쓰는 편이 정확하다.
 
 ## 8. 최종 시험은 저장량으로 버티는 것과 자율 유지 능력을 구분해야 한다
 

@@ -1,13 +1,13 @@
 # Dot.exe 상세 기획서
 
-> 버전: 0.3.1 (`CORE_GAME_RULES.md` v1.3 반영)  
+> 버전: 0.4 (`CORE_GAME_RULES.md` v1.4 반영)  
 > 장르: 생명 시뮬레이션 / 생존 디펜스 / 연구 트리 / 서사형 인크리멘탈  
 > 시대 배경: 1990년대 초반의 가상 생물학 연구소  
 > 핵심 미감: 단색 CRT, 오래된 연구용 터미널, 픽셀 UI, 제한된 녹색 계열  
-> 작품명: `Dot.exe` / 극중 프로그램명: `CULTURE//SYS`  
+> 작품명: `Dot.exe` / 극중 프로그램명: `Dot.exe`  
 > 출시 대상: Google Play · App Store. 유료 다운로드 ₩1,500, 인앱결제·광고·데이터 수집 없음. 세로 화면, 터치 조작 (TypeScript + Canvas/WebGL을 Capacitor로 감싼다)
 
-`Dot.exe`는 게임 전체의 제목이고, `CULTURE//SYS`는 플레이어가 연구실 컴퓨터에서 실행하는 극중 배양 시스템 소프트웨어다. 두 이름을 섞어 쓰지 않는다.
+`Dot.exe`는 작품명과 극중 시스템명 모두에 사용한다. 플레이어가 연구실 컴퓨터에서 실행하는 프로그램도 `Dot.exe`다.
 
 이 문서는 게임의 방향과 경험을 설명한다. 판정 공식, 처리 순서, 저장 범위처럼 구현 결과를 좌우하는 규칙의 정본은 프로젝트 루트의 `CORE_GAME_RULES.md`이며, 이 문서와 어긋나면 그쪽을 따른다. 본문에서 `결정 N절`은 `CORE_GAME_RULES.md`의 N절을 가리킨다. 본문의 수치는 따로 밝히지 않는 한 예시이거나 플레이테스트 전 초기 밸런스 값이다.
 
@@ -338,7 +338,7 @@ MVP 이후 처음 넣을 때 TEMP, PH, OXYGEN은 배양 공간 전체에 하나�
 
 # 9. 자원
 
-## 9.1 SYSTEM ENERGY
+## 9.1 ENERGY
 
 기본 성장 자원. 세포 각자가 가진 내부 에너지와는 다른 값이다.
 
@@ -356,14 +356,14 @@ MVP 이후 처음 넣을 때 TEMP, PH, OXYGEN은 배양 공간 전체에 하나�
 표시 예:
 
 ```text
-SYSTEM ENERGY
+ENERGY
 001824
 +12.4 / SEC
 ```
 
 ### 세포 내부 에너지와의 관계
 
-세포는 영양을 먹어 에너지를 만들고, 거기서 유지·이동·활성 행동 비용을 뺀 순생산을 내부 저장과 SYSTEM ENERGY로 나눈다.
+세포는 영양을 먹어 에너지를 만들고, 거기서 유지·이동·활성 행동 비용을 뺀 순생산을 내부 저장과 ENERGY로 나눈다.
 
 ```text
 NUTRIENT
@@ -374,13 +374,13 @@ NUTRIENT
    ↓
 순생산
    ↓
-세포 내부 에너지  /  SYSTEM ENERGY
+세포 내부 에너지  /  ENERGY
 ```
 
 - 내부 에너지가 생존 보유량보다 낮은 세포는 순생산을 전부 자기 몸에 쓴다. 굶주리는 세포는 연구 자원을 만들지 않는다.
-- 생존 보유량을 넘긴 세포는 순생산의 일부를 SYSTEM ENERGY로 보낸다.
+- 생존 보유량을 넘긴 세포는 순생산의 일부를 ENERGY로 보낸다.
 - 생존 보유량, 분열 요구량, 최대 저장량, 회수 비율은 서로 다른 값이다.
-- 저장량이 가득 찬 세포도 계속 먹고 대사한다. 저장하지 못한 내부 몫은 버리며 SYSTEM ENERGY로 돌리지 않는다.
+- 저장량이 가득 찬 세포도 계속 먹고 대사한다. 저장하지 못한 내부 몫은 버리며 ENERGY로 돌리지 않는다.
 - 순생산이 음수면 내부 에너지에서 뺀다.
 
 “내부 저장 한도를 넘친 에너지만 회수”하는 방식은 쓰지 않는다. 분열이 에너지를 계속 소모해 연구 자원이 나오지 않는 상황을 피하기 위해서다. (결정 4절)
@@ -397,7 +397,7 @@ NUTRIENT
 - 특이 개체 분석
 - 조건부 연구 목표 달성
 
-고급 연구는 SYSTEM ENERGY와 DATA를 함께 요구한다.
+고급 연구는 ENERGY와 DATA를 함께 요구한다.
 
 발견은 종류별로 한 번만 기록하고, 기록하는 순간 DATA를 지급한다. 미확정 DATA는 두지 않는다. 실험에 실패해 체크포인트를 불러오면 발견 기록과 DATA가 함께 되돌아가므로, 다시 하면서 다시 발견하고 다시 받는다. (결정 8절)
 
@@ -571,63 +571,30 @@ Running → Failed → GAME OVER → 체크포인트 로드 → Preparing
 
 ---
 
-# 14. 준비 단계
+# 14. 프로토콜 브리핑과 준비 단계
 
-실험 전에 일부 정보가 공개된다.
+프로토콜은 **읽는 시간**과 **결정하는 시간**을 분리한다.
 
-```text
-ORGANISM B-14
+### Briefing — 시간 제한 없음
+시뮬레이션을 멈추고 목표·알려진 위협·보상·현재 배양 상태를 읽는다. 연구 구매, Trait 변경, FEED/PURGE는 불가하다. `BEGIN PREPARATION`을 누르면 준비가 시작된다.
 
-REPRODUCTION    ███████
-MOBILITY        ███
-TOXICITY        ██
-RESISTANCE      █
+### Preparing — 제한시간 live planning
+Preparing 진입 순간 체크포인트와 준비 타이머를 시작한다. 세포와 자원 생산이 실제로 흐르는 동안 연구, Trait, 증식, 영양 배치를 제한시간 안에 결정한다.
 
-KNOWN WEAKNESS:
-UNKNOWN
-```
-
-준비 시간 동안 플레이어는 다음을 결정한다.
-
-- 세포 수 증가
-- 연구
-- SYSTEM ENERGY 저장
-- 활성 특성 변경
-- 영양분 배치
-- 군집 형태 정비
+RESEARCH, MAIL, ANALYSIS, SYSTEM 화면을 열어도 준비 타이머와 simulation은 계속 흐르고 남은 시간을 항상 표시한다. OS background만 예외적으로 pause한다.
 
 ## 14.1 실험 중에는 연구와 특성 변경이 잠긴다
 
-연구 구매와 활성 특성 변경은 실험이 진행 중(Running)일 때만 잠긴다. 그 밖의 상태(Idle, Preparing, Completed)에서는 언제든 할 수 있다.
-
-평소에는 생산 특성을 켜 두다가 피격 직전에만 방어 특성으로 갈아끼우면 발현 부하의 선택 비용이 사라진다. 어떤 구성으로 실험에 들어갈지가 준비 단계의 핵심 결정이어야 한다.
+Briefing은 조회만, Preparing/Idle/Completed는 변경 가능, Running은 변경 불가다. Running 진입 순간 Loadout을 고정한다.
 
 ## 14.2 게임 시간과 화면
 
-배양, 적, 프로토콜 타이머, SYSTEM ENERGY 생산, NUTRIENT 보충, 재사용 대기시간, 환경 변화는 모두 같은 시뮬레이션 시간을 따른다.
+- Briefing: pause
+- Preparing: 화면 전환과 무관하게 simulation/timer 진행
+- Preparing 이외 일반 화면: CULTURE 밖에서는 pause
+- OS background: pause, 복귀 시 밀린 시간 없음
 
-CULTURE 외의 전체 화면(MAIL, RESEARCH, ANALYSIS, SYSTEM, GAME OVER)을 열거나 직접 일시정지하면 이 시간이 통째로 멈춘다. 메일을 읽는 것이 손해가 되지 않고, 준비 타이머만 멈춘 채 자원만 쌓는 일도 없다.
-
-멈춘 동안에도 할 수 있는 것:
-
-- 연구 구매 (실험 중이 아닐 때)
-- 활성 특성 변경 (실험 중이 아닐 때)
-- 메일 읽기
-- 설정 변경
-- 저장
-
-멈춘 동안 할 수 없는 것:
-
-- FEED
-- SIGNAL
-- PURGE
-- 환경 조작
-
-일시정지에는 이유가 여러 개 겹칠 수 있다. 직접 일시정지한 상태에서 메일을 열었다 닫아도 자동으로 재개되지 않는다.
-
-기본 캠페인에는 오프라인 진행이 없다. (결정 9절)
-
----
+기본 캠페인에는 오프라인 진행이 없다.
 
 # 15. 연구와 발현의 분리
 
@@ -796,7 +763,7 @@ MVP에서는 약한 독성도 함께 만든다. Hazard Avoidance가 실제로 �
 | Enhanced Glycolysis | 에너지 생산 증가 | 영양 소비 증가 |
 | Efficient Respiration | 같은 영양으로 더 많은 에너지 생산 | 저산소에 취약 |
 | Anaerobic Metabolism | 산소 부족에서도 에너지 생산 | 생산 효율 낮음 |
-| Energy Storage | 내부 에너지 최대 저장량 증가 (SYSTEM ENERGY 회수 기준·비율은 건드리지 않음) | 발현 부하 (MVP에서는 다른 대가 없음) |
+| Energy Storage | 내부 에너지 최대 저장량 증가 (ENERGY 회수 기준·비율은 건드리지 않음) | 발현 부하 (MVP에서는 다른 대가 없음) |
 | Reserve Conversion | 굶주릴 때 저장 에너지 사용 | 평상시 효율 감소 |
 | Metabolic Burst | 위험 시 일시 생산 증가 | 스트레스 급증 |
 | Waste Recycling | 폐기물 일부 재활용 | 유지 비용 발생 |
@@ -1482,7 +1449,7 @@ UNKNOWN의 명확한 언어는 후반 25~30% 이전에 등장시키지 않는다
 예:
 
 ```text
-CULTURE//SYS
+Dot.exe
 CULTURE A-01
 
 ┌─────────────────────────────┐
@@ -1496,7 +1463,7 @@ CULTURE A-01
 └─────────────────────────────┘
 
 CELLS        0384
-SYS ENERGY   4821
+ENERGY   4821
 OUTPUT       +18.4/s
 RESERVE      62%
 CULTURE NUT  LOW
@@ -1515,7 +1482,7 @@ NEXT TEST    02:42
 메인 HUD에 `STABILITY %`를 두지 않는다. 왜 84%인지 설명하기 어려운 복합 점수는 기본 정보로 쓰지 않고 실제 상태를 보여준다.
 
 - CELLS
-- SYSTEM ENERGY
+- ENERGY
 - ENERGY OUTPUT
 - NUTRIENT RESERVE (FEED에 쓰는 비축량)
 - CULTURE NUTRIENT (배양액의 영양 상태)
@@ -1530,19 +1497,19 @@ NEXT TEST    02:42
 
 분열 직전의 밝아짐과 위험 경고가 같은 “밝아짐” 하나로 보이지 않게 한다.
 
-## 27.3 CRT 효과
+## 27.3 CRT 효과와 모바일 화면비
 
-게임 전체가 낡은 CRT 모니터 안에서 돌아가는 것처럼 보인다. 기준은 `Ref/Ref 01.jpg`다. 화면 외곽으로 갈수록 굴절되고 둘레에 레트로 모니터의 틀이 있으며, 타이틀부터 엔딩까지 항상 적용한다. 주사선, 픽셀 격자, 약한 번짐, 가장자리 어두움을 함께 쓴다.
+세로 고정, 기준 디자인 **1080×1920**, 논리 화면 **216×384**다.
 
-도트 느낌이 강해야 한다. 모든 화면은 가로 216픽셀의 저해상도 화면에 그린 뒤 정수 도트로 키우고, 색은 4색 녹색 팔레트만 쓴다. 음영은 색을 늘리지 않고 체크무늬 같은 도트 패턴으로 낸다. 글자는 픽셀 폰트 Galmuri11을 쓴다. 부드러운 확대, 안티앨리어싱, 그러데이션은 쓰지 않는다.
+ResponsiveShell이 safe area 안에 9:16 CRT 화면을 비율 유지로 맞춘다. 긴 폰의 남는 세로 공간과 태블릿의 남는 좌우 공간은 CRT 케이스·터미널 여백으로 처리하며 게임 영역 자체를 늘려 시야나 난이도를 바꾸지 않는다.
 
-굴절이 가장자리를 가리므로 UI는 안쪽으로 들여 놓고, 터치 위치는 굴절을 거꾸로 계산해 눈에 보이는 곳과 맞춘다.
+상단 HUD / 중앙 배양 / 하단 조작을 anchor zone으로 두고 노치·홈 인디케이터를 피한다. 터치는 shell과 CRT 굴절을 역변환해 논리 좌표로 전달한다.
 
-효과의 세기는 설정에서 줄일 수 있고, 줄여도 경고는 구분돼야 한다. 글리치와 강한 왜곡은 후반 서사 이벤트에만 쓴다. (결정 26.1절)
+CRT 기준은 `Game/Ref/Ref 01.jpg`, 색감은 `Game/Ref/색감 예시.png`다. 4색 녹색 팔레트와 픽셀 표현을 유지하고 강한 글리치는 후반에만 사용한다.
 
 ### 타이틀과 부팅
 
-큰 도트 제목이 `D` → `o` → `t` → `.exe` 순서로 나타나고, 그 아래 `TOUCH TO START`가 깜빡인다. 누르면 `Ref 02` 스타일의 레트로 로딩 화면(`Dot.exe booting...`)이 나오고, 연출이 끝나면 게임이 시작된다. (`Ref/타이틀 화면.txt`, 결정 26.4절)
+`D` → `o` → `t` → `.exe`, `TOUCH TO START`, `Dot.exe booting...` 순서로 진행한다.
 
 ## 27.4 레퍼런스 용도
 
@@ -1558,9 +1525,9 @@ NEXT TEST    02:42
 
 ## 27.5 언어
 
-이 문서에 예시로 실린 화면 글은 영어판 기준이다. 실제 게임의 글은 모두 `Locale/en.json`과 `Locale/ko.json`에서 가져오며, 한국어판에서는 메뉴·HUD·프로토콜·UNKNOWN의 메일까지 한국어로 나온다. 다른 언어는 JSON 파일 하나를 더해 지원한다. 번역 원칙은 `Locale/README.md`에 있다. (결정 30.1절)
+이 문서에 예시로 실린 화면 글은 영어판 기준이다. 실제 게임의 글은 모두 `Game/Locale/en.json`과 `Game/Locale/ko.json`에서 가져오며, 한국어판에서는 메뉴·HUD·프로토콜·UNKNOWN의 메일까지 한국어로 나온다. 다른 언어는 JSON 파일 하나를 더해 지원한다. 번역 원칙은 `Game/Locale/README.md`에 있다. (결정 30.1절)
 
-번역하지 않는 것은 극중 프로그램명 `CULTURE//SYS`, 프로토콜·균주 번호, 깨진 데이터뿐이다.
+번역하지 않는 것은 극중 프로그램명 `Dot.exe`, 프로토콜·균주 번호, 깨진 데이터뿐이다.
 
 메일 본문이 한글이므로 영문 픽셀 폰트만으로 시안을 확정하지 않는다. 실제 목표 해상도에서 최소 글자 크기, 한글 픽셀 폰트 가독성, 메일 본문, 세포 300개 이상인 화면을 직접 확인한다. (결정 26~27절)
 
@@ -1660,6 +1627,15 @@ P-01을 시작하기 전에 첫 세포를 굶겨 죽이는, 처음 하는 사람
 
 ---
 
+## 30.2 저장 UX
+
+- 캠페인 저장 1개 + CONTINUE
+- Rolling Autosave 최근 정상본 3세대
+- SYSTEM의 SAVE NOW
+- Protocol Checkpoint는 별도 RECOVERY 목록
+- 과거 checkpoint 복원 시 이후 시간선 저장을 정리
+- ProfileData는 엔딩/모드 해금을 별도 보존
+
 # 31. 반복 플레이
 
 첫 엔딩 후:
@@ -1688,7 +1664,7 @@ EXPERIMENT MODE
 
 대응:
 
-- SYSTEM ENERGY는 성장 자원
+- ENERGY는 성장 자원
 - DATA는 실험과 발견 자원
 
 고급 연구는 둘 다 필요하다.
@@ -1804,7 +1780,7 @@ UNKNOWN의 명확한 메시지는 후반부에만 등장시킨다.
 - 세포 최대 300
 - 공간 필드: Nutrient, Toxin, Signal (Signal은 Alarm Signal 전용)
 - 플레이어 조작: FEED, PURGE
-- 자원 세 가지: SYSTEM ENERGY, DATA(자동 분석만), NUTRIENT RESERVE
+- 자원 세 가지: ENERGY, DATA(자동 분석만), NUTRIENT RESERVE
 - 연구 10개 (18.7)
 - 전역 Trait Loadout과 발현 부하
 - Rapid Bacteria
@@ -1814,13 +1790,15 @@ UNKNOWN의 명확한 메시지는 후반부에만 등장시킨다.
 ## 34.2 프로토콜
 
 **P-01 CULTURE EXPANSION**  
-먹이 공급, 이동, 대사, 분열을 익히는 첫 성장 경험. 처음에는 Chemotaxis가 없어서 세포 가까이에 영양분을 놓아야 한다. P-01을 끝내면 Chemotaxis가 연구 완료 상태로 지급되어 바로 활성화되고, “먹이를 찾아가는 행동”이 눈에 띄는 성장 보상이 된다.
+Chemotaxis 없이 시작한다. 가까운 FEED, 불규칙 이동, 대사와 분열이 먼저 재미있어야 한다. P-01 완료 보상으로 Chemotaxis를 즉시 지급·활성화하고, 같은 FEED를 더 먼 곳에 사용했을 때 세포가 스스로 찾아가는 변화를 첫 성장 보상으로 보여준다.
+
+첫 프로토타입도 이 순서를 그대로 따른다. Chemotaxis를 미리 켜지 않으며 OFF 상태의 기본 재미와 ON 이후의 성장 체감을 각각 판정한다.
 
 **P-02 RAPID BACTERIA**  
-Rapid Bacteria를 처음 투입한다. 기본 PURGE만으로도 어렵게 통과할 수 있고, Reinforced Membrane·Phagocytosis·Alarm Signal이 있으면 크게 유리하다. 정답 특성 하나를 강제하지 않는다. 세균이 약한 독성도 만들기 때문에 Hazard Avoidance를 실제로 시험할 수 있다.
+Rapid Bacteria 최초 투입. 기본 PURGE로도 어렵게 통과할 수 있고 방어 연구가 있으면 유리하다.
 
 **P-03 LIMITED NUTRIENT**  
-Rapid Bacteria에 제한된 영양과 자원 경쟁이 더해진다. “제한”은 NUTRIENT RESERVE의 보충 속도가 줄어드는 것이다. Rapid Bacteria는 영양을 먹어야 증식하므로 세포와 같은 먹이를 두고 다툰다. 공격력보다 자원 관리와 이동이 중요해진다.
+NUTRIENT RESERVE 보충 속도를 줄이고 Rapid Bacteria가 같은 영양을 먹어 증식하게 해 자원 경쟁을 만든다.
 
 ## 34.3 MVP 이후로 미루는 것
 

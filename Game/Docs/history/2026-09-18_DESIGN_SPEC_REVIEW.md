@@ -1,3 +1,6 @@
+> **HISTORICAL RECORD — 구현 기준으로 사용하지 않음.**  
+> 이 문서는 당시 검토와 결정 과정을 보존한다. 현행 기준은 `Game/Docs/current/CORE_GAME_RULES.md`, `DEVELOPMENT_SPEC.md`, `GAME_DESIGN.md`다. 명칭과 화면 방향 표기는 현재 정책(Dot.exe 통합, 세로 고정)에 맞춰 정규화했다.
+
 # Dot.exe 기획·명세·레퍼런스 검토
 
 검토일: 2026-09-18 · 대상 문서 버전: 0.1
@@ -33,7 +36,7 @@
 
 **충돌 · 우선 해결**
 
-[기획서 509줄](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:509>)은 한계 초과 시 대사량·스트레스 증가, 분열·유지 효율 저하를 요구한다. [명세서 1100줄](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:1100>)의 테스트는 한계를 넘는 조합 자체를 거부한다.
+[기획서 509줄](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:509>)은 한계 초과 시 대사량·스트레스 증가, 분열·유지 효율 저하를 요구한다. [명세서 1100줄](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:1100>)의 테스트는 한계를 넘는 조합 자체를 거부한다.
 
 예를 들어 부하 90에서 부하 20짜리 특성을 켰을 때, 기획대로면 110 상태에서 불이익을 받고 명세대로면 장착이 실패한다. 같은 기능의 정답이 둘이다.
 
@@ -43,7 +46,7 @@
 
 **정의 부족 · 우선 해결**
 
-[기획서 426줄](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:426>)은 180초 유지와 생존 목표 60%를 예시로 든다. [명세서 705줄](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:705>)은 `ProtocolObjective[]`를 선언하지만 판정 의미는 정하지 않는다.
+[기획서 426줄](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:426>)은 180초 유지와 생존 목표 60%를 예시로 든다. [명세서 705줄](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:705>)은 `ProtocolObjective[]`를 선언하지만 판정 의미는 정하지 않는다.
 
 시작 개체 100 중 90이 죽고 새로 70이 태어났다면 원래 개체 생존율은 10%, 현재 개체 수/시작 개체 수는 80%다. 분열을 성장 수단으로 삼는 게임에서 두 기준은 다른 전략을 보상한다. 휴면 개체, 감염 개체, 격리 개체의 포함 여부와 0마리로 시작할 때의 처리도 필요하다.
 
@@ -53,7 +56,7 @@
 
 **정의 부족 · 우선 해결**
 
-[기획서 1233줄](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:1233>)은 마지막 생존 샘플을 복원하고 연구·영구 진행·주요 플래그를 유지한다. 현재 프로토콜, 일부 미확정 DATA, 임시 변이는 잃는다. 하지만 [자원 모델](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:679>)과 [저장 범위](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:987>)에는 확정/미확정 구분과 체크포인트 정책이 정해져 있지 않다.
+[기획서 1233줄](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:1233>)은 마지막 생존 샘플을 복원하고 연구·영구 진행·주요 플래그를 유지한다. 현재 프로토콜, 일부 미확정 DATA, 임시 변이는 잃는다. 하지만 [자원 모델](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:679>)과 [저장 범위](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:987>)에는 확정/미확정 구분과 체크포인트 정책이 정해져 있지 않다.
 
 실험 중 연구를 구매한 뒤 실패했을 때 연구는 유지하면서 지출 전 자원까지 복원하면 비용이 사라진다. 반대로 지출만 유지하고 배양체를 너무 약한 상태로 복원하면 다음 시도가 막힐 수 있다. 발견 보상이나 메일도 재시도마다 중복될 수 있다. 전멸하지 않고 생존 목표만 놓친 경우의 복구 여부도 불명확하다.
 
@@ -63,7 +66,7 @@
 
 **정의 부족 · 우선 해결**
 
-[기획서 306줄](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:306>)의 ENERGY는 연구 재화다. [분열 조건](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:385>)은 세포 내부 에너지를 사용한다. 명세도 [Cell.energy](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:316>)와 [ResourceState.energy](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:683>)를 별도로 둔다.
+[기획서 306줄](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:306>)의 ENERGY는 연구 재화다. [분열 조건](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:385>)은 세포 내부 에너지를 사용한다. 명세도 [Cell.energy](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:316>)와 [ResourceState.energy](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:683>)를 별도로 둔다.
 
 서로 다른 자원이어도 문제는 없다. 다만 공용 ENERGY가 내부 에너지를 빼내 얻는 것인지, 대사량에 비례한 별도 점수인지 결정하지 않으면 같은 영양 소비가 성장과 연구 양쪽에 어떻게 보상되는지 계산할 수 없다. 자식의 초기 에너지가 부모에서 이전되는지 새로 지급되는지도 연결된다.
 
@@ -73,7 +76,7 @@
 
 **정의 부족 · 우선 해결**
 
-명세의 [Cell.activeTraits](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:325>)와 [TraitLoadout.activeTraitIds](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:668>) 중 무엇이 기준인지 없다. 기획에는 [역할 분화와 비대칭 분열](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:625>)도 있다.
+명세의 [Cell.activeTraits](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:325>)와 [TraitLoadout.activeTraitIds](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:668>) 중 무엇이 기준인지 없다. 기획에는 [역할 분화와 비대칭 분열](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:625>)도 있다.
 
 특성 하나를 켤 때 기존 세포 전체에 적용되는지, 이후 태어날 세포만 받는지, 군집이나 역할별로 다르게 적용하는지에 따라 화면과 전략이 달라진다. 자유로운 즉시 교체를 허용하면 평소에는 생산 특성, 피격 직전에는 방어 특성만 켜서 발현 부하의 선택 비용을 우회할 수도 있다.
 
@@ -83,7 +86,7 @@
 
 **정의 부족 · 우선 해결**
 
-[기획서의 준비 단계](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:449>), [메일 메뉴](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:718>), [NEXT TEST 표시](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:1157>)는 시간 제한과 별도 화면을 전제한다. [고정 스텝 명세](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:257>)에는 화면 전환·일시정지 정책이 없다.
+[기획서의 준비 단계](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:449>), [메일 메뉴](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:718>), [NEXT TEST 표시](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:1157>)는 시간 제한과 별도 화면을 전제한다. [고정 스텝 명세](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:257>)에는 화면 전환·일시정지 정책이 없다.
 
 메일을 읽는 동안에도 배양이 진행되면 스토리를 읽는 행위가 손해가 될 수 있다. 준비 타이머만 멈추고 세포 생산은 계속되면 무제한 준비가 가능해진다. 창을 벗어나거나 로드한 뒤 밀린 시간을 한꺼번에 처리할지도 미정이다.
 
@@ -93,7 +96,7 @@
 
 **구현 위험 · 우선 해결**
 
-[명세서 277줄](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:277>)은 감염/전투 → 스트레스 → 분열 → 사망 순서다. 프로토콜 변경은 세포 처리보다 앞이며 Narrative observation은 Event flush보다 앞이다.
+[명세서 277줄](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:277>)은 감염/전투 → 스트레스 → 분열 → 사망 순서다. 프로토콜 변경은 세포 처리보다 앞이며 Narrative observation은 Event flush보다 앞이다.
 
 치명적 피해를 입어도 DeathSystem에서만 사망 여부를 확정하는 구현이라면, 해당 세포가 같은 tick에 분열할 수 있다. 프로토콜 완료 판정을 앞단에서 수행하면 마지막 tick의 피해를 반영하기 전에 성공 보상이 나갈 수 있다. 이벤트를 받는 관찰자가 뒤늦게 갱신될 때 어느 tick의 상태를 서사 판단에 쓸지도 필요하다. 이는 확정된 버그가 아니라 현재 순서를 구현할 때 생길 수 있는 문제다.
 
@@ -103,9 +106,9 @@
 
 **범위 불일치 · 우선 해결**
 
-[MVP 목록](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:1629>)에는 ENERGY만 명시되어 있다. [통합 테스트](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:1121>)는 DATA 보상을 요구하고, 기획은 NUTRIENT RESERVE로 공급을 제한한다. MVP가 연구 8~12개와 Rapid Bacteria를 포함하지만 어떤 연구가 세균에 대응하는지는 정해져 있지 않다.
+[MVP 목록](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:1629>)에는 ENERGY만 명시되어 있다. [통합 테스트](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:1121>)는 DATA 보상을 요구하고, 기획은 NUTRIENT RESERVE로 공급을 제한한다. MVP가 연구 8~12개와 Rapid Bacteria를 포함하지만 어떤 연구가 세균에 대응하는지는 정해져 있지 않다.
 
-또한 [첫 프로토타입의 먹이 추적](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:1659>)은 [화학주성 연구 후에만 작동한다는 규칙](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:246>)과 시작 조건을 맞춰야 한다. 프로토타입에 연구를 미리 켜 두는 것 자체는 문제가 아니지만 그 설정을 본편의 초기 상태로 오인하면 안 된다.
+또한 [첫 프로토타입의 먹이 추적](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:1659>)은 [화학주성 연구 후에만 작동한다는 규칙](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:246>)과 시작 조건을 맞춰야 한다. 프로토타입에 연구를 미리 켜 두는 것 자체는 문제가 아니지만 그 설정을 본편의 초기 상태로 오인하면 안 된다.
 
 **제안:** MVP에도 단순한 DATA 보상과 영양 비축량을 넣을지, 해당 기능과 검증을 명시적으로 미룰지 결정한다. 연구 8~12개, 프로토콜 3개, 시작 특성, 최초 방어 수단을 실제 목록으로 적는다. Phase 2의 예측 행동 메일을 사용한다면 Milestone 6에 잡힌 예측 행동을 어떻게 보여줄지도 정해야 한다. 예시의 P-05를 그대로 MVP에 넣어야 한다는 뜻은 아니다.
 
@@ -113,7 +116,7 @@
 
 **정의 부족 · 캠페인 전에 해결**
 
-[기획서 1311줄](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:1311>)은 지성 연구를 강제하지 않고 필수 스토리 조건을 자연스럽게 충족시키겠다고 한다. [명세서의 점수 입력](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:859>)은 기억·신호·예측·협동·자율성이다.
+[기획서 1311줄](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:1311>)은 지성 연구를 강제하지 않고 필수 스토리 조건을 자연스럽게 충족시키겠다고 한다. [명세서의 점수 입력](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:859>)은 기억·신호·예측·협동·자율성이다.
 
 플레이어가 대사·방어 위주로 살아남았을 때 기억·신호 계통을 거의 선택하지 않는 경로가 가능하다. 점수 입력이 여러 개라는 사실은 모든 허용 빌드가 임계값에 도달한다는 보장이 아니다. 점수가 활성 특성에 따라 떨어지는지, 누적 경험으로 남는지도 없다.
 
@@ -123,7 +126,7 @@
 
 **정의 부족 · 캠페인 전에 해결**
 
-[최종 프로토콜](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:960>)은 수동 먹이와 신호를 막는다. [Autonomous Metabolism](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:623>)은 외부 영양 의존도를 ‘크게 감소’시키며 완전히 없애지는 않는다. [기획서 1359줄](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:1359>)은 완전 자율화를 최종 실험에 한정한다.
+[최종 프로토콜](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:960>)은 수동 먹이와 신호를 막는다. [Autonomous Metabolism](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:623>)은 외부 영양 의존도를 ‘크게 감소’시키며 완전히 없애지는 않는다. [기획서 1359줄](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:1359>)은 완전 자율화를 최종 실험에 한정한다.
 
 자원 분배 능력은 자원 공급 능력과 다르다. 공급이 없는 유한 환경에서 무엇을 소모하고 재생하는지 정하지 않으면 장기 자율 생존과 저장량으로 잠시 버티기가 구분되지 않는다. ENVIRONMENT, PURGE, 특성 교체가 열려 있으면 ‘WITHOUT OPERATOR SUPPORT’의 범위도 모호하다. 잠금을 UI 버튼에만 적용하면 다른 입력 경로로 우회될 여지도 있다.
 
@@ -133,7 +136,7 @@
 
 **정의 부족 · 서사 구현 전에 해결**
 
-[기획서 815줄](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:815>)은 자극 1.8초 전 움직임, [839줄](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:839>)은 구조의 무작위 확률 0.031%, [926줄](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:926>)은 경계 발견을 보여준다. 명세는 [NarrativeService의 상태 직접 변경을 금지](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:813>)하며 [행동은 별도 시스템에 둔다](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:879>).
+[기획서 815줄](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:815>)은 자극 1.8초 전 움직임, [839줄](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:839>)은 구조의 무작위 확률 0.031%, [926줄](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:926>)은 경계 발견을 보여준다. 명세는 [NarrativeService의 상태 직접 변경을 금지](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:813>)하며 [행동은 별도 시스템에 둔다](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:879>).
 
 이 분리는 타당하다. 다만 해당 행동을 누가 발생시키고, 누가 관찰 사실을 확정하고, 어느 조건에서 메일이 오는지 빠져 있다. 프로토콜 완료만 보고 메일을 보내면 화면에서는 없었던 행동을 서사가 주장할 수 있다. 예측은 과거 주기의 학습인지, 실험 일정에 대한 접근인지, 의도된 이상 현상인지 구분해야 한다. 평소에도 벽에 부딪히는 세포가 후반에 처음 ‘경계’를 발견했다고 말하려면 체계적인 탐색 같은 관찰 차이가 필요하다.
 
@@ -145,7 +148,7 @@
 
 **정의 부족 · 저장 구현 전에 해결**
 
-[명세서 987줄](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:987>)은 핵심 배양 상태·프로토콜 진행·RNG seed 또는 재현에 필요한 값을 저장한다. 방향은 맞지만 ‘핵심’의 범위와 저장 경계가 정해져 있지 않다.
+[명세서 987줄](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:987>)은 핵심 배양 상태·프로토콜 진행·RNG seed 또는 재현에 필요한 값을 저장한다. 방향은 맞지만 ‘핵심’의 범위와 저장 경계가 정해져 있지 않다.
 
 진행 중 상태를 저장하면서 최초 seed만 보존하면 중간까지 소비한 난수 위치가 사라진다. 현재 RNG 상태나 그 위치를 재구성할 정보가 필요하다. 영양·독성·신호·산소 필드, 적의 증식/감염 타이머, 격리 영역, 재사용 대기시간, 이미 실행한 프로토콜 액션, 보상 확정 여부가 달라져도 로드 후 결과는 달라진다. 상위 SaveData 예시에 독립 필드가 없다는 사실만으로 누락을 확정할 수는 없으며 하위 저장 계약이 필요하다.
 
@@ -155,7 +158,7 @@
 
 **정의 부족**
 
-[기획서의 환경 조작](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:291>)은 TEMP·PH·OXYGEN·FLOW를 포함한다. [명세서 ScalarField](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:440>)는 농도 샘플·기울기·추가·갱신을 예시로 든다. 그러나 전역 산소 설정과 지역 산소 소비의 관계, FLOW가 세포와 물질에 미치는 영향, 배양 경계의 처리 방식은 없다.
+[기획서의 환경 조작](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:291>)은 TEMP·PH·OXYGEN·FLOW를 포함한다. [명세서 ScalarField](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:440>)는 농도 샘플·기울기·추가·갱신을 예시로 든다. 그러나 전역 산소 설정과 지역 산소 소비의 관계, FLOW가 세포와 물질에 미치는 영향, 배양 경계의 처리 방식은 없다.
 
 경계가 반사인지, 막힘인지, 반대편으로 이어지는지에 따라 생존 전략과 ‘경계 발견’ 장면이 달라진다. 필드의 확산·소실·소비 순서와 음수 방지 규칙도 필요하다. 감염원·영양분이 격리 구역을 통과할 수 있는지 모르면 ISOLATE의 효과를 판단할 수 없다.
 
@@ -165,11 +168,11 @@
 
 **정의 부족**
 
-[명세의 분열 절차](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:505>)는 부모를 Dividing으로 바꾸고 비용 차감·자식 생성을 수행한다. [상태 머신](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:1372>)에는 복귀 화살표가 있지만 소요 시간·나이 초기화·감염 및 변이 상속은 없다. Damaged → Active 회복 경로도 정해져 있지 않다.
+[명세의 분열 절차](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:505>)는 부모를 Dividing으로 바꾸고 비용 차감·자식 생성을 수행한다. [상태 머신](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:1372>)에는 복귀 화살표가 있지만 소요 시간·나이 초기화·감염 및 변이 상속은 없다. Damaged → Active 회복 경로도 정해져 있지 않다.
 
-분열 연출만 기다리는지 실제로 기능이 정지하는지에 따라 처리 방식이 다르다. 손상을 단일 생애 상태에 묶으면 휴면 중 손상이나 분열 중 피격을 어떻게 처리할지도 필요하다. 기획은 [돌연변이·오류 감소·비대칭 분열](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:625>)을 연구 보상/대가로 사용하지만 그 대상 규칙이 없다.
+분열 연출만 기다리는지 실제로 기능이 정지하는지에 따라 처리 방식이 다르다. 손상을 단일 생애 상태에 묶으면 휴면 중 손상이나 분열 중 피격을 어떻게 처리할지도 필요하다. 기획은 [돌연변이·오류 감소·비대칭 분열](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:625>)을 연구 보상/대가로 사용하지만 그 대상 규칙이 없다.
 
-또한 [부착](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:224>)은 이미 같은 군집인 세포를 대상으로 한다. 최초 군집 ID의 생성, 분열 시 상속, 접촉 시 병합, 떨어질 때 분리는 별도로 정해야 한다. 각 세포를 서로 다른 군집으로 초기화하면 부착만으로 첫 군집이 형성되지 않을 수 있다.
+또한 [부착](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:224>)은 이미 같은 군집인 세포를 대상으로 한다. 최초 군집 ID의 생성, 분열 시 상속, 접촉 시 병합, 떨어질 때 분리는 별도로 정해야 한다. 각 세포를 서로 다른 군집으로 초기화하면 부착만으로 첫 군집이 형성되지 않을 수 있다.
 
 **제안:** MVP에 필요한 분열·사망·군집 생성 규칙부터 적는다. 변이를 미루면 변이를 대가로 삼는 연구도 MVP에서 빼거나 임시 대가를 명시한다. 손상과 생애 상태를 꼭 분리해야 하는 것은 아니지만 동시에 발생할 수 있는 조합은 전이 규칙으로 설명해야 한다. 회피·추적·부착·플레이어 신호가 동시에 작동할 때의 우선순위나 가중치도 검증 대상이다.
 
@@ -179,18 +182,18 @@
 
 | 이미지 | 확인한 특징 | 적용할 부분 | 그대로 가져오면 생기는 문제 |
 |---|---|---|---|
-| [Game vibe ref](<E:/GameDev/ChatGPT/Dot.exe Project/Ref/Game vibe ref.jpg>) | 어두운 녹색·올리브, 적은 색 수, 촘촘한 픽셀 풍경 | 기본 팔레트·픽셀 밀도·프레임 분위기 | 타일 지형과 횡스크롤 화면 구성을 배양 공간 규칙으로 오해할 수 있음 |
-| [UI Ref](<E:/GameDev/ChatGPT/Dot.exe Project/Ref/UI Ref.jpg>) | 밝은 녹색 패널, 입체 테두리, 작은 버튼·아이콘 | 패널·버튼의 형태와 상태 구분 | 밝은 면적과 굵은 장식이 관찰 공간을 압도할 수 있음 |
-| [Ref 01](<E:/GameDev/ChatGPT/Dot.exe Project/Ref/Ref 01.jpg>) | 실제 모니터 외곽, 화면 곡률, 발광·주사선, 큰 제목 | 타이틀·부팅의 CRT 인상 | 상시 적용 시 작은 세포·본문의 선명도와 클릭 좌표 검증 부담 증가 |
-| [Ref 02](<E:/GameDev/ChatGPT/Dot.exe Project/Ref/Ref 02.jpg>) | 검은 배경, 선명한 네온 녹색, 픽셀 로딩 표시 | 부팅·대기 아이콘 | 올리브 중심 팔레트와 채도가 다름 |
-| [Ref 03](<E:/GameDev/ChatGPT/Dot.exe Project/Ref/Ref 03.jpg>) | 녹색 창 프레임, 업데이트 진행 막대, ‘INSTALLING 2026’ | 창 구조·진행 표시 | 2026 문구는 1990년대 초 설정과 맞지 않음 |
-| [Ref 04](<E:/GameDev/ChatGPT/Dot.exe Project/Ref/Ref 04.jpg>) | CRT 질감, 종료·바이러스 창, OPENAI·AGI 문구 | 후반 종료 화면·경고창 분위기 | 실제 기관·AI 문구가 가상 기관 설정과 반전 은폐에 맞지 않음 |
-| [Ref 05](<E:/GameDev/ChatGPT/Dot.exe Project/Ref/Ref 05.jpg>) | 강한 발광, 실행 코드임을 직접 말하는 문장 | 후반 메시지의 여백·강조 | 초반 사용 시 인공 생명 반전을 직접 드러냄 |
-| [Ref 06](<E:/GameDev/ChatGPT/Dot.exe Project/Ref/Ref 06.jpg>) | 2×2 패널, 글리치, 현대 AI 서비스 문구 | 패널 배치·제한된 이상 연출 | 현대 서비스명과 지속적 글리치는 시대·연구 장비의 평상시 표현과 어긋남 |
+| [Game vibe ref](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Ref/Game vibe ref.jpg>) | 어두운 녹색·올리브, 적은 색 수, 촘촘한 픽셀 풍경 | 기본 팔레트·픽셀 밀도·프레임 분위기 | 타일 지형과 횡스크롤 화면 구성을 배양 공간 규칙으로 오해할 수 있음 |
+| [UI Ref](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Ref/UI Ref.jpg>) | 밝은 녹색 패널, 입체 테두리, 작은 버튼·아이콘 | 패널·버튼의 형태와 상태 구분 | 밝은 면적과 굵은 장식이 관찰 공간을 압도할 수 있음 |
+| [Ref 01](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Ref/Ref 01.jpg>) | 실제 모니터 외곽, 화면 곡률, 발광·주사선, 큰 제목 | 타이틀·부팅의 CRT 인상 | 상시 적용 시 작은 세포·본문의 선명도와 클릭 좌표 검증 부담 증가 |
+| [Ref 02](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Ref/Ref 02.jpg>) | 검은 배경, 선명한 네온 녹색, 픽셀 로딩 표시 | 부팅·대기 아이콘 | 올리브 중심 팔레트와 채도가 다름 |
+| [Ref 03](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Ref/Ref 03.jpg>) | 녹색 창 프레임, 업데이트 진행 막대, ‘INSTALLING 2026’ | 창 구조·진행 표시 | 2026 문구는 1990년대 초 설정과 맞지 않음 |
+| [Ref 04](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Ref/Ref 04.jpg>) | CRT 질감, 종료·바이러스 창, OPENAI·AGI 문구 | 후반 종료 화면·경고창 분위기 | 실제 기관·AI 문구가 가상 기관 설정과 반전 은폐에 맞지 않음 |
+| [Ref 05](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Ref/Ref 05.jpg>) | 강한 발광, 실행 코드임을 직접 말하는 문장 | 후반 메시지의 여백·강조 | 초반 사용 시 인공 생명 반전을 직접 드러냄 |
+| [Ref 06](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Ref/Ref 06.jpg>) | 2×2 패널, 글리치, 현대 AI 서비스 문구 | 패널 배치·제한된 이상 연출 | 현대 서비스명과 지속적 글리치는 시대·연구 장비의 평상시 표현과 어긋남 |
 
 이미지는 참고 자료이므로 이 차이 자체가 문서의 확정 충돌은 아니다. **팔레트 참고, UI 구조 참고, 효과 참고, 후반 연출 참고를 구분하지 않고 모두 합치는 것이 위험하다.**
 
-[기획 UI](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:1119>)는 같은 녹색 계열에서 밝기·반전·깜빡임으로 위험을 표시한다. 한편 [분열 연출](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:405>)도 밝아지는 방식이다. 둘을 작은 점에서 동시에 사용하면 분열과 위험을 혼동할 수 있다. 농도장까지 같은 밝기로 겹치면 감염 개체나 적을 구분하기 어려워진다.
+[기획 UI](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:1119>)는 같은 녹색 계열에서 밝기·반전·깜빡임으로 위험을 표시한다. 한편 [분열 연출](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:405>)도 밝아지는 방식이다. 둘을 작은 점에서 동시에 사용하면 분열과 위험을 혼동할 수 있다. 농도장까지 같은 밝기로 겹치면 감염 개체나 적을 구분하기 어려워진다.
 
 **제안:** 평상시는 차분한 어두운 녹색과 선명한 픽셀을 기준으로 삼고, 강한 발광·왜곡은 제한된 장면에 적용한다. 아군/적/감염/휴면/분열을 색 이외의 모양·테두리·움직임으로도 구분한다. 효과를 줄여도 경고가 남게 한다. 실수 좌표 시뮬레이션은 유지하면서 화면에서만 픽셀 표현을 적용한다.
 
@@ -200,9 +203,9 @@
 
 **구현 위험**
 
-[명세서 421줄](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:421>)의 공간 분할은 적절하다. 하지만 세포가 좁은 범위에 몰리고 모두 서로의 감지 반경 안에 있으면 각 세포가 거의 모든 이웃을 확인하게 된다. 1,500개에 대해 서로 다른 쌍은 1,124,250개이며 양방향으로 중복 확인하면 그 두 배다. 일반적인 분산 배치 성능과 별개로 기획의 Dense Colony·ASSEMBLE이 이런 상황을 만들 수 있다.
+[명세서 421줄](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:421>)의 공간 분할은 적절하다. 하지만 세포가 좁은 범위에 몰리고 모두 서로의 감지 반경 안에 있으면 각 세포가 거의 모든 이웃을 확인하게 된다. 1,500개에 대해 서로 다른 쌍은 1,124,250개이며 양방향으로 중복 확인하면 그 두 배다. 일반적인 분산 배치 성능과 별개로 기획의 Dense Colony·ASSEMBLE이 이런 상황을 만들 수 있다.
 
-[성능 목표](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:1041>)는 아군 세포 수 중심이다. 빠르게 증식하는 적, 신호 전파, 필드 갱신, CRT 효과가 포함된 기준은 없다.
+[성능 목표](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:1041>)는 아군 세포 수 중심이다. 빠르게 증식하는 적, 신호 전파, 필드 갱신, CRT 효과가 포함된 기준은 없다.
 
 **제안:** MVP에서는 300개 한도를 먼저 검증하되 한곳에 모인 상태와 적이 함께 늘어난 상태를 포함한다. 장기 감지의 갱신 빈도·군집 단위 근사·위협 개체 수 제한은 측정 후 선택한다. 이웃 수를 임의로 잘라 성능만 맞추면 방어 행동도 달라질 수 있으므로 게임 규칙과 함께 검토한다. 1,500개 목표에는 기준 장치·해상도·효과 설정·위협 수를 붙인다. 처음부터 풀링이나 복잡한 병렬화를 넣을 필요는 없다.
 
@@ -210,16 +213,16 @@
 
 | 항목 | 근거와 영향 | 필요한 정리 |
 |---|---|---|
-| 작품명 혼재 | [명세서 11줄](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:11>)은 CULTURE//SYS, 제목은 Dot.exe | 게임명과 극중 프로그램명이 다른 것이라면 역할을 명시하고, 아니라면 통일 |
+| 작품명 혼재 | [명세서 11줄](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:11>)은 Dot.exe, 제목은 Dot.exe | 게임명과 극중 프로그램명이 다른 것이라면 역할을 명시하고, 아니라면 통일 |
 | 출시 환경 미정 | TypeScript와 requestAnimationFrame만 제시되어 있음 | 브라우저/데스크톱 대상, 저장 위치, 배포 방식을 결정. 제목의 .exe만으로 Windows 실행 파일을 요구한다고 볼 수는 없음 |
-| 키 입력 처리 | [F1~F5 메뉴](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:723>) | 실행 환경이 정해진 뒤 기본 키 동작과의 충돌을 확인하고 클릭·대체 키도 제공 |
-| 이상 현상 시점 | [Phase 2의 사전 반응](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:803>)과 [3~4시간의 이상 행동 발견](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:1111>) | 초기의 약한 징후와 후반의 명백한 발견을 구분하면 양립 가능 |
+| 키 입력 처리 | [F1~F5 메뉴](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:723>) | 실행 환경이 정해진 뒤 기본 키 동작과의 충돌을 확인하고 클릭·대체 키도 제공 |
+| 이상 현상 시점 | [Phase 2의 사전 반응](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:803>)과 [3~4시간의 이상 행동 발견](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:1111>) | 초기의 약한 징후와 후반의 명백한 발견을 구분하면 양립 가능 |
 | 첫 접촉 시점 | 5~7시간 목표, 4~5시간 첫 접촉, 후반 25~30% 제한 | 7시간 플레이에서 4시간은 약 57%이므로 명확한 언어의 첫 접촉이라면 어긋날 수 있음. 초반 접촉은 깨진 데이터인지, 시간표가 예시인지, 캠페인 단계가 실제 기준인지 정리 |
-| HUD 값의 의미 | [STABILITY 84%, NUTRIENT 62%](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:1154>) | 안정도의 계산과 영양 %가 비축량/배양 평균 농도 중 무엇인지 정하고 이름을 구분 |
+| HUD 값의 의미 | [STABILITY 84%, NUTRIENT 62%](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:1154>) | 안정도의 계산과 영양 %가 비축량/배양 평균 농도 중 무엇인지 정하고 이름을 구분 |
 | 적 분석과 DATA | 새 적·행동·특이 개체 분석으로 DATA를 얻지만 분석 조작·완료 조건은 없음 | 자동 발견과 능동 분석의 범위, 최초/반복 보상, 소요 시간과 실패 시 보존 여부 정의 |
-| 종료 뒤의 동작 | [엔딩 선택](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:1066>)과 [EXPERIMENT MODE](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_상세기획서.md:1258>) | 엔딩 기록, 타이틀 복귀, 이어하기 위치, 모드 해금 저장을 정의. 화면이 꺼진다는 연출만으로 실제 앱 종료를 뜻한다고 해석하지 않기 |
-| 개발 가이드 적용 | [명세서 1204줄](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:1204>)의 개발 규칙은 권장 예시이며 현재 AGENTS.md는 한국어 작성 규칙만 있음 | 구현 착수 시 적용할 개발 규칙과 문서 우선순위를 명시. 현재 ARCHITECTURE.md는 없으므로 아직 읽을 수 없음 |
-| 구조 변경 제한의 강도 | [기존 시스템 수정 0~2개 목표](<E:/GameDev/ChatGPT/Dot.exe Project/Docs/Dot.exe_개발명세서.md:1720>) | 기존 데이터의 변형에는 적절한 목표지만, 새 메커니즘으로 저장·UI가 바뀌는 정상적인 작업까지 구조 실패로 취급하지 않기 |
+| 종료 뒤의 동작 | [엔딩 선택](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:1066>)과 [EXPERIMENT MODE](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/GAME_DESIGN.md:1258>) | 엔딩 기록, 타이틀 복귀, 이어하기 위치, 모드 해금 저장을 정의. 화면이 꺼진다는 연출만으로 실제 앱 종료를 뜻한다고 해석하지 않기 |
+| 개발 가이드 적용 | [명세서 1204줄](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:1204>)의 개발 규칙은 권장 예시이며 현재 AGENTS.md는 한국어 작성 규칙만 있음 | 구현 착수 시 적용할 개발 규칙과 문서 우선순위를 명시. 현재 Game/Docs/current/ARCHITECTURE.md는 없으므로 아직 읽을 수 없음 |
+| 구조 변경 제한의 강도 | [기존 시스템 수정 0~2개 목표](<E:/GameDev/ChatGPT/Dot.exe Project/Game/Docs/current/DEVELOPMENT_SPEC.md:1720>) | 기존 데이터의 변형에는 적절한 목표지만, 새 메커니즘으로 저장·UI가 바뀌는 정상적인 작업까지 구조 실패로 취급하지 않기 |
 
 ## 충돌로 보지 않은 부분
 

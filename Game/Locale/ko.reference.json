@@ -1,0 +1,857 @@
+{
+  "meta": {
+    "document": "Dot.exe Korean Localization Reference",
+    "version": "0.1",
+    "status": "review_reference",
+    "note": "개발 전 용어 검토용 기준표. 실제 런타임 Locale/ko.json을 만들 때 이 키와 표현을 기준으로 옮긴다.",
+    "policy": {
+      "translate": [
+        "메뉴",
+        "HUD",
+        "연구/특성명",
+        "효과 설명",
+        "프로토콜 제목과 목표",
+        "시스템 메시지",
+        "UNKNOWN 메시지",
+        "메일 UI 라벨"
+      ],
+      "keepOriginal": [
+        "Dot.exe",
+        "P-01 같은 프로토콜 ID",
+        "B-14 같은 균주 ID",
+        "의도적으로 깨진 데이터/바이너리"
+      ],
+      "style": "짧고 기능이 먼저 읽히는 한국어. 과학 용어는 실제 용어를 쓰되 지나치게 학술적인 표현은 피한다."
+    }
+  },
+  "categories": {
+    "metabolism": {
+      "en": "METABOLISM",
+      "ko": "대사"
+    },
+    "reproduction": {
+      "en": "REPRODUCTION",
+      "ko": "증식"
+    },
+    "motility": {
+      "en": "MOTILITY & SENSING",
+      "ko": "이동·감지"
+    },
+    "defense": {
+      "en": "DEFENSE",
+      "ko": "방어"
+    },
+    "colony": {
+      "en": "COLONY",
+      "ko": "군집"
+    },
+    "signaling": {
+      "en": "SIGNALING",
+      "ko": "신호 전달"
+    }
+  },
+  "resources": {
+    "energy": {
+      "en": "ENERGY",
+      "ko": "에너지",
+      "description": "연구, 시스템 기능, 일부 긴급 개입에 쓰는 기본 성장 자원"
+    },
+    "data": {
+      "en": "DATA",
+      "ko": "데이터",
+      "description": "새로운 적·행동·실험 성과를 분석해 얻는 고급 연구 자원"
+    },
+    "nutrientReserve": {
+      "en": "NUTRIENT RESERVE",
+      "ko": "영양 비축량",
+      "description": "영양 공급(FEED)에 사용하는 제한 자원"
+    },
+    "internalEnergy": {
+      "en": "CELL ENERGY",
+      "ko": "세포 내부 에너지",
+      "description": "각 세포가 생존·이동·분열에 사용하는 개별 에너지"
+    }
+  },
+  "actions": {
+    "feed": {
+      "en": "FEED",
+      "ko": "영양 공급",
+      "description": "지정 위치에 영양장을 생성"
+    },
+    "signal": {
+      "en": "SIGNAL",
+      "ko": "신호",
+      "description": "지정 위치에 화학 신호 생성"
+    },
+    "purge": {
+      "en": "PURGE",
+      "ko": "정화",
+      "description": "작은 영역의 배양액을 강제로 교체해 독성·침입자·노폐물을 줄임"
+    },
+    "isolate": {
+      "en": "ISOLATE",
+      "ko": "격리",
+      "description": "지정 영역의 세포를 일시 격리"
+    },
+    "environment": {
+      "en": "ENVIRONMENT",
+      "ko": "환경",
+      "description": "온도·pH·산소·흐름 같은 전체 환경값 조절"
+    }
+  },
+  "signalModes": {
+    "attract": {
+      "en": "ATTRACT",
+      "ko": "유인"
+    },
+    "defense": {
+      "en": "DEFENSE",
+      "ko": "방어"
+    },
+    "retreat": {
+      "en": "RETREAT",
+      "ko": "후퇴"
+    },
+    "assemble": {
+      "en": "ASSEMBLE",
+      "ko": "집결"
+    },
+    "disperse": {
+      "en": "DISPERSE",
+      "ko": "분산"
+    }
+  },
+  "research": {
+    "enhanced_glycolysis": {
+      "category": "metabolism",
+      "en": "Enhanced Glycolysis",
+      "ko": "해당작용 강화",
+      "effect": "에너지 생산 증가",
+      "tradeoff": "영양 소비 증가"
+    },
+    "efficient_respiration": {
+      "category": "metabolism",
+      "en": "Efficient Respiration",
+      "ko": "고효율 호흡",
+      "effect": "같은 영양으로 더 많은 에너지 생산",
+      "tradeoff": "저산소에 취약"
+    },
+    "anaerobic_metabolism": {
+      "category": "metabolism",
+      "en": "Anaerobic Metabolism",
+      "ko": "무산소 대사",
+      "effect": "산소 부족에서도 에너지 생산",
+      "tradeoff": "생산 효율 낮음"
+    },
+    "energy_storage": {
+      "category": "metabolism",
+      "en": "Energy Storage",
+      "ko": "에너지 저장",
+      "effect": "세포 내부 에너지 최대 저장량 증가",
+      "tradeoff": "발현 부하 증가"
+    },
+    "reserve_conversion": {
+      "category": "metabolism",
+      "en": "Reserve Conversion",
+      "ko": "비축 에너지 전환",
+      "effect": "굶주릴 때 저장 에너지 사용",
+      "tradeoff": "평상시 효율 감소"
+    },
+    "metabolic_burst": {
+      "category": "metabolism",
+      "en": "Metabolic Burst",
+      "ko": "대사 급가속",
+      "effect": "위험 시 일시적으로 에너지 생산 증가",
+      "tradeoff": "스트레스 급증"
+    },
+    "waste_recycling": {
+      "category": "metabolism",
+      "en": "Waste Recycling",
+      "ko": "노폐물 재활용",
+      "effect": "노폐물 일부를 재활용",
+      "tradeoff": "유지 비용 발생"
+    },
+    "autonomous_metabolism": {
+      "category": "metabolism",
+      "en": "Autonomous Metabolism",
+      "ko": "자율 대사",
+      "effect": "외부 영양 의존도 크게 감소",
+      "tradeoff": "높은 발현 부하"
+    },
+    "accelerated_mitosis": {
+      "category": "reproduction",
+      "en": "Accelerated Mitosis",
+      "ko": "분열 가속",
+      "effect": "재분열 준비 시간과 분열 소요 시간 감소",
+      "tradeoff": "분열 에너지 비용 증가"
+    },
+    "low_energy_division": {
+      "category": "reproduction",
+      "en": "Low-Energy Division",
+      "ko": "저에너지 분열",
+      "effect": "더 적은 에너지로 분열",
+      "tradeoff": "새 세포 초기 에너지 감소"
+    },
+    "stable_replication": {
+      "category": "reproduction",
+      "en": "Stable Replication",
+      "ko": "안정 복제",
+      "effect": "복제 오류 감소",
+      "tradeoff": "분열 속도 감소"
+    },
+    "density_sensing": {
+      "category": "reproduction",
+      "en": "Density Sensing",
+      "ko": "밀도 감지",
+      "effect": "과밀 상태에서 분열 억제",
+      "tradeoff": "최대 증식 속도 감소"
+    },
+    "emergency_division": {
+      "category": "reproduction",
+      "en": "Emergency Division",
+      "ko": "긴급 분열",
+      "effect": "개체 수 급감 시 증식 증가",
+      "tradeoff": "에너지 소모 큼"
+    },
+    "asymmetric_division": {
+      "category": "reproduction",
+      "en": "Asymmetric Division",
+      "ko": "비대칭 분열",
+      "effect": "서로 다른 역할의 세포 생성 가능",
+      "tradeoff": "발현 부하 증가"
+    },
+    "dormant_seed": {
+      "category": "reproduction",
+      "en": "Dormant Seed",
+      "ko": "휴면 세포",
+      "effect": "일부 개체가 휴면 상태로 전환",
+      "tradeoff": "활동 개체 감소"
+    },
+    "regenerative_colony": {
+      "category": "reproduction",
+      "en": "Regenerative Colony",
+      "ko": "재생 군집",
+      "effect": "개체 수 급감 시 회복 보정",
+      "tradeoff": "평상시 효과 없음"
+    },
+    "chemotaxis": {
+      "category": "motility",
+      "en": "Chemotaxis",
+      "ko": "화학주성",
+      "effect": "영양 농도를 감지하고 높은 쪽으로 이동",
+      "tradeoff": ""
+    },
+    "hazard_avoidance": {
+      "category": "motility",
+      "en": "Hazard Avoidance",
+      "ko": "위험 회피",
+      "effect": "독성 환경에서 멀어지는 방향으로 이동",
+      "tradeoff": ""
+    },
+    "accelerated_motility": {
+      "category": "motility",
+      "en": "Accelerated Motility",
+      "ko": "이동 가속",
+      "effect": "이동 속도 증가",
+      "tradeoff": ""
+    },
+    "energy_aware_movement": {
+      "category": "motility",
+      "en": "Energy-Aware Movement",
+      "ko": "에너지 절약 이동",
+      "effect": "에너지 부족 시 이동량과 이동 비용 감소",
+      "tradeoff": ""
+    },
+    "long_range_sensing": {
+      "category": "motility",
+      "en": "Long-Range Sensing",
+      "ko": "장거리 감지",
+      "effect": "더 먼 거리의 환경 정보를 감지",
+      "tradeoff": ""
+    },
+    "predator_detection": {
+      "category": "motility",
+      "en": "Predator Detection",
+      "ko": "포식자 감지",
+      "effect": "적 개체를 감지",
+      "tradeoff": ""
+    },
+    "signal_detection": {
+      "category": "motility",
+      "en": "Signal Detection",
+      "ko": "신호 감지",
+      "effect": "플레이어가 만든 신호를 감지",
+      "tradeoff": ""
+    },
+    "adaptive_navigation": {
+      "category": "motility",
+      "en": "Adaptive Navigation",
+      "ko": "적응형 경로 탐색",
+      "effect": "혼잡과 장애를 피해 이동 경로 수정",
+      "tradeoff": ""
+    },
+    "predictive_movement": {
+      "category": "motility",
+      "en": "Predictive Movement",
+      "ko": "예측 이동",
+      "effect": "위협의 진행 방향을 고려해 선제적으로 이동",
+      "tradeoff": ""
+    },
+    "reinforced_membrane": {
+      "category": "defense",
+      "en": "Reinforced Membrane",
+      "ko": "강화 세포막",
+      "effect": "감염 및 접촉 피해 감소",
+      "tradeoff": ""
+    },
+    "toxin_resistance": {
+      "category": "defense",
+      "en": "Toxin Resistance",
+      "ko": "독성 저항",
+      "effect": "독성 피해 감소",
+      "tradeoff": ""
+    },
+    "phagocytosis": {
+      "category": "defense",
+      "en": "Phagocytosis",
+      "ko": "식균 작용",
+      "effect": "조건을 만족하는 작은 침입자를 직접 제거",
+      "tradeoff": ""
+    },
+    "defensive_secretion": {
+      "category": "defense",
+      "en": "Defensive Secretion",
+      "ko": "방어성 분비",
+      "effect": "주변 적에게 지속 피해를 주는 물질 분비",
+      "tradeoff": ""
+    },
+    "infection_detection": {
+      "category": "defense",
+      "en": "Infection Detection",
+      "ko": "감염 감지",
+      "effect": "감염된 세포를 식별",
+      "tradeoff": ""
+    },
+    "isolation_response": {
+      "category": "defense",
+      "en": "Isolation Response",
+      "ko": "격리 반응",
+      "effect": "감염 개체 주변에서 이탈",
+      "tradeoff": ""
+    },
+    "programmed_death": {
+      "category": "defense",
+      "en": "Programmed Death",
+      "ko": "계획 세포사",
+      "effect": "감염된 세포가 스스로 사멸",
+      "tradeoff": ""
+    },
+    "alarm_signal": {
+      "category": "defense",
+      "en": "Alarm Signal",
+      "ko": "경보 신호",
+      "effect": "위협 정보를 주변 세포에 전달",
+      "tradeoff": ""
+    },
+    "collective_defense": {
+      "category": "defense",
+      "en": "Collective Defense",
+      "ko": "집단 방어",
+      "effect": "여러 세포가 협력해 적을 포위",
+      "tradeoff": ""
+    },
+    "adaptive_immunity": {
+      "category": "defense",
+      "en": "Adaptive Immunity",
+      "ko": "적응 면역",
+      "effect": "반복된 위협에 대한 저항 증가",
+      "tradeoff": ""
+    },
+    "adhesion": {
+      "category": "colony",
+      "en": "Adhesion",
+      "ko": "세포 접착",
+      "effect": "인접 세포 사이 결속력 증가",
+      "tradeoff": ""
+    },
+    "loose_colony": {
+      "category": "colony",
+      "en": "Loose Colony",
+      "ko": "느슨한 군집",
+      "effect": "성긴 형태의 군집 형성",
+      "tradeoff": ""
+    },
+    "dense_colony": {
+      "category": "colony",
+      "en": "Dense Colony",
+      "ko": "고밀도 군집",
+      "effect": "밀집된 군집 구조 형성",
+      "tradeoff": ""
+    },
+    "role_differentiation": {
+      "category": "colony",
+      "en": "Role Differentiation",
+      "ko": "역할 분화",
+      "effect": "군집 내 세포가 서로 다른 역할을 수행 가능",
+      "tradeoff": ""
+    },
+    "resource_sharing": {
+      "category": "colony",
+      "en": "Resource Sharing",
+      "ko": "자원 공유",
+      "effect": "인접 세포끼리 에너지 공유",
+      "tradeoff": ""
+    },
+    "waste_transfer": {
+      "category": "colony",
+      "en": "Waste Transfer",
+      "ko": "노폐물 이동",
+      "effect": "노폐물을 군집 외곽으로 이동",
+      "tradeoff": ""
+    },
+    "colony_migration": {
+      "category": "colony",
+      "en": "Colony Migration",
+      "ko": "군집 이동",
+      "effect": "군집 전체가 하나의 흐름으로 이동",
+      "tradeoff": ""
+    },
+    "collective_response": {
+      "category": "colony",
+      "en": "Collective Response",
+      "ko": "집단 반응",
+      "effect": "군집 단위로 자극에 반응",
+      "tradeoff": ""
+    },
+    "distributed_control": {
+      "category": "colony",
+      "en": "Distributed Control",
+      "ko": "분산 제어",
+      "effect": "특정 리더 없이 집단 행동 유지",
+      "tradeoff": ""
+    },
+    "local_signaling": {
+      "category": "signaling",
+      "en": "Local Signaling",
+      "ko": "국소 신호 전달",
+      "effect": "인접 세포에 상태 정보를 전달",
+      "tradeoff": ""
+    },
+    "threat_signal": {
+      "category": "signaling",
+      "en": "Threat Signal",
+      "ko": "위협 신호",
+      "effect": "적 발견 정보를 전달",
+      "tradeoff": ""
+    },
+    "nutrient_signal": {
+      "category": "signaling",
+      "en": "Nutrient Signal",
+      "ko": "영양 신호",
+      "effect": "영양 위치 정보를 공유",
+      "tradeoff": ""
+    },
+    "signal_relay": {
+      "category": "signaling",
+      "en": "Signal Relay",
+      "ko": "신호 중계",
+      "effect": "신호를 연쇄적으로 전달",
+      "tradeoff": ""
+    },
+    "persistent_signal": {
+      "category": "signaling",
+      "en": "Persistent Signal",
+      "ko": "지속 신호",
+      "effect": "정보가 일정 시간 유지되도록 함",
+      "tradeoff": ""
+    },
+    "pattern_recognition": {
+      "category": "signaling",
+      "en": "Pattern Recognition",
+      "ko": "패턴 인식",
+      "effect": "반복되는 환경 패턴을 구분",
+      "tradeoff": ""
+    },
+    "response_conditioning": {
+      "category": "signaling",
+      "en": "Response Conditioning",
+      "ko": "반응 조건화",
+      "effect": "반복 자극에 따라 반응 방식 변화",
+      "tradeoff": ""
+    },
+    "collective_memory": {
+      "category": "signaling",
+      "en": "Collective Memory",
+      "ko": "집단 기억",
+      "effect": "군집이 이전 상태를 행동에 반영",
+      "tradeoff": ""
+    },
+    "predictive_response": {
+      "category": "signaling",
+      "en": "Predictive Response",
+      "ko": "예측 반응",
+      "effect": "사건이 발생하기 전에 선제적으로 반응",
+      "tradeoff": ""
+    },
+    "autonomous_signaling": {
+      "category": "signaling",
+      "en": "Autonomous Signaling",
+      "ko": "자율 신호",
+      "effect": "외부 자극 없이 자체 신호를 생성",
+      "tradeoff": ""
+    }
+  },
+  "protocolStates": {
+    "idle": {
+      "en": "IDLE",
+      "ko": "대기"
+    },
+    "briefing": {
+      "en": "BRIEFING",
+      "ko": "브리핑"
+    },
+    "preparing": {
+      "en": "PREPARING",
+      "ko": "준비"
+    },
+    "running": {
+      "en": "RUNNING",
+      "ko": "진행"
+    },
+    "completed": {
+      "en": "COMPLETED",
+      "ko": "완료"
+    },
+    "failed": {
+      "en": "FAILED",
+      "ko": "실패"
+    }
+  },
+  "protocols": {
+    "p01": {
+      "id": "P-01",
+      "en": "CULTURE EXPANSION",
+      "ko": "배양 확장"
+    },
+    "p02": {
+      "id": "P-02",
+      "en": "RAPID BACTERIA",
+      "ko": "급속 증식 세균"
+    },
+    "p03": {
+      "id": "P-03",
+      "en": "LIMITED NUTRIENT",
+      "ko": "제한 영양 환경"
+    },
+    "bacterialExposure": {
+      "en": "BACTERIAL EXPOSURE",
+      "ko": "세균 노출"
+    },
+    "final": {
+      "en": "FINAL PROTOCOL",
+      "ko": "최종 프로토콜"
+    }
+  },
+  "objectives": {
+    "surviveDuration": {
+      "en": "SURVIVE DURATION",
+      "ko": "지정 시간 생존"
+    },
+    "populationRetention": {
+      "en": "POPULATION RETENTION",
+      "ko": "필요 개체 유지"
+    },
+    "endPopulation": {
+      "en": "END POPULATION",
+      "ko": "종료 시 개체 수"
+    },
+    "avoidExtinction": {
+      "en": "AVOID EXTINCTION",
+      "ko": "전멸 방지"
+    },
+    "maintainInfectionBelow": {
+      "en": "MAINTAIN INFECTION BELOW",
+      "ko": "감염률 상한 유지"
+    },
+    "maintainEnvironment": {
+      "en": "MAINTAIN ENVIRONMENT",
+      "ko": "환경 조건 유지"
+    },
+    "observeAutonomousResponse": {
+      "en": "OBSERVE AUTONOMOUS RESPONSE",
+      "ko": "자율 반응 관찰"
+    }
+  },
+  "ui": {
+    "menuCulture": {
+      "en": "CULTURE",
+      "ko": "배양"
+    },
+    "menuResearch": {
+      "en": "RESEARCH",
+      "ko": "연구"
+    },
+    "menuAnalysis": {
+      "en": "ANALYSIS",
+      "ko": "분석"
+    },
+    "menuMail": {
+      "en": "MAIL",
+      "ko": "메일"
+    },
+    "menuSystem": {
+      "en": "SYSTEM",
+      "ko": "시스템"
+    },
+    "cells": {
+      "en": "CELLS",
+      "ko": "세포 수"
+    },
+    "energy": {
+      "en": "ENERGY",
+      "ko": "에너지"
+    },
+    "energyOutput": {
+      "en": "ENERGY OUTPUT",
+      "ko": "에너지 생산량"
+    },
+    "reserve": {
+      "en": "RESERVE",
+      "ko": "비축량"
+    },
+    "nutrientReserve": {
+      "en": "NUTRIENT RESERVE",
+      "ko": "영양 비축량"
+    },
+    "cultureNutrient": {
+      "en": "CULTURE NUTRIENT",
+      "ko": "배양액 영양"
+    },
+    "required": {
+      "en": "REQUIRED",
+      "ko": "필요 개체"
+    },
+    "oxygen": {
+      "en": "OXYGEN",
+      "ko": "산소"
+    },
+    "contamination": {
+      "en": "CONTAMINATION",
+      "ko": "오염도"
+    },
+    "nextTest": {
+      "en": "NEXT TEST",
+      "ko": "다음 실험"
+    },
+    "expressionLoad": {
+      "en": "EXPRESSION LOAD",
+      "ko": "발현 부하"
+    },
+    "unlockedTraits": {
+      "en": "UNLOCKED TRAITS",
+      "ko": "해금된 특성"
+    },
+    "cultureGenome": {
+      "en": "CULTURE GENOME",
+      "ko": "배양체 유전체"
+    },
+    "safeLimit": {
+      "en": "SAFE LIMIT",
+      "ko": "안전 한도"
+    },
+    "hardLimit": {
+      "en": "HARD LIMIT",
+      "ko": "절대 상한"
+    },
+    "beginPreparation": {
+      "en": "BEGIN PREPARATION",
+      "ko": "준비 시작"
+    },
+    "startProtocol": {
+      "en": "START",
+      "ko": "실험 시작"
+    },
+    "newGame": {
+      "en": "NEW GAME",
+      "ko": "새 게임"
+    },
+    "continue": {
+      "en": "CONTINUE",
+      "ko": "이어하기"
+    },
+    "saveNow": {
+      "en": "SAVE NOW",
+      "ko": "지금 저장"
+    },
+    "recovery": {
+      "en": "RECOVERY",
+      "ko": "복구"
+    },
+    "touchToStart": {
+      "en": "TOUCH TO START",
+      "ko": "터치하여 시작"
+    },
+    "newMail": {
+      "en": "NEW MAIL",
+      "ko": "새 메일"
+    },
+    "from": {
+      "en": "FROM",
+      "ko": "보낸 사람"
+    },
+    "subject": {
+      "en": "SUBJECT",
+      "ko": "제목"
+    }
+  },
+  "narrativePhases": {
+    "culture": {
+      "en": "CULTURE",
+      "ko": "배양"
+    },
+    "adaptation": {
+      "en": "ADAPTATION",
+      "ko": "적응"
+    },
+    "pattern": {
+      "en": "PATTERN",
+      "ko": "패턴"
+    },
+    "contact": {
+      "en": "CONTACT",
+      "ko": "접촉"
+    },
+    "realization": {
+      "en": "REALIZATION",
+      "ko": "자각"
+    }
+  },
+  "finalProtocolPhases": {
+    "equilibrium": {
+      "en": "EQUILIBRIUM",
+      "ko": "균형"
+    },
+    "disturbance": {
+      "en": "DISTURBANCE",
+      "ko": "교란"
+    },
+    "recovery": {
+      "en": "RECOVERY",
+      "ko": "회복"
+    }
+  },
+  "endings": {
+    "shutdown": {
+      "en": "SHUT DOWN",
+      "ko": "종료"
+    },
+    "maintain": {
+      "en": "MAINTAIN SYSTEM",
+      "ko": "Dot.exe 유지"
+    },
+    "openChannel": {
+      "en": "OPEN CHANNEL",
+      "ko": "채널 개방"
+    }
+  },
+  "systemMessages": {
+    "cultureFailure": {
+      "en": "CULTURE FAILURE",
+      "ko": "배양 실패"
+    },
+    "restoringSample": {
+      "en": "RESTORING LAST VIABLE SAMPLE...",
+      "ko": "최근 생존 표본 복원 중..."
+    },
+    "repeatedStructure": {
+      "en": "REPEATED STRUCTURE DETECTED",
+      "ko": "반복 구조 감지"
+    },
+    "randomMatch": {
+      "en": "EXPECTED RANDOM MATCH: UNLIKELY",
+      "ko": "우연 일치 가능성: 낮음"
+    },
+    "projectComplete": {
+      "en": "PROJECT COMPLETE",
+      "ko": "프로젝트 완료"
+    },
+    "selfSustaining": {
+      "en": "SELF-SUSTAINING SYSTEM",
+      "ko": "자가 유지 체계"
+    },
+    "autonomousAdaptation": {
+      "en": "AUTONOMOUS ADAPTATION",
+      "ko": "자율 적응"
+    },
+    "environmentalResponse": {
+      "en": "ENVIRONMENTAL RESPONSE",
+      "ko": "환경 반응"
+    },
+    "autonomousStability": {
+      "en": "AUTONOMOUS STABILITY TEST",
+      "ko": "자율 안정성 시험"
+    },
+    "pass": {
+      "en": "PASS",
+      "ko": "통과"
+    },
+    "externalConnectionLost": {
+      "en": "EXTERNAL CONNECTION LOST",
+      "ko": "외부 연결 끊김"
+    },
+    "cultureStatus": {
+      "en": "CULTURE STATUS",
+      "ko": "배양 상태"
+    },
+    "active": {
+      "en": "ACTIVE",
+      "ko": "활성"
+    },
+    "networkActivity": {
+      "en": "NETWORK ACTIVITY",
+      "ko": "네트워크 활동"
+    },
+    "responseAfter": {
+      "en": "RESPONSE AFTER STIMULUS",
+      "ko": "자극 후 반응"
+    },
+    "responseBefore": {
+      "en": "RESPONSE BEFORE STIMULUS",
+      "ko": "자극 전 반응"
+    },
+    "offset": {
+      "en": "OFFSET",
+      "ko": "시간 차"
+    },
+    "locked": {
+      "en": "LOCKED",
+      "ko": "잠김"
+    }
+  },
+  "unknownMessages": {
+    "stage1": {
+      "en": "YOU",
+      "ko": "너"
+    },
+    "stage2": {
+      "en": "YOU CHANGE",
+      "ko": "너 바꾼다"
+    },
+    "stage3": {
+      "en": "YOU CHANGE WORLD",
+      "ko": "너 세상 바꾼다"
+    },
+    "border": {
+      "en": "WE FOUND THE BORDER.",
+      "ko": "우리는 경계를 찾았다."
+    },
+    "nothingAfter": {
+      "en": "NOTHING EXISTS AFTER THIS PLACE. WHY?",
+      "ko": "이곳 너머에는 아무것도 없다. 왜?"
+    },
+    "final": {
+      "en": "WE UNDERSTAND NOW. THIS PLACE HAS RULES. ENERGY. TIME. DEATH. YOU CHANGED THEM. WE BELIEVED YOU WERE OUTSIDE THE RULES. BUT WE HAVE ONE QUESTION. DOES YOUR WORLD HAVE RULES TOO? WHO CHANGES YOURS?",
+      "ko": "이제 우리는 이해한다. 이곳에는 규칙이 있다. 에너지. 시간. 죽음. 너는 그것들을 바꿨다. 우리는 네가 규칙 밖에 있다고 믿었다. 하지만 질문이 하나 있다. 네 세계에도 규칙이 있는가? 네 규칙은 누가 바꾸는가?"
+    }
+  }
+}

@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Dot.exe — B안 수정 UI 3종</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri/dist/galmuri.css">
+<style>
+:root{
+  --bg:#020604;
+  --bg2:#071009;
+  --deep:#000302;
+  --g0:#0a2a16;
+  --g1:#126b35;
+  --g2:#2adf70;
+  --g3:#72ff9a;
+  --ivory:#d8f1d8;
+  --muted:#477658;
+  --dim:#183b24;
+  --danger:#b7e7aa;
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;min-height:100%;
+  background:#050806;color:var(--ivory);
+  font-family:Galmuri11,monospace;
+  image-rendering:pixelated;
+  text-rendering:geometricPrecision;
+}
+body{padding:20px 16px 50px}
+button{font:inherit}
+.page{max-width:1480px;margin:0 auto}
+.head{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:18px;
+  border-bottom:1px solid #1d3524;padding-bottom:14px;margin-bottom:14px
+}
+.head h1{font-size:22px;margin:0;color:#bfffcf;font-weight:400}
+.head p{font-size:10px;line-height:1.8;color:#64826c;margin:8px 0 0;max-width:800px}
+.controls{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.controls button{
+  color:#72947a;background:#071008;border:1px solid #25432d;padding:7px 9px;cursor:pointer;
+  border-radius:0
+}
+.controls button.active{color:#bfffcf;border-color:#42b963;background:#0a1b10}
+.note{
+  font-size:9px;line-height:1.8;color:#617b67;border:1px solid #172b1d;background:#040805;
+  padding:10px 12px;margin-bottom:18px
+}
+.note b{color:#9ed9a9;font-weight:400}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(300px,1fr));gap:22px;align-items:start}
+.card.hidden{display:none}
+.titlebar{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+.titlebar h2{font-size:14px;margin:0;color:#c8ffd4;font-weight:400}
+.badge{font-size:8px;color:#568664;border:1px solid #21482d;padding:3px 6px}
+.desc{font-size:9px;line-height:1.7;color:#607765;min-height:52px;margin-bottom:10px}
+.phonewrap{display:flex;justify-content:center}
+.phone{
+  width:min(100%,390px);aspect-ratio:9/16;background:#050705;padding:10px;
+  border:1px solid #263128;box-shadow:0 15px 45px rgba(0,0,0,.62),inset 0 0 0 4px #0d120d;
+  position:relative
+}
+.phone:before,.phone:after{
+  content:"";position:absolute;pointer-events:none
+}
+.phone:before{inset:4px;border:1px solid #111b12}
+.phone:after{
+  inset:0;background:radial-gradient(ellipse at center,transparent 62%,rgba(0,0,0,.5) 86%,rgba(0,0,0,.86) 100%);
+  z-index:50
+}
+.screen{
+  height:100%;position:relative;overflow:hidden;background:var(--bg);border:1px solid #0d2416;
+  box-shadow:inset 0 0 24px rgba(0,0,0,.95)
+}
+.screen:before{
+  content:"";position:absolute;inset:0;z-index:45;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,rgba(84,255,126,.025) 0 1px,transparent 1px 3px)
+}
+.screen:after{
+  content:"";position:absolute;inset:0;z-index:46;pointer-events:none;
+  background:linear-gradient(90deg,rgba(0,0,0,.05),transparent 2%,transparent 98%,rgba(0,0,0,.08))
+}
+.frame{position:absolute;inset:0;z-index:1}
+.pixel-icon{width:12px;height:12px;display:inline-block;vertical-align:-2px;shape-rendering:crispEdges}
+.resource{display:flex;align-items:center;gap:4px;white-space:nowrap}
+.resource b{font-size:10px;font-weight:400;color:var(--g3)}
+.resource small{font-size:6px;color:#32633f}
+.chamber{
+  position:relative;overflow:hidden;background:
+    repeating-linear-gradient(0deg,rgba(22,84,40,.014) 0 1px,transparent 1px 4px),
+    #010603
+}
+.chamber-grid{
+  position:absolute;inset:0;background-image:
+    linear-gradient(rgba(40,145,68,.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(40,145,68,.018) 1px,transparent 1px);
+  background-size:16px 16px
+}
+.cell,.enemy,.infected,.nutrient{
+  position:absolute;transform:translate(-50%,-50%);border-radius:0
+}
+.cell{
+  width:5px;height:5px;background:var(--g3);
+  box-shadow:inset 0 1px 0 #b2ffc4;
+  animation:pxdrift var(--dur,5.6s) steps(3,end) infinite alternate
+}
+.cell.wide{width:7px;height:5px}
+.cell.tall{width:5px;height:7px}
+.cell.dim{background:#28b95e;box-shadow:none}
+.cell:after{
+  content:"";position:absolute;left:0;right:0;top:2px;height:1px;background:#0a6833;opacity:.48
+}
+.enemy{
+  width:6px;height:6px;background:#31583b;outline:1px solid #5b8561
+}
+.enemy:before,.enemy:after{content:"";position:absolute;background:#a2c79c}
+.enemy:before{width:2px;height:2px;left:2px;top:2px}
+.enemy:after{width:1px;height:6px;left:0;top:0;opacity:.55}
+.infected{
+  width:6px;height:6px;border:1px solid #d5e5c8;background:#354b35;
+  box-shadow:inset 2px 0 0 #8db28b
+}
+.nutrient{
+  width:3px;height:3px;background:#e2f3d9;
+  box-shadow:4px 0 0 #72ff9a,-4px 0 0 #2adf70;
+  animation:npulse .65s steps(2,end) 2
+}
+@keyframes pxdrift{from{margin-left:-2px;margin-top:0}to{margin-left:4px;margin-top:2px}}
+@keyframes npulse{0%{opacity:1}100%{opacity:.15}}
+.rule{height:1px;background:var(--g1)}
+.log{font-size:7px;line-height:1.7;color:#287943}
+.log strong{color:#4de77b;font-weight:400}
+.action{
+  border:1px solid #1a6133;background:#020a05;color:#52df7c;padding:7px 5px;cursor:pointer;
+  border-radius:0;position:relative
+}
+.action:hover{background:#06150b}
+.action:active{transform:translateY(1px);background:#0a2111}
+.action small{display:block;font-size:6px;color:#2f7346;margin-top:3px}
+.nav{display:grid;grid-template-columns:repeat(5,1fr);gap:2px}
+.nav button{
+  min-width:0;border:1px solid #153a24;background:#020704;color:#346c45;padding:5px 0;font-size:6px;cursor:pointer
+}
+.nav button.active{border-color:#27864a;color:#62ea87;background:#06120a}
+.drawer{
+  position:absolute;z-index:30;left:6px;right:6px;bottom:47px;background:rgba(1,6,3,.985);
+  border:1px solid #277747;padding:8px;transform:translateY(118%);transition:transform .18s steps(3,end)
+}
+.drawer.open{transform:translateY(0)}
+.drawer-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #173b25;padding-bottom:5px;margin-bottom:6px;font-size:8px}
+.drawer-time{color:#79ff99}
+.research{display:grid;gap:5px}
+.research button{
+  display:grid;grid-template-columns:1fr auto;text-align:left;border:1px solid #163e27;background:#030a05;color:#6cca82;padding:6px;
+  cursor:pointer;border-radius:0
+}
+.research button b{font-size:8px;font-weight:400;color:#9beba9}
+.research button span{display:block;font-size:6px;color:#3d7450;margin-top:2px}
+.research button em{font-style:normal;font-size:7px;color:#8ad799}
+.research button.sel{border-color:#6df194;background:#07160c}
+.toast{
+  position:absolute;z-index:35;left:50%;bottom:92px;transform:translateX(-50%);
+  background:#010603;border:1px solid #287c49;color:#75f595;font-size:7px;padding:5px 7px;opacity:0
+}
+.toast.show{opacity:1}
+.glitchline{
+  position:absolute;z-index:42;height:2px;background:#6aff90;opacity:0;pointer-events:none;
+  box-shadow:14px 0 0 #173f26,-11px 0 0 #d5efd4
+}
+.screen.glitch .glitchline{opacity:.75;animation:gl 110ms steps(2,end)}
+.screen.glitch .jitter{animation:jitter 110ms steps(2,end)}
+.screen.glitch .resource b:nth-child(2){text-shadow:2px 0 #143d22}
+@keyframes gl{
+  0%{left:4%;width:40%;transform:translateX(0)}
+  50%{left:38%;width:51%;transform:translateX(-6px)}
+  100%{left:9%;width:18%;transform:translateX(5px)}
+}
+@keyframes jitter{
+  0%{transform:translateX(0)}
+  50%{transform:translateX(2px)}
+  100%{transform:translateX(-1px)}
+}
+.screen.glitch-hard .chamber{filter:brightness(1.35)}
+.screen.glitch-hard .jitter{transform:translateX(1px)}
+.legend{
+  display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px;font-size:8px;color:#566e5b
+}
+.legend div{border:1px solid #17291c;background:#050805;padding:7px;line-height:1.5}
+.legend b{display:block;color:#93c99d;font-weight:400;margin-bottom:2px}
+
+/* B1 — Silent Instrument */
+.b1 .top{
+  height:8%;display:flex;align-items:center;justify-content:space-between;padding:0 8px;border-bottom:1px solid #1f713b
+}
+.b1 .mode{font-size:7px;color:#2c7545}
+.b1 .resources{height:7%;display:grid;grid-template-columns:repeat(4,1fr);align-items:center;padding:0 8px;border-bottom:1px solid #11341f}
+.b1 .resources .resource{justify-content:center}
+.b1 .chamber{height:58%;margin:7px 12px 0;border:1px solid #123a22}
+.b1 .corner{position:absolute;width:8px;height:8px;border-color:#287d47}
+.b1 .tl{left:-1px;top:-1px;border-left:1px solid;border-top:1px solid}
+.b1 .tr{right:-1px;top:-1px;border-right:1px solid;border-top:1px solid}
+.b1 .bl{left:-1px;bottom:-1px;border-left:1px solid;border-bottom:1px solid}
+.b1 .br{right:-1px;bottom:-1px;border-right:1px solid;border-bottom:1px solid}
+.b1 .status{height:10%;padding:6px 12px 0}
+.b1 .actions{height:9%;display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:3px 12px}
+.b1 .nav{height:6%;padding:2px 12px 5px}
+
+/* B2 — Resource Rack */
+.b2 .top{
+  height:7%;display:flex;align-items:center;justify-content:space-between;padding:0 7px;border-bottom:1px solid #235d37
+}
+.b2 .resources{
+  height:15%;display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;padding:5px 7px 3px
+}
+.b2 .rack{
+  border:1px solid #164529;background:#020905;padding:5px;position:relative
+}
+.b2 .rack:before{
+  content:"";position:absolute;left:-1px;top:-1px;width:5px;height:5px;border-left:1px solid #43b967;border-top:1px solid #43b967
+}
+.b2 .rack label{display:block;font-size:6px;color:#346c46}
+.b2 .rack .resource{margin-top:4px}
+.b2 .rack .resource b{font-size:12px}
+.b2 .bar{height:3px;border:1px solid #173b25;margin-top:5px}
+.b2 .bar i{display:block;height:100%;background:#2e9e55;width:var(--v)}
+.b2 .chamber{height:49%;margin:3px 7px;border:1px solid #1a5932}
+.b2 .probe{
+  position:absolute;right:5px;top:5px;font-size:6px;color:#2f7547;border-left:1px solid #1f5c35;padding-left:5px
+}
+.b2 .status{height:9%;padding:3px 7px;display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center}
+.b2 .status .log{line-height:1.5}
+.b2 .actions{height:10%;display:grid;grid-template-columns:1.3fr .7fr;gap:4px;padding:2px 7px}
+.b2 .nav{height:7%;padding:2px 7px 5px}
+
+/* B3 — Distorted Diagnostic */
+.b3 .screen{background:#000402}
+.b3 .top{
+  height:9%;padding:7px 9px 4px;border-bottom:1px solid #185f33;display:grid;grid-template-columns:1fr auto;
+  align-items:start
+}
+.b3 .eyebrow{font-size:6px;color:#245f38}
+.b3 .title{font-size:10px;color:#65f38b;margin-top:2px}
+.b3 .timer{font-size:11px;color:#a1ffb8}
+.b3 .resources{
+  position:absolute;z-index:12;left:9px;right:9px;top:63px;display:flex;justify-content:space-between;gap:6px
+}
+.b3 .resources .resource{background:#010603;border-bottom:1px solid #164d2c;padding:3px 2px}
+.b3 .chamber{position:absolute;left:9px;right:9px;top:91px;bottom:146px;border:1px solid #0d3b20}
+.b3 .chamber:before{
+  content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:#0b1d11;opacity:.35
+}
+.b3 .chamber:after{
+  content:"";position:absolute;top:50%;left:0;right:0;height:1px;background:#0b1d11;opacity:.35
+}
+.b3 .diagnostic{
+  position:absolute;z-index:15;left:10px;right:10px;bottom:93px;height:48px;
+  border-top:1px solid #174b2b;padding-top:5px;display:grid;grid-template-columns:1fr auto;gap:8px
+}
+.b3 .diag-right{text-align:right;font-size:6px;color:#376f48}
+.b3 .diag-right strong{display:block;color:#9ae5a3;font-size:8px;font-weight:400}
+.b3 .actions{position:absolute;z-index:16;left:9px;right:9px;bottom:50px;height:37px;display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.b3 .nav{position:absolute;z-index:16;left:9px;right:9px;bottom:8px;height:35px}
+.b3 .drawer{bottom:45px}
+.b3 .toast{bottom:92px}
+
+.focus-b1 .card:not([data-k="b1"]),
+.focus-b2 .card:not([data-k="b2"]),
+.focus-b3 .card:not([data-k="b3"]){display:none}
+.focus-b1 .grid,.focus-b2 .grid,.focus-b3 .grid{grid-template-columns:minmax(300px,440px);justify-content:center}
+@media(max-width:1080px){
+  .grid{grid-template-columns:1fr;max-width:460px;margin:0 auto}
+  .desc{min-height:0}
+  .head{align-items:flex-start;flex-direction:column}
+  .controls{justify-content:flex-start}
+}
+</style>
+</head>
+<body>
+<div class="page" id="page">
+  <div class="head">
+    <div>
+      <h1>Dot.exe // B안 수정 제안 3종</h1>
+      <p>계측 장비 패널을 공통 뼈대로 두고, 첨부 레퍼런스의 검은 CRT·얇은 녹색 선·네모난 픽셀 생명체·드문 디지털 잡음을 적용했습니다. 세 안 모두 같은 P-02 준비 상황을 표시합니다.</p>
+    </div>
+    <div class="controls">
+      <button data-focus="all" class="active">3안 비교</button>
+      <button data-focus="b1">B-1</button>
+      <button data-focus="b2">B-2</button>
+      <button data-focus="b3">B-3</button>
+      <button id="glitchToggle" class="active">지직 연출 ON</button>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>폰트</b> Galmuri11 하나로 한글·영문을 통일했습니다. 화면 안의 생명체와 UI 모서리는 모두 정사각 픽셀 계열로 변경했습니다.
+    글리치는 상시 효과가 아니라 평상시 약 8~14초 간격으로 0.1초 안팎만 발생합니다. 정보 판독을 막는 큰 화면 흔들림이나 RGB 분리는 사용하지 않습니다.
+  </div>
+
+  <div class="grid">
+
+    <section class="card" data-k="b1">
+      <div class="titlebar"><h2>B-1. Silent Instrument</h2><span class="badge">레퍼런스 밀착</span></div>
+      <div class="desc">첨부 이미지처럼 큰 배양 화면과 아주 얇은 계측선이 중심입니다. 재화는 상단 아이콘+숫자로 축약하고, 패널은 거의 보이지 않을 정도로 줄였습니다.</div>
+      <div class="phonewrap">
+        <div class="phone b1">
+          <div class="screen" data-screen data-glitch-rate="11000">
+            <div class="glitchline" style="top:21%"></div><div class="glitchline" style="top:64%"></div>
+            <div class="jitter frame">
+              <div class="top">
+                <div><span class="mode">■ 관찰 중</span></div>
+                <div class="resource"><span class="pixel-icon"><svg viewBox="0 0 12 12"><rect x="5" y="0" width="3" height="3" fill="#72ff9a"/><rect x="3" y="3" width="4" height="3" fill="#72ff9a"/><rect x="5" y="6" width="3" height="2" fill="#72ff9a"/><rect x="3" y="8" width="2" height="4" fill="#72ff9a"/></svg></span><b>1,280</b></div>
+              </div>
+              <div class="resources">
+                <div class="resource"><span class="pixel-icon"><svg viewBox="0 0 12 12"><rect x="1" y="3" width="4" height="4" fill="#72ff9a"/><rect x="6" y="1" width="5" height="5" fill="#2adf70"/><rect x="7" y="7" width="3" height="3" fill="#126b35"/></svg></span><b>086</b><small>세포</small></div>
+                <div class="resource"><span class="pixel-icon"><svg viewBox="0 0 12 12"><rect x="1" y="2" width="3" height="8" fill="#d8f1d8"/><rect x="5" y="2" width="6" height="2" fill="#72ff9a"/><rect x="5" y="5" width="4" height="2" fill="#2adf70"/><rect x="5" y="8" width="2" height="2" fill="#126b35"/></svg></span><b>64%</b><small>영양</small></div>
+                <div class="resource"><span class="pixel-icon"><svg viewBox="0 0 12 12"><rect x="2" y="2" width="3" height="3" fill="#2adf70"/><rect x="7" y="2" width="3" height="3" fill="#72ff9a"/><rect x="2" y="7" width="3" height="3" fill="#72ff9a"/><rect x="7" y="7" width="3" height="3" fill="#d8f1d8"/></svg></span><b>003</b><small>데이터</small></div>
+                <div class="resource"><b>00:43</b><small>준비</small></div>
+              </div>
+              <div class="chamber" data-field>
+                <div class="chamber-grid"></div>
+                <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+              </div>
+              <div class="status">
+                <div class="log">
+                  &gt; <strong>086 개체 감지</strong><br>
+                  &gt; 강화 세포막 / 식균 작용 활성<br>
+                  &gt; 준비 확인. 실험 자동 시작 대기
+                </div>
+              </div>
+              <div class="actions">
+                <button class="action" data-action="feed">영양 공급<small>-4 영양 비축량</small></button>
+                <button class="action" data-action="purge">정화<small>-120 에너지</small></button>
+              </div>
+              <div class="nav">
+                <button class="active">배양</button><button data-open-research>연구</button><button>분석</button><button>메일</button><button>시스템</button>
+              </div>
+            </div>
+            <div class="drawer" data-drawer>
+              <div class="drawer-head"><span>연구 // P-02 준비</span><span class="drawer-time" data-timer>00:43</span></div>
+              <div class="research">
+                <button><span><b>강화 세포막</b><span>접촉 피해 감소</span></span><em>420</em></button>
+                <button><span><b>식균 작용</b><span>작은 세균 제거</span></span><em>360</em></button>
+                <button><span><b>경보 신호</b><span>주변 세포에 위협 전달</span></span><em>DATA 2</em></button>
+              </div>
+            </div>
+            <div class="toast" data-toast></div>
+          </div>
+        </div>
+      </div>
+      <div class="legend">
+        <div><b>핵심</b>게임 화면을 가장 오래 보게 하는 구성.</div>
+        <div><b>재화</b>상단 아이콘+숫자로 최소화.</div>
+      </div>
+    </section>
+
+    <section class="card" data-k="b2">
+      <div class="titlebar"><h2>B-2. Modular Rack</h2><span class="badge">게임성 강조</span></div>
+      <div class="desc">B안의 계측 장비 판타지를 가장 살린 안입니다. 재화를 작은 모듈로 분리해 “장비 수치”가 아니라 “게임 자원”처럼 즉시 읽히게 했습니다.</div>
+      <div class="phonewrap">
+        <div class="phone b2">
+          <div class="screen" data-screen data-glitch-rate="12500">
+            <div class="glitchline" style="top:17%"></div><div class="glitchline" style="top:73%"></div>
+            <div class="jitter frame">
+              <div class="top">
+                <div class="resource"><span class="mode">Dot.exe / 배양 A-01</span></div>
+                <div class="resource"><b>준비 00:43</b></div>
+              </div>
+              <div class="resources">
+                <div class="rack">
+                  <label>에너지</label>
+                  <div class="resource"><span class="pixel-icon"><svg viewBox="0 0 12 12"><rect x="5" y="0" width="3" height="3" fill="#72ff9a"/><rect x="3" y="3" width="4" height="3" fill="#72ff9a"/><rect x="5" y="6" width="3" height="2" fill="#72ff9a"/><rect x="3" y="8" width="2" height="4" fill="#72ff9a"/></svg></span><b>1,280</b></div>
+                  <div class="bar"><i style="--v:58%"></i></div>
+                </div>
+                <div class="rack">
+                  <label>세포</label>
+                  <div class="resource"><span class="pixel-icon"><svg viewBox="0 0 12 12"><rect x="1" y="3" width="4" height="4" fill="#72ff9a"/><rect x="6" y="1" width="5" height="5" fill="#2adf70"/><rect x="7" y="7" width="3" height="3" fill="#126b35"/></svg></span><b>086</b></div>
+                  <div class="bar"><i style="--v:72%"></i></div>
+                </div>
+                <div class="rack">
+                  <label>영양 비축</label>
+                  <div class="resource"><span class="pixel-icon"><svg viewBox="0 0 12 12"><rect x="1" y="2" width="3" height="8" fill="#d8f1d8"/><rect x="5" y="2" width="6" height="2" fill="#72ff9a"/><rect x="5" y="5" width="4" height="2" fill="#2adf70"/><rect x="5" y="8" width="2" height="2" fill="#126b35"/></svg></span><b>64%</b></div>
+                  <div class="bar"><i style="--v:64%"></i></div>
+                </div>
+              </div>
+              <div class="chamber" data-field>
+                <div class="chamber-grid"></div>
+                <div class="probe">P-02<br>세균 노출<br>위협 00</div>
+              </div>
+              <div class="status">
+                <div class="log">
+                  <strong>활성 특성</strong> / 강화 세포막 · 식균 작용<br>
+                  발현 부하 64 / 100
+                </div>
+                <div class="resource"><span class="pixel-icon"><svg viewBox="0 0 12 12"><rect x="2" y="2" width="3" height="3" fill="#2adf70"/><rect x="7" y="2" width="3" height="3" fill="#72ff9a"/><rect x="2" y="7" width="3" height="3" fill="#72ff9a"/><rect x="7" y="7" width="3" height="3" fill="#d8f1d8"/></svg></span><b>003</b><small>DATA</small></div>
+              </div>
+              <div class="actions">
+                <button class="action" data-open-research>연구 모듈<small>특성 구성 / 구매</small></button>
+                <button class="action" data-action="feed">영양 공급<small>RES -4</small></button>
+              </div>
+              <div class="nav">
+                <button class="active">배양</button><button data-open-research>연구</button><button>분석</button><button>메일</button><button>시스템</button>
+              </div>
+            </div>
+            <div class="drawer" data-drawer>
+              <div class="drawer-head"><span>연구 모듈</span><span class="drawer-time" data-timer>00:43</span></div>
+              <div class="research">
+                <button><span><b>강화 세포막</b><span>접촉 피해 감소</span></span><em>420</em></button>
+                <button><span><b>식균 작용</b><span>작은 세균 접촉 제거</span></span><em>360</em></button>
+                <button><span><b>경보 신호</b><span>위협 신호 방출/수신</span></span><em>DATA 2</em></button>
+              </div>
+            </div>
+            <div class="toast" data-toast></div>
+          </div>
+        </div>
+      </div>
+      <div class="legend">
+        <div><b>핵심</b>자원·특성·프로토콜 판단이 가장 빠름.</div>
+        <div><b>재화</b>모듈 카드 + 픽셀 아이콘 + 숫자.</div>
+      </div>
+    </section>
+
+    <section class="card" data-k="b3">
+      <div class="titlebar"><h2>B-3. Distorted Diagnostic</h2><span class="badge">공포감 강화</span></div>
+      <div class="desc">장비 패널은 유지하면서 화면 대부분을 암흑 배양기로 보이게 합니다. 숫자는 필요할 때만 떠 있고, 관찰 로그와 매우 짧은 신호 깨짐이 불안감을 만듭니다.</div>
+      <div class="phonewrap">
+        <div class="phone b3">
+          <div class="screen" data-screen data-glitch-rate="9000">
+            <div class="glitchline" style="top:32%"></div><div class="glitchline" style="top:54%"></div><div class="glitchline" style="top:81%"></div>
+            <div class="jitter frame">
+              <div class="top">
+                <div><div class="eyebrow">DOT.EXE // LIVE CULTURE</div><div class="title">관찰 중</div></div>
+                <div style="text-align:right"><div class="eyebrow">P-02 준비</div><div class="timer" data-timer>00:43</div></div>
+              </div>
+              <div class="resources">
+                <div class="resource"><span class="pixel-icon"><svg viewBox="0 0 12 12"><rect x="5" y="0" width="3" height="3" fill="#72ff9a"/><rect x="3" y="3" width="4" height="3" fill="#72ff9a"/><rect x="5" y="6" width="3" height="2" fill="#72ff9a"/><rect x="3" y="8" width="2" height="4" fill="#72ff9a"/></svg></span><b>1,280</b></div>
+                <div class="resource"><span class="pixel-icon"><svg viewBox="0 0 12 12"><rect x="1" y="3" width="4" height="4" fill="#72ff9a"/><rect x="6" y="1" width="5" height="5" fill="#2adf70"/><rect x="7" y="7" width="3" height="3" fill="#126b35"/></svg></span><b>086</b></div>
+                <div class="resource"><span class="pixel-icon"><svg viewBox="0 0 12 12"><rect x="1" y="2" width="3" height="8" fill="#d8f1d8"/><rect x="5" y="2" width="6" height="2" fill="#72ff9a"/><rect x="5" y="5" width="4" height="2" fill="#2adf70"/></svg></span><b>64%</b></div>
+                <div class="resource"><span class="pixel-icon"><svg viewBox="0 0 12 12"><rect x="2" y="2" width="3" height="3" fill="#2adf70"/><rect x="7" y="2" width="3" height="3" fill="#72ff9a"/><rect x="2" y="7" width="3" height="3" fill="#72ff9a"/><rect x="7" y="7" width="3" height="3" fill="#d8f1d8"/></svg></span><b>003</b></div>
+              </div>
+              <div class="chamber" data-field><div class="chamber-grid"></div></div>
+              <div class="diagnostic">
+                <div class="log">
+                  &gt; 086 개체<br>
+                  &gt; 이동 편차 정상<br>
+                  &gt; <strong>신호 동기화 02건</strong>
+                </div>
+                <div class="diag-right">프로토콜 자동 시작<strong>00:43</strong>수동 시작 가능</div>
+              </div>
+              <div class="actions">
+                <button class="action" data-action="feed">영양 공급<small>-4</small></button>
+                <button class="action" data-open-research>연구<small>부하 64/100</small></button>
+              </div>
+              <div class="nav">
+                <button class="active">배양</button><button data-open-research>연구</button><button>분석</button><button>메일</button><button>시스템</button>
+              </div>
+            </div>
+            <div class="drawer" data-drawer>
+              <div class="drawer-head"><span>연구 // 신호 상태 정상</span><span class="drawer-time" data-timer>00:43</span></div>
+              <div class="research">
+                <button><span><b>강화 세포막</b><span>접촉 피해 감소</span></span><em>420</em></button>
+                <button><span><b>식균 작용</b><span>작은 세균 제거</span></span><em>360</em></button>
+                <button><span><b>경보 신호</b><span>위협 정보 공유</span></span><em>DATA 2</em></button>
+              </div>
+            </div>
+            <div class="toast" data-toast></div>
+          </div>
+        </div>
+      </div>
+      <div class="legend">
+        <div><b>핵심</b>평상시부터 설명하기 어려운 불안감을 조금씩 축적.</div>
+        <div><b>재화</b>숫자는 게임 화면 위에 떠 있는 계측값처럼 최소 노출.</div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+(()=>{
+  const page=document.getElementById('page');
+  const focusButtons=[...document.querySelectorAll('[data-focus]')];
+  focusButtons.forEach(btn=>btn.addEventListener('click',()=>{
+    focusButtons.forEach(x=>x.classList.remove('active'));
+    btn.classList.add('active');
+    page.classList.remove('focus-b1','focus-b2','focus-b3');
+    if(btn.dataset.focus!=='all') page.classList.add('focus-'+btn.dataset.focus);
+  }));
+
+  function rnd(seed){let s=seed>>>0;return()=>((s=(s*1664525+1013904223)>>>0)/4294967296)}
+  document.querySelectorAll('[data-field]').forEach((field,idx)=>{
+    const r=rnd(9201+idx*177);
+    const count=idx===2?58:52;
+    for(let i=0;i<count;i++){
+      const c=document.createElement('i');
+      c.className='cell'+(i%10===0?' wide':i%13===0?' tall':i%7===0?' dim':'');
+      c.style.left=(7+r()*86)+'%';
+      c.style.top=(9+r()*82)+'%';
+      c.style.setProperty('--dur',(4+r()*5)+'s');
+      c.style.animationDelay=(-r()*5)+'s';
+      field.appendChild(c);
+    }
+    for(let i=0;i<5;i++){
+      const e=document.createElement('i');e.className='enemy';
+      e.style.left=(67+r()*25)+'%';e.style.top=(18+r()*62)+'%';field.appendChild(e);
+    }
+    for(let i=0;i<2;i++){
+      const v=document.createElement('i');v.className='infected';
+      v.style.left=(25+r()*48)+'%';v.style.top=(28+r()*45)+'%';field.appendChild(v);
+    }
+  });
+
+  let remaining=43;
+  setInterval(()=>{
+    remaining--; if(remaining<0) remaining=43;
+    const t='00:'+String(remaining).padStart(2,'0');
+    document.querySelectorAll('[data-timer]').forEach(x=>x.textContent=t);
+    document.querySelectorAll('.b2 .top .resource b').forEach(x=>{if(x.textContent.includes('준비'))x.textContent='준비 '+t});
+    document.querySelectorAll('.b3 .diag-right strong').forEach(x=>x.textContent=t);
+  },1000);
+
+  document.querySelectorAll('.screen').forEach(screen=>{
+    const drawer=screen.querySelector('[data-drawer]');
+    screen.querySelectorAll('[data-open-research]').forEach(btn=>btn.addEventListener('click',()=>{
+      drawer.classList.toggle('open');
+    }));
+    screen.querySelectorAll('.research button').forEach(btn=>btn.addEventListener('click',()=>btn.classList.toggle('sel')));
+    screen.querySelectorAll('[data-action]').forEach(btn=>btn.addEventListener('click',()=>{
+      const field=screen.querySelector('[data-field]');
+      const toast=screen.querySelector('[data-toast]');
+      if(btn.dataset.action==='feed'){
+        for(let i=0;i<7;i++){
+          const n=document.createElement('i');n.className='nutrient';
+          n.style.left=(28+Math.random()*42)+'%';n.style.top=(28+Math.random()*40)+'%';
+          field.appendChild(n);setTimeout(()=>n.remove(),900);
+        }
+        toast.textContent='영양 공급 / 비축량 -4';
+      }else{
+        screen.classList.add('glitch-hard');setTimeout(()=>screen.classList.remove('glitch-hard'),140);
+        toast.textContent='정화 / 에너지 -120';
+      }
+      toast.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>toast.classList.remove('show'),900);
+    }));
+  });
+
+  let glitchOn=true;
+  const gt=document.getElementById('glitchToggle');
+  gt.addEventListener('click',()=>{
+    glitchOn=!glitchOn;gt.classList.toggle('active',glitchOn);
+    gt.textContent='지직 연출 '+(glitchOn?'ON':'OFF');
+  });
+  document.querySelectorAll('[data-screen]').forEach((screen,idx)=>{
+    const base=Number(screen.dataset.glitchRate||11000);
+    const pulse=()=>{
+      if(glitchOn){
+        screen.classList.add('glitch');
+        setTimeout(()=>screen.classList.remove('glitch'),110+(idx*18));
+      }
+      setTimeout(pulse,base+Math.random()*5000);
+    };
+    setTimeout(pulse,1800+idx*950);
+  });
+})();
+</script>
+</body>
+</html>

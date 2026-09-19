@@ -1,10 +1,10 @@
-# Dot.exe 검토 문제 결정사항
+# Dot.exe CORE GAME RULES
 
-> **동결됨.** 규칙의 정식 원본은 프로젝트 루트의 `CORE_GAME_RULES.md`로 옮겼다. 이 문서는 v1.2 시점의 결정 이력으로만 남기며 더 고치지 않는다. 규칙은 `CORE_GAME_RULES.md`에서 고친다.  
-> 문서 버전: 1.2 (2026-09-19. 바뀐 곳은 문서 끝 `변경 기록` 참고. v1.0은 `_v0.1_원본/`에 보관)  
-> 작성 기준: `Dot.exe_기획·명세_검토보고서.md`, `Dot.exe_규칙수정안_재검토.md` 및 두 차례 검토 후 확정한 결정사항  
-> 목적: 기획서와 개발 명세서 사이에서 해석이 갈릴 수 있는 규칙을 하나의 결정 문서로 모은다.  
-> 주의: 이 문서는 **게임 규칙과 구현 기준을 확정하는 문서**다. 아직 플레이테스트를 거치지 않은 수치는 `초기 밸런스 값`으로만 취급하며 고정 규칙으로 간주하지 않는다.
+> 문서 버전: 1.4 (2026-09-19)  
+> 이 문서가 게임 규칙의 **정식 원본**이다. 기획서와 명세서의 `결정 N절`, `정본 N절`은 이 문서의 N절을 가리킨다.  
+> 규칙을 바꿀 때는 이 문서를 먼저 고치고 문서 끝 `변경 기록`에 적은 뒤 기획서·명세서·코드를 맞춘다.  
+> 아직 플레이테스트를 거치지 않은 수치는 `초기 밸런스 값`이며 고정 규칙이 아니다. 실제 값은 `Game/src/data/balance/`에 둔다.  
+> 출처: 세 차례 검토의 결정(`Game/Docs/history/2026-09-19_DECISION_LOG_V1.2.md`, v1.2에서 동결).
 
 ---
 
@@ -12,27 +12,25 @@
 
 게임 규칙이 여러 문서에서 다르게 적혀 있을 경우 다음 순서로 해석한다.
 
-1. `CORE GAME RULES` 또는 본 결정 문서의 확정 규칙
-2. 개발 명세서
-3. 상세 기획서
+1. `Game/Docs/current/CORE_GAME_RULES.md`
+2. `Game/Docs/current/DEVELOPMENT_SPEC.md`
+3. `Game/Docs/current/GAME_DESIGN.md`
 4. 밸런스 데이터
 5. 예시 문구 및 연출용 수치
 
-동일한 규칙을 여러 문서에 복사해 관리하지 않는다.  
-정식 규칙은 한 곳에만 두고 다른 문서에서는 해당 규칙을 참조한다.
+`Game/Docs/history/`는 검토 과정과 결정 이력을 보존하는 기록이며 구현 기준이 아니다. `.agents/`는 Luna Chat Coder 통합 전용이며 게임 규칙·기획·코드를 두지 않는다.
 
----
+규칙을 바꿀 때는 이 문서를 먼저 수정하고 다른 현행 문서와 코드를 맞춘다.
 
-# 2. 작품명과 극중 프로그램명
+# 2. 명칭
 
-- **작품명:** `Dot.exe`
-- **극중 프로그램명:** `CULTURE//SYS`
+게임 작품명과 게임 안에서 연구원이 실행하는 시스템의 이름을 모두 **`Dot.exe`**로 통일한다.
 
-두 이름을 혼용하지 않는다.
+- 작품명: `Dot.exe`
+- 극중 프로그램/배양 시스템명: `Dot.exe`
+- 타이틀, 부팅 화면, 시스템 헤더도 `Dot.exe`를 사용한다.
 
-`Dot.exe`는 게임 전체의 제목이고, `CULTURE//SYS`는 플레이어가 연구실 컴퓨터에서 실행하는 극중 배양 시스템 소프트웨어다.
-
----
+별도의 시스템명은 사용하지 않는다. `CULTURE`, `RESEARCH`, `MAIL` 등은 기능·화면 이름이므로 그대로 사용할 수 있다.
 
 # 3. 발현 부하(Expression Load)
 
@@ -85,7 +83,7 @@ Hard Limit 초과만 거부한다.
 
 ---
 
-# 4. 세포 에너지와 SYSTEM ENERGY
+# 4. 세포 에너지와 ENERGY
 
 기존의 “내부 저장 한도를 넘은 에너지만 연구 자원으로 회수”하는 방식은 사용하지 않는다.
 
@@ -108,7 +106,7 @@ Net Metabolic Output
  ┌────────────────────┐
  │                    │
  ▼                    ▼
-Cell Internal Energy  SYSTEM ENERGY
+Cell Internal Energy  ENERGY
 ```
 
 ## 4.2 별도 관리 값
@@ -126,21 +124,21 @@ System Harvest Ratio
 
 ## 4.3 생존 우선 규칙
 
-세포 내부 에너지가 `Survival Reserve`보다 낮으면 SYSTEM ENERGY 회수를 중단한다.
+세포 내부 에너지가 `Survival Reserve`보다 낮으면 ENERGY 회수를 중단한다.
 
 ```text
 Cell Energy < Survival Reserve
 → 순생산 100%를 세포 내부에 배정
 
 Cell Energy >= Survival Reserve
-→ 순생산 일부를 내부 저장, 일부를 SYSTEM ENERGY로 배정
+→ 순생산 일부를 내부 저장, 일부를 ENERGY로 배정
 ```
 
 ## 4.4 Energy Storage 연구
 
 `Energy Storage`는 `Maximum Storage`만 증가시킨다.
 
-SYSTEM ENERGY 회수 기준이나 회수 비율을 직접 올리지 않는다.
+ENERGY 회수 기준이나 회수 비율을 직접 올리지 않는다.
 
 ## 4.5 분열 에너지 보존
 
@@ -162,7 +160,7 @@ SYSTEM ENERGY 회수 기준이나 회수 비율을 직접 올리지 않는다.
 ## 4.6 경계 경우
 
 - 내부 에너지가 `Maximum Storage`에 찬 세포도 섭취와 대사를 계속한다.
-- 저장하지 못한 내부 몫은 버린다. SYSTEM ENERGY로 돌리지 않는다. (돌리면 “넘친 만큼 회수” 방식이 되살아나 Energy Storage 구매가 SYSTEM ENERGY 생산을 깎는다.)
+- 저장하지 못한 내부 몫은 버린다. ENERGY로 돌리지 않는다. (돌리면 “넘친 만큼 회수” 방식이 되살아나 Energy Storage 구매가 ENERGY 생산을 깎는다.)
 - 순생산이 음수면 내부 에너지에서 뺀다.
 - 특성 변경으로 `Maximum Storage`가 줄면 넘는 몫은 바로 사라진다.
 
@@ -270,101 +268,66 @@ REQUIRED 060
 
 # 6. 프로토콜 상태와 체크포인트
 
-실패 처리는 일반적인 싱글플레이 게임의 방식을 따른다. 실패하면 게임 오버가 되고 체크포인트를 통째로 다시 불러온다.
+프로토콜은 설명을 읽는 시간과 실제 준비 압박을 분리한다. **Briefing은 무제한**, **Preparing은 제한시간**이다.
 
 ## 6.1 상태 흐름
 
 ```text
 Idle
+→ Briefing
 → Preparing
 → Running
 → Completed
-→ 다음 프로토콜의 Preparing (없으면 Idle)
+→ 다음 프로토콜의 Briefing (없으면 Idle)
 
 Running
 → Failed
-→ GAME OVER 화면
+→ GAME OVER
 → 체크포인트 로드
 → Preparing
 ```
 
-`RetryPreparation` 상태는 두지 않는다.
-
-Idle에서도 시뮬레이션 시간은 흐른다.
+- `Briefing`: simulation pause. 목표·예상 위협·보상을 읽는다. 연구 구매·Trait 변경·FEED/PURGE는 할 수 없다.
+- `Preparing`: simulation과 Preparation Timer가 흐르는 live-planning 구간. 연구·Trait·FEED/PURGE·증식·자원 생산을 제한시간 안에서 처리한다.
+- `Running`: 연구와 Trait 변경을 잠근다.
+- `RetryPreparation`은 두지 않는다.
 
 ## 6.2 체크포인트 생성 시점
 
-프로토콜이 `Preparing`에 들어가는 순간 정확히 한 번 생성한다. 준비 타이머가 돌기 시작하는 시점이다.
+`Briefing → Preparing` 전환에서 Preparing에 들어가는 순간 정확히 한 번 생성한다. 체크포인트를 먼저 확정한 뒤 준비 타이머를 시작한다.
 
-체크포인트는 그 시점의 전체 저장 데이터다. 일반 저장과 같은 형식을 쓴다.
-
-이전 프로토콜의 체크포인트도 지우지 않고 남겨 둔다. 준비 단계를 다시 해도 넘을 수 없을 만큼 배양체가 무너졌다면 더 앞의 체크포인트를 불러올 수 있다.
-
-실험 시작 직전이 아니라 준비 단계 시작에 두는 까닭은, 약한 상태로 실험에 들어갔다가 실패했을 때 같은 상태로 되돌아가 막히는 일을 없애기 위해서다. 준비 단계부터 다시 하면 연구, 특성 구성, 증식을 모두 다시 할 수 있다.
+이전 프로토콜 체크포인트도 캠페인 동안 보존한다. SYSTEM → RECOVERY에서 더 앞의 체크포인트를 선택할 수 있다.
 
 ## 6.3 Running 전환
 
-수동 시작과 자동 시작 모두 같은 전환 함수를 사용한다.
-
-```text
-수동 시작
-Start Button
-→ transitionToRunning()
-
-자동 시작
-Preparation Timer == 0
-→ transitionToRunning()
-```
+수동 시작과 자동 시작 모두 `transitionToRunning()`을 사용한다. Preparation Timer가 0이면 자동 시작한다. 남은 시간은 모든 준비 UI에서 항상 보인다.
 
 ## 6.4 실패 후 복구
 
-전멸이든 필수 목표 미달이든 실패는 같은 방식으로 처리한다.
-
-```text
-CULTURE FAILURE
-
-RESTORING
-LAST VIABLE SAMPLE...
-```
-
-체크포인트를 불러오면 준비 타이머가 처음부터 다시 돈다.
-
----
+실패하면 GAME OVER 뒤 체크포인트를 통째로 불러오고 Briefing을 다시 강제하지 않은 채 Preparing으로 돌아간다. 준비 타이머는 처음부터 다시 돈다.
 
 # 7. 복원 범위와 연구 구매
 
 ## 7.1 복원 범위
 
-체크포인트를 불러오면 **전부** 그 시점으로 돌아간다.
+체크포인트를 불러오면 세포·적·환경 Field, 자원, 연구, Trait Loadout, Protocol 상태, 메일, Narrative Flag, Observation, 발견 기록, Emergence Evidence, simulationTick, RNG를 모두 그 시점으로 되돌린다.
 
-- 세포, 적, 환경 Field
-- SYSTEM ENERGY, DATA, NUTRIENT RESERVE
-- 연구 해금, Trait Loadout
-- Protocol 상태, Cooldown, 일시 효과
-- 메일, Narrative Flag, Observation Record, 발견 기록, Emergence Evidence
-- simulationTick, RNG 상태
-
-“영구 진행”과 “실험 상태”를 나누지 않는다. 실패한 시도에서 받은 메일과 발견은 다시 하면서 다시 얻는다.
-
-체크포인트와 무관하게 유지하는 것은 엔딩 기록과 모드 해금 정보뿐이다. 이 둘은 캠페인 저장과 별도로 보관한다.
+체크포인트와 무관하게 유지하는 것은 ProfileData의 엔딩 기록과 모드 해금 정보뿐이다.
 
 ## 7.2 연구 구매와 Trait 변경
 
-`Running` 상태에서만 금지한다. Idle, Preparing, Completed에서는 허용한다.
+- `Briefing`: 조회만 가능. 구매·변경 금지.
+- `Preparing`: 허용. 제한시간 안의 핵심 선택 구간.
+- `Running`: 금지.
+- `Idle`, `Completed`: 허용.
 
 ## 7.3 Running이 아닐 때의 전멸
 
-Running이 아닐 때 Viable Cell이 0이 되면 게임 오버로 처리하지 않는다.
-
-`RESTORING LAST VIABLE SAMPLE` 연출과 함께 초기 세포 하나를 배양 공간 중앙에 다시 만든다. 자원과 연구는 그대로 둔다.
-
-P-01 시작 전에 첫 세포를 굶겨 죽이는 실수를 받아 주기 위한 규칙이다.
+Running이 아닐 때 Viable Cell이 0이 되면 게임 오버로 처리하지 않는다. 초기 세포 하나를 중앙에 다시 만들고 자원과 연구는 유지한다.
 
 ## 7.4 프로토콜 완료 시
 
-`Completed`로 넘어갈 때 남아 있는 위협 개체를 제거한다. 실험이 끝난 뒤 남은 세균에게 배양체가 전멸하는 일을 막는다.
-
----
+Completed로 넘어갈 때 남아 있는 위협을 제거한다.
 
 # 8. 발견 기록과 DATA 보상
 
@@ -389,75 +352,30 @@ DiscoveryRecord {
 
 # 9. 게임 시간과 UI 명령 처리
 
-`Simulation Time`과 `UI/Transaction Processing`을 분리한다.
+Simulation Time과 UI/Transaction Processing을 분리한다. **Preparing은 시간 압박을 위한 live-planning 예외**다.
 
-## 9.1 Simulation Time이 멈추는 화면
+## 9.1 화면과 시간
 
-CULTURE 외의 전체 화면은 모두 시뮬레이션을 Pause한다.
-
-- MAIL
-- RESEARCH
-- ANALYSIS
-- SYSTEM
-- GAME OVER
-- 명시적인 Pause
-
-Pause 시 멈추는 것:
-
-- 세포 시뮬레이션
-- 적 행동
-- Protocol Timer
-- SYSTEM ENERGY 생산
-- NUTRIENT 보충
-- Cooldown
-- 환경 시간 변화
+- `Briefing`: simulation pause, 준비 타이머 시작 전.
+- `Preparing`: simulation과 Preparation Timer 진행. RESEARCH, Trait Loadout, MAIL, ANALYSIS, SYSTEM을 열어도 멈추지 않으며 남은 시간을 항상 표시한다. 일반 Manual Pause는 사용할 수 없다.
+- `Preparing` 이외: CULTURE 외 화면은 기존처럼 simulation pause.
+- 앱 background/OS interruption은 `SYSTEM_SUSPEND`로 모든 시간을 멈춘다. 복귀 시 밀린 시간을 소급하지 않는다.
 
 ## 9.2 Pause 중 즉시 처리 가능한 명령
 
-다음은 시뮬레이션 시간이 멈춰도 즉시 검증·확정할 수 있다.
-
-- 연구 구매 (Running이 아닐 때)
-- Trait Loadout 변경 (Running이 아닐 때)
-- 메일 읽음 처리
-- 설정 변경
-- 저장
+Preparing 이외의 pause 상태에서는 상태 규칙이 허용하는 연구 구매, Trait 변경, 메일 읽음, 설정 변경, 저장을 Transaction으로 처리할 수 있다.
 
 ## 9.3 Pause 중 금지되는 시뮬레이션 명령
 
-다음은 Pause 상태에서 사용할 수 없다.
-
-- FEED
-- SIGNAL
-- PURGE
-- 환경 조작
-- 전투성 개입
-
-Pause 상태에서 명령을 예약해 두는 플레이에 마찰을 주기 위한 규칙이다. Pause → 위치 확인 → 재개 → 곧바로 클릭까지 막지는 않으며, 그것을 막는 장치를 더 얹지 않는다.
+FEED, SIGNAL, PURGE, 환경 조작, 전투성 개입은 pause 상태에서 사용할 수 없다.
 
 ## 9.4 Pause Source
 
-단순 boolean 하나를 사용하지 않는다.
-
-예:
-
-```text
-MANUAL_PAUSE
-MAIL_MODAL
-RESEARCH_MODAL
-ANALYSIS_MODAL
-SYSTEM_MODAL
-GAME_OVER
-```
-
-여러 이유가 동시에 존재할 수 있다.
-
-수동 Pause 상태에서 Mail을 열었다 닫았다고 자동으로 재개되지 않는다.
+`MANUAL_PAUSE`, `BRIEFING`, `MAIL_MODAL`, `RESEARCH_MODAL`, `ANALYSIS_MODAL`, `SYSTEM_MODAL`, `GAME_OVER`, `SYSTEM_SUSPEND`를 구분한다. Preparing에서는 modal source를 추가하지 않으며 SYSTEM_SUSPEND만 준비 시간을 멈춘다.
 
 ## 9.5 오프라인 진행
 
-기본 캠페인에서는 오프라인 진행을 사용하지 않는다.
-
----
+기본 캠페인에는 오프라인 진행이 없다.
 
 # 10. Tick 처리 순서
 
@@ -723,19 +641,22 @@ MVP에서는 한 노드에 최소 행동을 묶는다.
 
 ## P-01 CULTURE EXPANSION
 
-목적:
+초기에는 Chemotaxis가 없다. 플레이어는 세포 가까이에 영양분을 공급하고 기본 불규칙 운동·섭취·분열로 첫 성장을 만든다.
 
-- 기본 먹이 공급
-- 이동
-- 대사
-- 분열
-- 첫 성장 경험
+P-01 완료 보상으로 Chemotaxis를 연구 완료 상태로 지급하고 즉시 활성화한다. 이후 같은 FEED를 더 먼 곳에 사용했을 때 세포가 스스로 찾아가는 변화가 첫 번째 큰 성장 보상이 된다.
 
-초기에는 Chemotaxis가 없다.
+첫 프로토타입도 본편과 같은 순서를 따른다.
 
-플레이어는 세포 가까이에 영양분을 공급해야 한다.
+```text
+Chemotaxis OFF
+→ 가까운 FEED로 성장·분열
+→ P-01 완료에 해당하는 지점
+→ Chemotaxis 지급/활성
+→ 더 먼 FEED
+→ 군집 흐름 변화 확인
+```
 
-P-01을 완료하면 Chemotaxis가 연구 완료 상태로 지급되고 바로 활성화된다. “먹이를 찾아가는 행동”이 눈에 띄는 성장 보상이 된다.
+Chemotaxis를 처음부터 켜 둔 프로토타입만으로 핵심 재미를 검증했다고 보지 않는다.
 
 ## P-02 RAPID BACTERIA
 
@@ -778,7 +699,7 @@ SIGNAL은 받을 세포가 없으므로(Signal Detection이 MVP 연구에 없다
 MVP에도 다음 세 자원을 포함한다.
 
 ```text
-SYSTEM ENERGY
+ENERGY
 DATA
 NUTRIENT RESERVE
 ```
@@ -1171,62 +1092,34 @@ PASS
 
 # 23. 저장 규칙
 
-저장은 **시뮬레이션 업데이트나 Transaction 처리 중이 아닌 일관된 상태**에서 수행한다.
+저장은 일관된 state boundary에서 수행하고 쓰기 실패 시 직전 정상본을 보존한다. MVP/첫 출시에서는 복잡한 슬롯 관리보다 모바일의 CONTINUE 경험을 우선한다.
 
-반드시 새 tick을 한 번 돌린 뒤 저장할 필요는 없다.
+## 23.1 저장 계층
 
-## 23.1 저장해야 하는 것
+1. **Campaign Save 1개** — 타이틀의 CONTINUE 대상. NEW GAME은 덮어쓰기 확인을 받는다.
+2. **Rolling Autosave 3세대** — Campaign Save를 덮기 전 최근 정상본을 순환 보관한다. 최신본 손상 시 이전 세대로 fallback한다.
+3. **Protocol Checkpoint** — Preparing 진입 시 생성하는 별도 복구 지점. 일반 저장과 슬롯을 공유하지 않는다.
+4. **ProfileData** — 엔딩 기록과 모드 해금. 캠페인 rollback과 분리한다.
 
-최소:
+초기 autosave 주기는 약 30초의 simulation time으로 두되 설정값으로 관리한다. Protocol 완료, 중요한 Transaction 묶음 확정, app background 직전에도 autosave를 요청하며 연속 요청은 합친다. Failed 상태 자체를 정상 autosave로 덮어쓰지 않는다.
 
-- simulationTick
-- Cells
-- Cell division progress
-- lastDivisionTick
-- wander state
-- Threats
-- Environment
-- Scalar Fields
-- Protocol state
-- 이미 실행한 Protocol Action
-- Cooldowns
-- Isolation state
-- Resources
-- Research
-- Discovery Records
-- Trait Loadout
-- Mail Inbox
-- Mail Queue
-- Narrative Flags
-- Emergence Evidence
-- Observation Records
-- RNG state
+## 23.2 사용자 UX
 
-tick 기준 값(`lastDivisionTick`, Cooldown 등)은 `simulationTick`과 함께 저장·복원되므로 절대 tick으로 두어도 어긋나지 않는다.
+SYSTEM에는 `SAVE NOW`를 둔다. 일반 플레이에서 슬롯 번호를 고르게 하지 않는다.
 
-체크포인트는 저장 데이터 안에 넣지 않는다. 같은 형식의 별도 저장본으로 둔다. (6.2)
+SYSTEM → RECOVERY에서는 최근 autosave 세대와 이전 Protocol Checkpoint를 볼 수 있다. 과거 checkpoint 복원 시 이후 진행이 사라진다는 확인을 받고, 선택 지점 뒤의 campaign/autosave/checkpoint를 폐기해 시간선이 섞이지 않게 한다.
 
-엔딩 기록과 모드 해금 정보는 캠페인 저장과 분리된 프로필 데이터에 둔다.
+## 23.3 저장해야 하는 것
 
-## 23.2 저장하지 않는 것
+simulationTick, Cells와 분열/wander 상태, Threats, Environment/Fields, Protocol state와 Preparation Timer, 실행된 Protocol Action, Cooldown, Resources, Research, Discovery, Trait Loadout, Mail Inbox/Queue, Narrative Flags, Emergence Evidence, Observation Records, RNG state를 저장한다.
 
-현재 상태로 재구성 가능한 값:
+## 23.4 저장하지 않는 것
 
-- Spatial Hash
-- 화면 파티클
-- UI hover
-- 렌더 보간값
+Spatial Hash, 파티클, UI hover, 렌더 보간값처럼 현재 상태로 재구성 가능한 것은 저장하지 않는다.
 
-## 23.3 Event Queue
+## 23.5 Event Queue
 
-단순 알림성 이벤트 큐는 저장하지 않는다.
-
-미래 게임 결과에 영향을 주는 예약 작업은:
-
-- 이미 상태로 확정하거나
-- 별도 scheduled command로 저장한다.
-
----
+단순 알림 큐는 저장하지 않는다. 미래 게임 결과에 영향을 주는 예약 작업은 상태 또는 scheduled command로 저장한다.
 
 # 24. RNG
 
@@ -1324,15 +1217,29 @@ Object Pool, Worker, 병렬 처리 등은 프로파일링 결과가 필요할 �
 
 ## 26.1 메인 플레이 화면
 
-강한 CRT 왜곡을 상시 사용하지 않는다.
+게임은 **세로 방향 고정**이다. FHD `1920×1080`을 세로로 돌린 **1080×1920(9:16)**을 디자인 기준으로 삼고, 픽셀 논리 화면은 **216×384**로 고정한다.
 
-권장:
+- `ResponsiveShell`이 기기의 safe area 안에 9:16 CRT 화면을 비율 유지로 최대 배치한다.
+- 18:9, 19.5:9, 20:9처럼 더 긴 폰의 남는 영역은 CRT 케이스·터미널 여백·암부로 사용한다.
+- 3:4 같은 넓은 세로 화면은 좌우 여백을 모니터 케이스로 처리한다.
+- 게임 규칙과 배양 공간 논리 좌표는 기기 화면비 때문에 늘어나거나 잘리지 않는다.
+- 노치, Dynamic Island, 상태 표시줄, 홈 인디케이터는 safe-area inset으로 피한다.
+- UI는 상단 HUD / 중앙 배양 화면 / 하단 조작부 anchor zone으로 구성한다.
+- 데스크톱 개발 창도 세로 9:16 CRT 화면을 가운데 표시한다.
+- 터치는 physical → ResponsiveShell 역변환 → CRT 굴절 역변환 → 216×384 논리 좌표 순으로 변환한다.
 
-- 약한 scanline
-- 미세한 phosphor glow
-- 낮은 noise
+CRT는 `Game/Ref/Ref 01.jpg`를 기준으로 하며 4색 녹색 팔레트, 픽셀 폰트, 주사선, 약한 번짐과 가장자리 암부를 사용한다. 강한 글리치는 후반 서사에 제한한다.
 
-강한 곡률, 글리치, 왜곡은 부팅·후반 서사 이벤트에 제한한다.
+최소 화면비 테스트는 9:16, 9:18, 9:19.5, 9:20, 3:4 세로에서 수행한다.
+
+## 26.4 타이틀과 부팅
+
+`Game/Ref/타이틀 화면.txt`를 따른다.
+
+1. `Ref 01` 스타일의 큰 도트 제목이 `D` → `o` → `t` → `.exe` 순서로 나타난다.
+2. 제목 아래에 `TOUCH TO START`가 깜빡인다. 연출 중에 누르면 연출을 끝까지 넘긴다.
+3. 누르면 `Ref 02` 스타일의 레트로 로딩 화면이 나온다. 문구는 `Dot.exe booting...`이다.
+4. 로딩 연출이 끝나면 게임이 시작된다.
 
 ## 26.2 상태 구분
 
@@ -1373,7 +1280,7 @@ Object Pool, Worker, 병렬 처리 등은 프로파일링 결과가 필요할 �
 
 ```text
 CELLS
-SYSTEM ENERGY
+ENERGY
 ENERGY OUTPUT
 NUTRIENT RESERVE
 CULTURE NUTRIENT
@@ -1430,41 +1337,26 @@ Ending
 
 # 30. 구현 환경
 
-출시 대상은 **Google Play와 App Store**다. 유료 다운로드(₩1,500)이며 인앱결제, 광고, 데이터 수집이 없다.
+실제 게임 프로젝트 루트는 `Game/`이다. `.agents/`는 Luna Chat Coder 전용이며 게임 소스·문서·에셋을 두지 않는다.
 
-게임 로직은 TypeScript로 작성하고 Canvas/WebGL 계열로 그린다. 개발 중에는 데스크톱 브라우저에서 실행하고, 출시할 때 Capacitor로 Android와 iOS 앱으로 감싼다. 빌드 도구는 Vite, 테스트는 Vitest다.
+출시 대상은 Google Play와 App Store다. TypeScript + Canvas/WebGL + Capacitor, Vite, Vitest를 사용한다.
 
-- 화면은 가로 고정이다.
-- 기본 입력은 터치다. 개발과 테스트를 위해 마우스 입력도 같은 경로로 받는다.
-- hover에 기대는 UI를 만들지 않는다.
-- F1~F5 표기는 연출로만 남긴다. 화면은 탭 버튼으로 연다. 키보드가 있으면 숫자키를 보조 단축키로 쓴다.
-- 앱이 뒤로 가면 Pause한다. 돌아올 때 밀린 시간을 처리하지 않는다. (9.5)
-- 성능 기준 기기는 3~4년 된 중급 Android 기기 한 대로 정하고, 25절의 측정은 그 기기에서 한다. 기기는 Stage 1 관문 전에 확정한다.
-- 저장은 앱 전용 저장소에 하고, 쓰기에 실패하면 이전 저장본을 보존한다.
-
-게임 규칙과 `features/`는 플랫폼을 모른다. 플랫폼에 따라 바뀌는 것은 `presentation/`, `input/`, 저장 매체뿐이다.
-
-## 30.2 단계별 테스트 절차
-
-개발은 `Docs/Dot.exe_개발_파이프라인.html`의 단계를 하나씩 밟는다. 한 단계가 끝나면 다음 세 차례 테스트를 순서대로 거치고, 사람이 승인해야 다음 단계로 간다.
-
-1. **에이전트 배속 테스트**: 자동 테스트 전체와, 시뮬레이션을 화면 없이 빠르게 돌려 규칙을 확인하는 헤드리스 시나리오.
-2. **브라우저 배속 테스트**: 메인 에이전트가 Chrome에 실제 화면을 띄워 배속으로 돌려 보고 화면, 콘솔 오류, 조작을 확인한다.
-3. **사람 테스트**: 단계마다 `Docs/테스트/`에 체크리스트를 만들어 공유하고, 사람이 직접 해 보고 판정한다. 재미와 느낌에 대한 관문은 사람만 판정한다.
-
-이를 위해 시뮬레이션은 화면 없이 돌릴 수 있어야 하고, 개발 빌드에는 배속 설정이 있어야 한다. 배속은 tick을 더 자주 돌리는 것이며 tick 하나의 계산은 바꾸지 않는다.
+- 세로 고정, 기준 디자인 1080×1920, 논리 화면 216×384.
+- ResponsiveShell이 safe area와 화면비를 처리하고 simulation 좌표는 기기별로 바꾸지 않는다.
+- 기본 입력은 터치이며 마우스도 같은 경로로 처리한다.
+- 앱 background는 SYSTEM_SUSPEND로 pause하고 밀린 시간을 처리하지 않는다.
+- 저장은 앱 전용 저장소에 하며 실패 시 직전 정상본을 보존한다.
+- 게임 규칙과 `Game/src/features/`는 플랫폼을 모른다.
 
 ## 30.1 현지화
 
-화면에 나오는 글은 코드와 콘텐츠 데이터에 직접 적지 않는다. 키만 적고 글은 `Locale/<언어 코드>.json`에서 가져온다.
+화면 글은 `Game/Locale/<언어>.json`의 키로 관리한다. 기준은 en.json, 1차 지원은 한국어·영어다.
 
-- 기준 파일은 `en.json`이다. 1차 지원 언어는 한국어와 영어다.
-- 새 언어는 JSON 파일 하나를 더하는 것으로 끝나야 한다.
-- 연구·특성·프로토콜·메일 데이터는 `title`, `body` 같은 문자열 대신 키를 갖는다.
-- 언어에 따라 달라지는 것은 글뿐이다. 게임 규칙과 서사 조건은 언어와 무관하다.
-- 폰트는 언어별로 지정할 수 있게 한다. (26.3)
+## 30.2 단계별 테스트 절차
 
----
+`Game/Docs/current/DEVELOPMENT_PIPELINE.html`을 따른다. 에이전트 배속 → 브라우저 배속 → 사람 테스트 순서이며 체크리스트는 `Game/Docs/tests/`에 둔다.
+
+Stage 1 사람 테스트는 Chemotaxis OFF의 실제 P-01 초반과 P-01 완료 뒤 ON의 전후 비교를 모두 포함한다.
 
 # 31. 바이브코딩 구조 규칙
 
@@ -1560,7 +1452,7 @@ MVP의 목적은 스토리 전체가 아니라 다음을 검증하는 것이다.
 - Observation 2Hz
 - Final Protocol 90/60/90초
 - Population Retention 비율
-- SYSTEM ENERGY harvest ratio
+- ENERGY harvest ratio
 - Division cooldown
 - Division duration
 - Cell cap
@@ -1577,9 +1469,9 @@ MVP의 목적은 스토리 전체가 아니라 다음을 검증하는 것이다.
 ## 에너지
 
 - 최초 세포가 지속 분열해도 첫 유료 연구에 도달할 수 있다.
-- Energy Storage 구매가 SYSTEM ENERGY 생산을 부자연스럽게 막지 않는다.
+- Energy Storage 구매가 ENERGY 생산을 부자연스럽게 막지 않는다.
 - 굶주리는 세포가 연구 자원을 계속 생산하지 않는다.
-- 저장량이 가득 찬 세포의 넘친 몫이 SYSTEM ENERGY로 들어가지 않는다.
+- 저장량이 가득 찬 세포의 넘친 몫이 ENERGY로 들어가지 않는다.
 - 내부 에너지가 0인 세포는 Health가 줄고, 에너지를 되찾으면 회복한다.
 
 ## Protocol
@@ -1667,7 +1559,7 @@ MVP의 목적은 스토리 전체가 아니라 다음을 검증하는 것이다.
 
 ---
 
-이 문서를 기준으로 다음 작업은 `CORE_GAME_RULES.md`에 규칙을 정식 반영하고, 상세 기획서와 개발 명세서의 충돌 문장을 수정하는 것이다.
+기획서 v0.4와 개발 명세서 v0.3은 이 문서 v1.4에 맞춰져 있다.
 
 ---
 
@@ -1675,7 +1567,7 @@ MVP의 목적은 스토리 전체가 아니라 다음을 검증하는 것이다.
 
 ## v1.1 (2026-09-19) — 3차 검토 결정
 
-근거: `Dot.exe_기획서v0.2_3차검토.md`
+근거: `Game/Docs/history/2026-09-19_GAME_DESIGN_V0.2_REVIEW.md`
 
 | 절 | 바뀐 내용 |
 |---|---|
@@ -1693,11 +1585,29 @@ MVP의 목적은 스토리 전체가 아니라 다음을 검증하는 것이다.
 | 19.1 | Evidence는 체크포인트 로드 때만 되돌아감 |
 | 23 | 체크포인트는 별도 저장본. 엔딩 기록은 프로필 데이터 |
 | 27, 33, 35, 36 | 위 변경에 맞춰 HUD, 미루는 기능, 테스트 시나리오, 요약 갱신 |
-| 30.1 | 현지화 규칙 추가. 화면의 글은 `Locale/*.json`에서 키로 가져온다 |
+| 30.1 | 현지화 규칙 추가. 화면의 글은 `Game/Locale/*.json`에서 키로 가져온다 |
 
 ## v1.2 (2026-09-19) — 출시 플랫폼과 테스트 절차
 
 | 절 | 바뀐 내용 |
 |---|---|
-| 30 | 1차 플랫폼을 Windows 데스크톱에서 Google Play · App Store(유료 ₩1,500, Capacitor)로 변경. 가로 고정, 터치 입력, 기준 기기, 저장 위치 |
+| 30 | 1차 플랫폼을 Windows 데스크톱에서 Google Play · App Store(유료 ₩1,500, Capacitor)로 변경. 당시 화면 방향 규칙과 터치 입력, 기준 기기, 저장 위치를 추가했으며 화면 방향은 v1.3에서 세로로 최종 확정했다. |
 | 30.2 | 단계별 3차 테스트 절차(에이전트 배속 → 브라우저 배속 → 사람 체크리스트) 추가. 헤드리스 실행과 배속 설정 요구 |
+
+## v1.3 (2026-09-19) — 세로 화면과 도트·CRT 화면 규칙
+
+| 절 | 바뀐 내용 |
+|---|---|
+| 26.1 | “강한 CRT 왜곡을 상시 쓰지 않는다”를 뒤집었다. 굴절과 모니터 틀을 항상 적용한다. 저해상도 논리 화면, 4색 팔레트, 픽셀 폰트, 가장자리 들여 놓기, 터치 좌표의 굴절 보정을 규칙으로 추가 |
+| 26.4 | 타이틀과 부팅 흐름 추가 (`Game/Ref/타이틀 화면.txt`) |
+| 30 | 화면 방향을 세로 고정으로 최종 확정. v1.4에서 기준 디자인 1080×1920, 논리 화면 216×384와 적응형 shell 규칙으로 구체화 |
+
+
+## v1.4 (2026-09-19) — 프로젝트 구조·명칭·모바일 UX 정리
+
+- 작품명과 극중 시스템명을 Dot.exe로 통합.
+- .agents와 Game을 분리하고 current/history 문서 체계를 확정.
+- 1080×1920 기준, 216×384 논리 화면, ResponsiveShell 적응 규칙 확정.
+- Briefing → 제한시간 Preparing → Running 흐름으로 준비 긴장 설계.
+- P-01 프로토타입을 Chemotaxis OFF → 완료 보상 후 ON으로 본편과 일치.
+- Campaign 1슬롯 + Rolling Autosave 3세대 + Protocol Checkpoint + ProfileData 저장 UX 확정.

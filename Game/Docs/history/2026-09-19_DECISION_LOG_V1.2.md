@@ -1,10 +1,13 @@
-# Dot.exe CORE GAME RULES
+> **HISTORICAL RECORD — 구현 기준으로 사용하지 않음.**  
+> 이 문서는 당시 검토와 결정 과정을 보존한다. 현행 기준은 `Game/Docs/current/CORE_GAME_RULES.md`, `DEVELOPMENT_SPEC.md`, `GAME_DESIGN.md`다. 명칭과 화면 방향 표기는 현재 정책(Dot.exe 통합, 세로 고정)에 맞춰 정규화했다.
 
-> 문서 버전: 1.3 (2026-09-19)  
-> 이 문서가 게임 규칙의 **정식 원본**이다. 기획서와 명세서의 `결정 N절`, `정본 N절`은 이 문서의 N절을 가리킨다.  
-> 규칙을 바꿀 때는 이 문서를 먼저 고치고 문서 끝 `변경 기록`에 적은 뒤 기획서·명세서·코드를 맞춘다.  
-> 아직 플레이테스트를 거치지 않은 수치는 `초기 밸런스 값`이며 고정 규칙이 아니다. 실제 값은 `src/data/balance/`에 둔다.  
-> 출처: 세 차례 검토의 결정(`Docs/Dot.exe_두차례_검토_결정사항.md`, v1.2에서 동결).
+# Dot.exe 검토 문제 결정사항
+
+> **동결됨.** 규칙의 정식 원본은 프로젝트 루트의 `Game/Docs/current/CORE_GAME_RULES.md`로 옮겼다. 이 문서는 v1.2 시점의 결정 이력으로만 남기며 더 고치지 않는다. 규칙은 `Game/Docs/current/CORE_GAME_RULES.md`에서 고친다.  
+> 문서 버전: 1.2 (2026-09-19. 바뀐 곳은 문서 끝 `변경 기록` 참고. v1.0은 `_v0.1_원본/`에 보관)  
+> 작성 기준: `Dot.exe_기획·명세_검토보고서.md`, `Dot.exe_규칙수정안_재검토.md` 및 두 차례 검토 후 확정한 결정사항  
+> 목적: 기획서와 개발 명세서 사이에서 해석이 갈릴 수 있는 규칙을 하나의 결정 문서로 모은다.  
+> 주의: 이 문서는 **게임 규칙과 구현 기준을 확정하는 문서**다. 아직 플레이테스트를 거치지 않은 수치는 `초기 밸런스 값`으로만 취급하며 고정 규칙으로 간주하지 않는다.
 
 ---
 
@@ -12,7 +15,7 @@
 
 게임 규칙이 여러 문서에서 다르게 적혀 있을 경우 다음 순서로 해석한다.
 
-1. 이 문서(`CORE_GAME_RULES.md`)
+1. `CORE GAME RULES` 또는 본 결정 문서의 확정 규칙
 2. 개발 명세서
 3. 상세 기획서
 4. 밸런스 데이터
@@ -26,11 +29,11 @@
 # 2. 작품명과 극중 프로그램명
 
 - **작품명:** `Dot.exe`
-- **극중 프로그램명:** `CULTURE//SYS`
+- **극중 프로그램명:** `Dot.exe`
 
 두 이름을 혼용하지 않는다.
 
-`Dot.exe`는 게임 전체의 제목이고, `CULTURE//SYS`는 플레이어가 연구실 컴퓨터에서 실행하는 극중 배양 시스템 소프트웨어다.
+`Dot.exe`는 게임 전체의 제목이고, `Dot.exe`는 플레이어가 연구실 컴퓨터에서 실행하는 극중 배양 시스템 소프트웨어다.
 
 ---
 
@@ -85,7 +88,7 @@ Hard Limit 초과만 거부한다.
 
 ---
 
-# 4. 세포 에너지와 SYSTEM ENERGY
+# 4. 세포 에너지와 ENERGY
 
 기존의 “내부 저장 한도를 넘은 에너지만 연구 자원으로 회수”하는 방식은 사용하지 않는다.
 
@@ -108,7 +111,7 @@ Net Metabolic Output
  ┌────────────────────┐
  │                    │
  ▼                    ▼
-Cell Internal Energy  SYSTEM ENERGY
+Cell Internal Energy  ENERGY
 ```
 
 ## 4.2 별도 관리 값
@@ -126,21 +129,21 @@ System Harvest Ratio
 
 ## 4.3 생존 우선 규칙
 
-세포 내부 에너지가 `Survival Reserve`보다 낮으면 SYSTEM ENERGY 회수를 중단한다.
+세포 내부 에너지가 `Survival Reserve`보다 낮으면 ENERGY 회수를 중단한다.
 
 ```text
 Cell Energy < Survival Reserve
 → 순생산 100%를 세포 내부에 배정
 
 Cell Energy >= Survival Reserve
-→ 순생산 일부를 내부 저장, 일부를 SYSTEM ENERGY로 배정
+→ 순생산 일부를 내부 저장, 일부를 ENERGY로 배정
 ```
 
 ## 4.4 Energy Storage 연구
 
 `Energy Storage`는 `Maximum Storage`만 증가시킨다.
 
-SYSTEM ENERGY 회수 기준이나 회수 비율을 직접 올리지 않는다.
+ENERGY 회수 기준이나 회수 비율을 직접 올리지 않는다.
 
 ## 4.5 분열 에너지 보존
 
@@ -162,7 +165,7 @@ SYSTEM ENERGY 회수 기준이나 회수 비율을 직접 올리지 않는다.
 ## 4.6 경계 경우
 
 - 내부 에너지가 `Maximum Storage`에 찬 세포도 섭취와 대사를 계속한다.
-- 저장하지 못한 내부 몫은 버린다. SYSTEM ENERGY로 돌리지 않는다. (돌리면 “넘친 만큼 회수” 방식이 되살아나 Energy Storage 구매가 SYSTEM ENERGY 생산을 깎는다.)
+- 저장하지 못한 내부 몫은 버린다. ENERGY로 돌리지 않는다. (돌리면 “넘친 만큼 회수” 방식이 되살아나 Energy Storage 구매가 ENERGY 생산을 깎는다.)
 - 순생산이 음수면 내부 에너지에서 뺀다.
 - 특성 변경으로 `Maximum Storage`가 줄면 넘는 몫은 바로 사라진다.
 
@@ -338,7 +341,7 @@ LAST VIABLE SAMPLE...
 체크포인트를 불러오면 **전부** 그 시점으로 돌아간다.
 
 - 세포, 적, 환경 Field
-- SYSTEM ENERGY, DATA, NUTRIENT RESERVE
+- ENERGY, DATA, NUTRIENT RESERVE
 - 연구 해금, Trait Loadout
 - Protocol 상태, Cooldown, 일시 효과
 - 메일, Narrative Flag, Observation Record, 발견 기록, Emergence Evidence
@@ -407,7 +410,7 @@ Pause 시 멈추는 것:
 - 세포 시뮬레이션
 - 적 행동
 - Protocol Timer
-- SYSTEM ENERGY 생산
+- ENERGY 생산
 - NUTRIENT 보충
 - Cooldown
 - 환경 시간 변화
@@ -778,7 +781,7 @@ SIGNAL은 받을 세포가 없으므로(Signal Detection이 MVP 연구에 없다
 MVP에도 다음 세 자원을 포함한다.
 
 ```text
-SYSTEM ENERGY
+ENERGY
 DATA
 NUTRIENT RESERVE
 ```
@@ -1324,31 +1327,15 @@ Object Pool, Worker, 병렬 처리 등은 프로파일링 결과가 필요할 �
 
 ## 26.1 메인 플레이 화면
 
-게임 전체가 낡은 CRT 모니터 안에서 돌아가는 것처럼 보인다. 기준은 `Ref/Ref 01.jpg`다.
+강한 CRT 왜곡을 상시 사용하지 않는다.
 
-- 화면의 가운데는 평면이고 끝쪽에서만 약하게 굴절된다. 둘레에 레트로 모니터의 틀이 있다. 타이틀부터 엔딩까지 항상 적용한다.
-- 분위기는 어둡고 조금 무섭다. 색감의 기준은 `Ref/색감 예시.png`다: 검정에 가까운 바탕, 가라앉은 선, 네온 에메랄드 글자, 어둠에 잠기는 가장자리. 똑같이 만들 필요는 없다.
-- UI는 면을 채운 밝은 패널 대신 가는 테두리와 글자로 만든다. 밝은 색은 강조할 것과 세포에만 쓴다.
-- 주사선, 픽셀 격자, 약한 번짐, 가장자리 어두움을 함께 쓴다.
-- 모든 화면은 저해상도 논리 화면(가로 216픽셀)에 그린 뒤 정수 도트로 키운다. 부드러운 확대, 안티앨리어싱, 그러데이션을 쓰지 않는다.
-- 색은 4색 녹색 팔레트뿐이다. 중간색은 가장 가까운 팔레트 색으로 맞춘다. 음영은 색을 늘리지 않고 체크무늬 같은 도트 패턴으로 낸다.
-- 글자는 픽셀 폰트(Galmuri11, OFL 1.1)를 제 크기 그대로 쓴다. 큰 글자는 도트를 정수배로 키워 만든다.
-- 도트 밀도는 `Ref/Game vibe ref.jpg`를 따른다. `Ref/UI Ref.jpg`는 아이콘과 부품의 도트 표현만 참고한다.
+권장:
 
-굴절 때문에 화면 가장자리와 모서리가 가려진다. UI는 가장자리에서 안쪽으로 들여 놓고, 터치 좌표는 굴절과 같은 식을 거쳐 논리 좌표로 바꾼다. 눈에 보이는 위치와 눌리는 위치가 어긋나면 안 된다.
+- 약한 scanline
+- 미세한 phosphor glow
+- 낮은 noise
 
-효과의 세기는 설정에서 줄일 수 있어야 하고, 줄여도 26.2의 상태 구분이 유지돼야 한다. 굴절과 틀은 남긴다.
-
-글리치와 강한 왜곡은 후반 서사 이벤트에 제한한다.
-
-## 26.4 타이틀과 부팅
-
-`Ref/타이틀 화면.txt`를 따른다.
-
-1. `Ref 01` 스타일의 큰 도트 제목이 `D` → `o` → `t` → `.exe` 순서로 나타난다.
-2. 제목 아래에 `TOUCH TO START`가 깜빡인다. 연출 중에 누르면 연출을 끝까지 넘긴다.
-3. 누르면 `Ref 02` 스타일의 레트로 로딩 화면이 나온다. 문구는 `Dot.exe booting...`이다.
-4. 로딩 연출이 끝나면 게임이 시작된다.
+강한 곡률, 글리치, 왜곡은 부팅·후반 서사 이벤트에 제한한다.
 
 ## 26.2 상태 구분
 
@@ -1389,7 +1376,7 @@ Object Pool, Worker, 병렬 처리 등은 프로파일링 결과가 필요할 �
 
 ```text
 CELLS
-SYSTEM ENERGY
+ENERGY
 ENERGY OUTPUT
 NUTRIENT RESERVE
 CULTURE NUTRIENT
@@ -1450,7 +1437,7 @@ Ending
 
 게임 로직은 TypeScript로 작성하고 Canvas/WebGL 계열로 그린다. 개발 중에는 데스크톱 브라우저에서 실행하고, 출시할 때 Capacitor로 Android와 iOS 앱으로 감싼다. 빌드 도구는 Vite, 테스트는 Vitest다.
 
-- 화면은 세로 고정이다. 논리 화면의 가로는 216픽셀로 고정하고 세로는 기기 비율에 맞춘다. 넓은 창에서는 9:16 비율로 가운데에 놓는다.
+- 화면은 세로 고정이다.
 - 기본 입력은 터치다. 개발과 테스트를 위해 마우스 입력도 같은 경로로 받는다.
 - hover에 기대는 UI를 만들지 않는다.
 - F1~F5 표기는 연출로만 남긴다. 화면은 탭 버튼으로 연다. 키보드가 있으면 숫자키를 보조 단축키로 쓴다.
@@ -1462,11 +1449,11 @@ Ending
 
 ## 30.2 단계별 테스트 절차
 
-개발은 `Docs/Dot.exe_개발_파이프라인.html`의 단계를 하나씩 밟는다. 한 단계가 끝나면 다음 세 차례 테스트를 순서대로 거치고, 사람이 승인해야 다음 단계로 간다.
+개발은 `Game/Docs/current/DEVELOPMENT_PIPELINE.html`의 단계를 하나씩 밟는다. 한 단계가 끝나면 다음 세 차례 테스트를 순서대로 거치고, 사람이 승인해야 다음 단계로 간다.
 
 1. **에이전트 배속 테스트**: 자동 테스트 전체와, 시뮬레이션을 화면 없이 빠르게 돌려 규칙을 확인하는 헤드리스 시나리오.
 2. **브라우저 배속 테스트**: 메인 에이전트가 Chrome에 실제 화면을 띄워 배속으로 돌려 보고 화면, 콘솔 오류, 조작을 확인한다.
-3. **사람 테스트**: 단계마다 `Docs/테스트/`에 체크리스트를 만들어 공유하고, 사람이 직접 해 보고 판정한다. 재미와 느낌에 대한 관문은 사람만 판정한다.
+3. **사람 테스트**: 단계마다 `Game/Docs/tests/`에 체크리스트를 만들어 공유하고, 사람이 직접 해 보고 판정한다. 재미와 느낌에 대한 관문은 사람만 판정한다.
 
 이를 위해 시뮬레이션은 화면 없이 돌릴 수 있어야 하고, 개발 빌드에는 배속 설정이 있어야 한다. 배속은 tick을 더 자주 돌리는 것이며 tick 하나의 계산은 바꾸지 않는다.
 
@@ -1515,8 +1502,8 @@ Ending
 
 ```text
 AGENTS.md
-ARCHITECTURE.md
-CORE_GAME_RULES.md
+Game/Docs/current/ARCHITECTURE.md
+Game/Docs/current/CORE_GAME_RULES.md
 ```
 
 권장 역할:
@@ -1524,10 +1511,10 @@ CORE_GAME_RULES.md
 ### AGENTS.md
 AI 작업 규칙
 
-### ARCHITECTURE.md
+### Game/Docs/current/ARCHITECTURE.md
 시스템 책임, 의존 방향, 이벤트, 저장 구조
 
-### CORE_GAME_RULES.md
+### Game/Docs/current/CORE_GAME_RULES.md
 본 문서에서 확정한 게임 규칙의 정식 원본
 
 ---
@@ -1576,7 +1563,7 @@ MVP의 목적은 스토리 전체가 아니라 다음을 검증하는 것이다.
 - Observation 2Hz
 - Final Protocol 90/60/90초
 - Population Retention 비율
-- SYSTEM ENERGY harvest ratio
+- ENERGY harvest ratio
 - Division cooldown
 - Division duration
 - Cell cap
@@ -1593,9 +1580,9 @@ MVP의 목적은 스토리 전체가 아니라 다음을 검증하는 것이다.
 ## 에너지
 
 - 최초 세포가 지속 분열해도 첫 유료 연구에 도달할 수 있다.
-- Energy Storage 구매가 SYSTEM ENERGY 생산을 부자연스럽게 막지 않는다.
+- Energy Storage 구매가 ENERGY 생산을 부자연스럽게 막지 않는다.
 - 굶주리는 세포가 연구 자원을 계속 생산하지 않는다.
-- 저장량이 가득 찬 세포의 넘친 몫이 SYSTEM ENERGY로 들어가지 않는다.
+- 저장량이 가득 찬 세포의 넘친 몫이 ENERGY로 들어가지 않는다.
 - 내부 에너지가 0인 세포는 Health가 줄고, 에너지를 되찾으면 회복한다.
 
 ## Protocol
@@ -1683,7 +1670,7 @@ MVP의 목적은 스토리 전체가 아니라 다음을 검증하는 것이다.
 
 ---
 
-기획서 v0.3과 개발 명세서 v0.2는 이 문서에 맞춰져 있다.
+이 문서를 기준으로 다음 작업은 `Game/Docs/current/CORE_GAME_RULES.md`에 규칙을 정식 반영하고, 상세 기획서와 개발 명세서의 충돌 문장을 수정하는 것이다.
 
 ---
 
@@ -1715,13 +1702,5 @@ MVP의 목적은 스토리 전체가 아니라 다음을 검증하는 것이다.
 
 | 절 | 바뀐 내용 |
 |---|---|
-| 30 | 1차 플랫폼을 Windows 데스크톱에서 Google Play · App Store(유료 ₩1,500, Capacitor)로 변경. 가로 고정, 터치 입력, 기준 기기, 저장 위치 |
+| 30 | 1차 플랫폼을 Windows 데스크톱에서 Google Play · App Store(유료 ₩1,500, Capacitor)로 변경. 세로 고정, 터치 입력, 기준 기기, 저장 위치 |
 | 30.2 | 단계별 3차 테스트 절차(에이전트 배속 → 브라우저 배속 → 사람 체크리스트) 추가. 헤드리스 실행과 배속 설정 요구 |
-
-## v1.3 (2026-09-19) — 세로 화면과 도트·CRT 화면 규칙
-
-| 절 | 바뀐 내용 |
-|---|---|
-| 26.1 | “강한 CRT 왜곡을 상시 쓰지 않는다”를 뒤집었다. 굴절과 모니터 틀을 항상 적용한다. 저해상도 논리 화면, 4색 팔레트, 픽셀 폰트, 가장자리 들여 놓기, 터치 좌표의 굴절 보정을 규칙으로 추가 |
-| 26.4 | 타이틀과 부팅 흐름 추가 (`Ref/타이틀 화면.txt`) |
-| 30 | 가로 고정을 세로 고정으로 변경. 논리 화면 가로 216픽셀 |

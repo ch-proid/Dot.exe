@@ -338,7 +338,7 @@ MVP 이후 처음 넣을 때 TEMP, PH, OXYGEN은 배양 공간 전체에 하나�
 
 # 9. 자원
 
-## 9.1 SYSTEM ENERGY
+## 9.1 ENERGY
 
 기본 성장 자원. 세포 각자가 가진 내부 에너지와는 다른 값이다.
 
@@ -356,14 +356,14 @@ MVP 이후 처음 넣을 때 TEMP, PH, OXYGEN은 배양 공간 전체에 하나�
 표시 예:
 
 ```text
-SYSTEM ENERGY
+ENERGY
 001824
 +12.4 / SEC
 ```
 
 ### 세포 내부 에너지와의 관계
 
-세포는 영양을 먹어 에너지를 만들고, 거기서 유지·이동·활성 행동 비용을 뺀 순생산을 내부 저장과 SYSTEM ENERGY로 나눈다.
+세포는 영양을 먹어 에너지를 만들고, 거기서 유지·이동·활성 행동 비용을 뺀 순생산을 내부 저장과 ENERGY로 나눈다.
 
 ```text
 NUTRIENT
@@ -374,13 +374,13 @@ NUTRIENT
    ↓
 순생산
    ↓
-세포 내부 에너지  /  SYSTEM ENERGY
+세포 내부 에너지  /  ENERGY
 ```
 
 - 내부 에너지가 생존 보유량보다 낮은 세포는 순생산을 전부 자기 몸에 쓴다. 굶주리는 세포는 연구 자원을 만들지 않는다.
-- 생존 보유량을 넘긴 세포는 순생산의 일부를 SYSTEM ENERGY로 보낸다.
+- 생존 보유량을 넘긴 세포는 순생산의 일부를 ENERGY로 보낸다.
 - 생존 보유량, 분열 요구량, 최대 저장량, 회수 비율은 서로 다른 값이다.
-- 저장량이 가득 찬 세포도 계속 먹고 대사한다. 저장하지 못한 내부 몫은 버리며 SYSTEM ENERGY로 돌리지 않는다.
+- 저장량이 가득 찬 세포도 계속 먹고 대사한다. 저장하지 못한 내부 몫은 버리며 ENERGY로 돌리지 않는다.
 - 순생산이 음수면 내부 에너지에서 뺀다.
 
 “내부 저장 한도를 넘친 에너지만 회수”하는 방식은 쓰지 않는다. 분열이 에너지를 계속 소모해 연구 자원이 나오지 않는 상황을 피하기 위해서다. (결정 4절)
@@ -397,7 +397,7 @@ NUTRIENT
 - 특이 개체 분석
 - 조건부 연구 목표 달성
 
-고급 연구는 SYSTEM ENERGY와 DATA를 함께 요구한다.
+고급 연구는 ENERGY와 DATA를 함께 요구한다.
 
 발견은 종류별로 한 번만 기록하고, 기록하는 순간 DATA를 지급한다. 미확정 DATA는 두지 않는다. 실험에 실패해 체크포인트를 불러오면 발견 기록과 DATA가 함께 되돌아가므로, 다시 하면서 다시 발견하고 다시 받는다. (결정 8절)
 
@@ -763,7 +763,7 @@ MVP에서는 약한 독성도 함께 만든다. Hazard Avoidance가 실제로 �
 | Enhanced Glycolysis | 에너지 생산 증가 | 영양 소비 증가 |
 | Efficient Respiration | 같은 영양으로 더 많은 에너지 생산 | 저산소에 취약 |
 | Anaerobic Metabolism | 산소 부족에서도 에너지 생산 | 생산 효율 낮음 |
-| Energy Storage | 내부 에너지 최대 저장량 증가 (SYSTEM ENERGY 회수 기준·비율은 건드리지 않음) | 발현 부하 (MVP에서는 다른 대가 없음) |
+| Energy Storage | 내부 에너지 최대 저장량 증가 (ENERGY 회수 기준·비율은 건드리지 않음) | 발현 부하 (MVP에서는 다른 대가 없음) |
 | Reserve Conversion | 굶주릴 때 저장 에너지 사용 | 평상시 효율 감소 |
 | Metabolic Burst | 위험 시 일시 생산 증가 | 스트레스 급증 |
 | Waste Recycling | 폐기물 일부 재활용 | 유지 비용 발생 |
@@ -1463,7 +1463,7 @@ CULTURE A-01
 └─────────────────────────────┘
 
 CELLS        0384
-SYS ENERGY   4821
+ENERGY   4821
 OUTPUT       +18.4/s
 RESERVE      62%
 CULTURE NUT  LOW
@@ -1482,7 +1482,7 @@ NEXT TEST    02:42
 메인 HUD에 `STABILITY %`를 두지 않는다. 왜 84%인지 설명하기 어려운 복합 점수는 기본 정보로 쓰지 않고 실제 상태를 보여준다.
 
 - CELLS
-- SYSTEM ENERGY
+- ENERGY
 - ENERGY OUTPUT
 - NUTRIENT RESERVE (FEED에 쓰는 비축량)
 - CULTURE NUTRIENT (배양액의 영양 상태)
@@ -1664,7 +1664,7 @@ EXPERIMENT MODE
 
 대응:
 
-- SYSTEM ENERGY는 성장 자원
+- ENERGY는 성장 자원
 - DATA는 실험과 발견 자원
 
 고급 연구는 둘 다 필요하다.
@@ -1780,7 +1780,7 @@ UNKNOWN의 명확한 메시지는 후반부에만 등장시킨다.
 - 세포 최대 300
 - 공간 필드: Nutrient, Toxin, Signal (Signal은 Alarm Signal 전용)
 - 플레이어 조작: FEED, PURGE
-- 자원 세 가지: SYSTEM ENERGY, DATA(자동 분석만), NUTRIENT RESERVE
+- 자원 세 가지: ENERGY, DATA(자동 분석만), NUTRIENT RESERVE
 - 연구 10개 (18.7)
 - 전역 Trait Loadout과 발현 부하
 - Rapid Bacteria

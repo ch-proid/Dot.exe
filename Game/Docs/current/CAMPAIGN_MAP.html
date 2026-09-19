@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dot.exe Campaign Map — Recommended v0.1</title>
+<style>
+:root{
+  --bg:#050b08;
+  --panel:#09120d;
+  --panel2:#0d1711;
+  --line:#284434;
+  --line2:#426c52;
+  --text:#d9eadf;
+  --muted:#7f9989;
+  --green:#9ee8b4;
+  --white:#eff8f1;
+  --warn:#d7d49a;
+  --danger:#d09a9a;
+  --phase1:#5f876d;
+  --phase2:#6f8e72;
+  --phase3:#7f9070;
+  --phase4:#8d816c;
+  --phase5:#8d706d;
+  --final:#9a8c74;
+  --shadow:0 12px 44px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  color:var(--text);
+  background:
+    linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px) 0 0/100% 4px,
+    radial-gradient(circle at 50% -10%,#10251a 0,#07100b 35%,var(--bg) 70%);
+  font-family:"Galmuri11","Galmuri",ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  line-height:1.55;
+}
+body:before{
+  content:"";
+  position:fixed;inset:0;pointer-events:none;
+  box-shadow:inset 0 0 120px rgba(0,0,0,.8);
+  z-index:50;
+}
+a{color:inherit}
+.wrap{max-width:1700px;margin:0 auto;padding:26px 24px 80px}
+.top{
+  display:grid;grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr);
+  gap:18px;align-items:stretch;margin-bottom:18px;
+}
+.panel{
+  border:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(13,23,17,.94),rgba(7,14,10,.94));
+  box-shadow:var(--shadow);
+}
+.hero{padding:30px}
+.eyebrow{color:var(--green);font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+h1{font-size:clamp(30px,5vw,64px);margin:6px 0 8px;line-height:1}
+.subtitle{font-size:15px;color:var(--muted);max-width:900px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.badge{border:1px solid var(--line2);padding:5px 9px;font-size:12px;background:#08120c;color:#bad4c2}
+.badge strong{color:var(--white)}
+.summary{padding:22px;display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stat{border:1px solid var(--line);padding:14px;background:#07100b}
+.stat b{display:block;font-size:28px;color:var(--white);line-height:1}
+.stat span{font-size:11px;color:var(--muted)}
+.notice{margin-top:10px;font-size:11px;color:var(--warn);grid-column:1/-1}
+
+.sticky{
+  position:sticky;top:0;z-index:30;
+  border:1px solid var(--line);background:rgba(4,10,7,.94);
+  backdrop-filter:blur(8px);padding:10px;margin:18px 0;
+  display:flex;gap:8px;flex-wrap:wrap;align-items:center;
+}
+.sticky button,.sticky input{
+  border:1px solid var(--line);background:#08120c;color:var(--text);
+  font:inherit;font-size:12px;padding:8px 10px;
+}
+.sticky button{cursor:pointer}
+.sticky button.active,.sticky button:hover{border-color:var(--green);color:var(--green)}
+.sticky input{margin-left:auto;min-width:250px;outline:none}
+.sticky input:focus{border-color:var(--green)}
+
+.emotion{padding:22px;margin-bottom:18px}
+.emotion h2,.section-title{font-size:16px;margin:0 0 14px;color:var(--white);letter-spacing:.04em}
+.arc{display:grid;grid-template-columns:repeat(6,1fr);gap:2px}
+.arc-step{min-height:110px;border-top:3px solid var(--line2);padding:12px 10px;background:#07100b}
+.arc-step b{display:block;font-size:12px;color:var(--white)}
+.arc-step span{font-size:11px;color:var(--muted)}
+.arc-step .q{margin-top:8px;color:var(--green)}
+
+.phase-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:18px 0}
+.phase-head{border:1px solid var(--line);padding:12px;background:#07100b}
+.phase-head .n{font-size:11px;color:var(--muted)}
+.phase-head strong{display:block;color:var(--white);font-size:14px;margin:2px 0}
+.phase-head small{color:var(--muted)}
+.phase-head[data-phase="1"]{border-top:3px solid var(--phase1)}
+.phase-head[data-phase="2"]{border-top:3px solid var(--phase2)}
+.phase-head[data-phase="3"]{border-top:3px solid var(--phase3)}
+.phase-head[data-phase="4"]{border-top:3px solid var(--phase4)}
+.phase-head[data-phase="5"]{border-top:3px solid var(--phase5)}
+.phase-head[data-phase="6"]{border-top:3px solid var(--final)}
+
+.table-panel{overflow:hidden}
+.table-head{display:flex;justify-content:space-between;gap:14px;align-items:end;padding:18px 18px 12px}
+.table-head p{margin:0;color:var(--muted);font-size:11px}
+.table-wrap{overflow:auto;max-height:68vh}
+table{border-collapse:separate;border-spacing:0;width:100%;min-width:1500px;font-size:12px}
+th,td{border-right:1px solid #1d3226;border-bottom:1px solid #1d3226;padding:11px;vertical-align:top}
+th{
+  position:sticky;top:0;z-index:8;background:#0d1811;color:#9fb9a7;
+  text-align:left;font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+}
+td:first-child,th:first-child{position:sticky;left:0;z-index:7;background:#0a140e}
+th:first-child{z-index:9}
+tr:hover td{background:#0b1710}
+tr:hover td:first-child{background:#0c1811}
+.proto{font-weight:800;color:var(--white);font-size:14px;white-space:nowrap}
+.phase-tag{display:inline-block;margin-top:5px;padding:2px 5px;border:1px solid var(--line);font-size:9px;color:var(--muted)}
+.title{color:var(--green);font-weight:800;white-space:nowrap}
+.kick{color:var(--white)}
+.muted{color:var(--muted)}
+.mail{color:#c6d9ca}
+.evidence{display:inline-block;border:1px solid var(--line2);padding:2px 5px;margin:2px 2px 2px 0;font-size:9px;color:#b7d4bf}
+.turn{color:var(--warn)}
+.horror{color:#d7b1a6}
+
+.details{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.detail-panel{padding:20px}
+.detail-panel h3{font-size:14px;margin:0 0 10px;color:var(--white)}
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.flow div{border:1px solid var(--line);padding:10px;min-height:90px;background:#07100b;font-size:11px}
+.flow b{display:block;color:var(--green);margin-bottom:4px}
+.rules{margin:0;padding-left:18px;color:#adc0b2;font-size:12px}
+.rules li{margin:7px 0}
+
+.mailplan{margin-top:18px;padding:20px}
+.mailbars{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mailbar{border:1px solid var(--line);padding:12px;background:#07100b}
+.mailbar b{display:block;color:var(--white)}
+.mailbar strong{font-size:25px;color:var(--green)}
+.mailbar span{display:block;font-size:10px;color:var(--muted)}
+
+.footer{margin-top:18px;padding:18px;color:var(--muted);font-size:11px}
+.hidden{display:none!important}
+
+@media(max-width:1000px){
+  .top,.details{grid-template-columns:1fr}
+  .phase-grid,.arc{grid-template-columns:repeat(3,1fr)}
+  .sticky input{width:100%;margin-left:0}
+  .flow{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+  .wrap{padding:12px 10px 50px}
+  .hero{padding:20px}
+  .summary{grid-template-columns:1fr 1fr}
+  .phase-grid,.arc,.mailbars{grid-template-columns:1fr 1fr}
+}
+@media print{
+  body{background:#fff;color:#111}
+  body:before,.sticky{display:none}
+  .panel,.phase-head,.arc-step,.stat,.mailbar,.flow div{box-shadow:none;background:#fff;color:#111;border-color:#999}
+  .wrap{max-width:none;padding:0}
+  .table-wrap{max-height:none;overflow:visible}
+  th{position:static;background:#eee;color:#111}
+  td:first-child,th:first-child{position:static;background:#fff}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="top">
+    <div class="panel hero">
+      <div class="eyebrow">DOT.EXE / CAMPAIGN ARCHITECTURE</div>
+      <h1>CAMPAIGN MAP</h1>
+      <div class="subtitle">
+        5막 + Final, 총 16개 Protocol 권장안. 플레이어가 “세포 배양”을 믿도록 시작해,
+        행동 증거를 통해 스스로 의심하고, 끝에는 세계의 규칙과 관찰자의 위치를 되묻게 하는 구조.
+      </div>
+      <div class="badges">
+        <span class="badge"><strong>핵심 구조</strong> 게임플레이 → 실제 행동 → Observation → Mail</span>
+        <span class="badge"><strong>서사 방식</strong> 선형 캠페인 / 비선형 연구 경로</span>
+        <span class="badge"><strong>목표 플레이타임</strong> 5–7h</span>
+        <span class="badge"><strong>상태</strong> 권장안 v0.1 · 검토용</span>
+      </div>
+    </div>
+    <div class="panel summary">
+      <div class="stat"><b>16</b><span>PROTOCOLS</span></div>
+      <div class="stat"><b>5+1</b><span>PHASES + FINAL</span></div>
+      <div class="stat"><b>~30</b><span>STORY MAILS</span></div>
+      <div class="stat"><b>4</b><span>EVIDENCE CLASSES</span></div>
+      <div class="notice">※ P-01~P-03은 기존 설계를 유지. P-04 이후는 이번 캠페인 권장안이며 승인 전까지 확정 규칙으로 취급하지 않는다.</div>
+    </div>
+  </section>
+
+  <section class="panel emotion">
+    <h2>PLAYER EMOTION ARC</h2>
+    <div class="arc">
+      <div class="arc-step"><b>I · CULTURE</b><span>성장 만족 / 통제감</span><div class="q">“내가 세포를 키운다.”</div></div>
+      <div class="arc-step"><b>II · ADAPTATION</b><span>놀라움 / 애착</span><div class="q">“생각보다 잘 적응한다.”</div></div>
+      <div class="arc-step"><b>III · PATTERN</b><span>호기심 / 불편함</span><div class="q">“이건 조금 이상하다.”</div></div>
+      <div class="arc-step"><b>IV · CONTACT</b><span>의심 / 공포</span><div class="q">“저쪽에서 나를 본다.”</div></div>
+      <div class="arc-step"><b>V · REALIZATION</b><span>경외 / 관계 역전</span><div class="q">“자기 세계를 알아냈다.”</div></div>
+      <div class="arc-step"><b>FINAL</b><span>무력감 / 철학적 여운</span><div class="q">“그렇다면 내 세계는?”</div></div>
+    </div>
+  </section>
+
+  <nav class="sticky" aria-label="campaign filters">
+    <button class="active" data-filter="all">ALL</button>
+    <button data-filter="1">I CULTURE</button>
+    <button data-filter="2">II ADAPTATION</button>
+    <button data-filter="3">III PATTERN</button>
+    <button data-filter="4">IV CONTACT</button>
+    <button data-filter="5">V REALIZATION</button>
+    <button data-filter="6">FINAL</button>
+    <input id="search" type="search" placeholder="프로토콜 / 행동 / 메일 / 키워드 검색">
+  </nav>
+
+  <section class="phase-grid">
+    <div class="phase-head" data-phase="1"><span class="n">P-01 → P-03</span><strong>I. CULTURE</strong><small>정상적인 배양 게임을 믿게 만든다.</small></div>
+    <div class="phase-head" data-phase="2"><span class="n">P-04 → P-06</span><strong>II. ADAPTATION</strong><small>적응은 놀랍지만 아직 생물학으로 설명된다.</small></div>
+    <div class="phase-head" data-phase="3"><span class="n">P-07 → P-10</span><strong>III. PATTERN</strong><small>반복 구조·기억·정보망이 우연을 넘기 시작한다.</small></div>
+    <div class="phase-head" data-phase="4"><span class="n">P-11 → P-13</span><strong>IV. CONTACT</strong><small>예측과 자율 신호 뒤에 첫 언어가 나타난다.</small></div>
+    <div class="phase-head" data-phase="5"><span class="n">P-14 → P-15</span><strong>V. REALIZATION</strong><small>세포가 경계와 세계의 규칙을 인식한다.</small></div>
+    <div class="phase-head" data-phase="6"><span class="n">P-16</span><strong>FINAL</strong><small>플레이어의 개입을 없애고 관계를 뒤집는다.</small></div>
+  </section>
+
+  <section class="panel table-panel">
+    <div class="table-head">
+      <div>
+        <h2 class="section-title">PROTOCOL MASTER TABLE</h2>
+        <p>행 하나가 게임플레이·행동 증거·메일·감정 목표까지 연결된다. 가로 스크롤 가능.</p>
+      </div>
+      <p>클릭 필터 + 검색 지원</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Protocol</th>
+            <th>실험 / 중심 경험</th>
+            <th>새 위협·시스템</th>
+            <th>플레이어가 하는 일</th>
+            <th>실제 세포 행동 / Observation</th>
+            <th>Evidence</th>
+            <th>Mail / Story Beat</th>
+            <th>해금·보상</th>
+            <th>목표 감정 / 의미 전환</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-phase="1">
+            <td><div class="proto">P-01</div><span class="phase-tag">CULTURE</span></td>
+            <td><div class="title">CULTURE EXPANSION</div><div class="kick">성장과 분열의 첫 쾌감</div></td>
+            <td>기본 Nutrient / Random Motion<br><span class="muted">Chemotaxis OFF로 시작</span></td>
+            <td>가까운 위치에 FEED. 세포가 먹고 분열하도록 관찰.</td>
+            <td>완료 후 Chemotaxis 활성. 먼 FEED에도 군집 흐름이 바뀜.</td>
+            <td><span class="muted">없음</span></td>
+            <td class="mail">Miller: 배양 유지 지시.<br>모든 문맥은 정상 연구.</td>
+            <td>CHEMOTAXIS 자동 연구·즉시 활성</td>
+            <td><b>“내가 키운다.”</b><br><span class="muted">자율성의 가장 작은 씨앗.</span></td>
+          </tr>
+
+          <tr data-phase="1">
+            <td><div class="proto">P-02</div><span class="phase-tag">CULTURE</span></td>
+            <td><div class="title">RAPID BACTERIA</div><div class="kick">첫 방어와 긴장</div></td>
+            <td>Rapid Bacteria / 약한 Toxin</td>
+            <td>PURGE와 방어 연구를 조합해 전멸을 피함.</td>
+            <td>Alarm Signal / Phagocytosis 조합에 따라 군집 대응 양상이 달라짐.</td>
+            <td><span class="muted">아직 서사 Evidence로 승격하지 않음</span></td>
+            <td class="mail">Miller: 균주 노출 결과 요청.<br>Park: 데이터 분석 담당으로 짧게 등장 가능.</td>
+            <td>방어 계열 연구 접근 확대</td>
+            <td><b>“대응 방법이 여러 개다.”</b><br>연구가 행동을 바꾼다는 신뢰 형성.</td>
+          </tr>
+
+          <tr data-phase="1">
+            <td><div class="proto">P-03</div><span class="phase-tag">CULTURE</span></td>
+            <td><div class="title">LIMITED NUTRIENT</div><div class="kick">증식의 대가</div></td>
+            <td>제한 Nutrient Reserve / 세균 자원 경쟁</td>
+            <td>먹이 배치와 개체 수를 조절. 무조건 증식하는 전략을 버림.</td>
+            <td>세포와 세균이 같은 영양을 추적하며 실제 경쟁 구조 형성.</td>
+            <td><span class="muted">없음</span></td>
+            <td class="mail">시스템: 자원 소비 보고.<br>Miller: 생존성과 효율 동시 요구.</td>
+            <td>MVP 종료 지점 / 다음 환경 실험 예고</td>
+            <td><b>“많다고 항상 좋은 게 아니다.”</b></td>
+          </tr>
+
+          <tr data-phase="2">
+            <td><div class="proto">P-04</div><span class="phase-tag">ADAPTATION</span></td>
+            <td><div class="title">TOXIC EXPOSURE</div><div class="kick">환경 자체가 적이 된다</div></td>
+            <td>Toxin Test / 지역 독성장</td>
+            <td>Hazard Avoidance, 저항, 먹이 위치를 조합.</td>
+            <td>독성 gradient를 읽고 위험 지역을 회피.</td>
+            <td><span class="muted">후속 Evidence의 기준 데이터</span></td>
+            <td class="mail">Park: 회피 궤적이 연구값과 일치한다고 보고.<br>아직 이상 없음.</td>
+            <td>Toxin Resistance 계열</td>
+            <td><b>“연구한 대로 진화했다.”</b></td>
+          </tr>
+
+          <tr data-phase="2">
+            <td><div class="proto">P-05</div><span class="phase-tag">ADAPTATION</span></td>
+            <td><div class="title">PARASITIC EXPOSURE</div><div class="kick">첫 ‘기억’ 후보</div></td>
+            <td>Parasite / Infection</td>
+            <td>감염 탐지·격리·자가사멸 등 다양한 경로 선택.</td>
+            <td>동일 계열 위협 재노출 시 이전 노출과 다른 반응이 실제 발생.</td>
+            <td><span class="evidence">MEMORY 후보</span></td>
+            <td class="mail">Park: “두 번째 반응이 첫 번째와 다릅니다.”<br>Miller: 적응 범위 내로 해석.</td>
+            <td>Infection 계열 / 적응 연구</td>
+            <td><b>“얘들이 배운 건가?”</b><br><span class="muted">아직 생물학으로 설명 가능.</span></td>
+          </tr>
+
+          <tr data-phase="2">
+            <td><div class="proto">P-06</div><span class="phase-tag">ADAPTATION</span></td>
+            <td><div class="title">HYPOXIA</div><div class="kick">빌드가 생존 철학이 된다</div></td>
+            <td>Global Oxygen / 저산소</td>
+            <td>고대사·저대사·저장·무산소 전략 중 선택.</td>
+            <td>활성 Trait에 따라 같은 위기에서 완전히 다른 생존 행동.</td>
+            <td><span class="muted">경로 다양성 확인</span></td>
+            <td class="mail">System: 산소/대사 로그.<br>Park: 특정 집단의 행동 지속성 기록.</td>
+            <td>Anaerobic / Reserve 계열</td>
+            <td><b>“내 선택이 이 생명체의 성질을 만들었다.”</b></td>
+          </tr>
+
+          <tr data-phase="3">
+            <td><div class="proto">P-07</div><span class="phase-tag">PATTERN</span></td>
+            <td><div class="title">MOTILE COMPETITION</div><div class="kick">세포끼리 정보가 흐르기 시작</div></td>
+            <td>Motile Bacteria / 자원 추적 경쟁</td>
+            <td>감지 거리·이동·영양 신호를 조합해 경쟁.</td>
+            <td>여러 세포가 동일 자원/위협에 집단적으로 방향을 맞추는 행동.</td>
+            <td><span class="evidence">COORDINATION 후보</span></td>
+            <td class="mail">Park: 개별 회피가 아니라 집단 방향성처럼 보인다고 언급.</td>
+            <td>Long-Range Sensing / Nutrient Signal</td>
+            <td><b>“개체가 아니라 군집이 움직인다.”</b></td>
+          </tr>
+
+          <tr data-phase="3">
+            <td><div class="proto">P-08</div><span class="phase-tag">PATTERN</span></td>
+            <td><div class="title">COLONY STABILITY</div><div class="kick">첫 명백한 패턴</div></td>
+            <td>정식 Cluster / 환경 변동</td>
+            <td>Adhesion·밀도·자원 공유 계열로 군집 유지.</td>
+            <td>입력 조건이 달라도 유사한 군집 구조가 반복 생성됨.</td>
+            <td><span class="evidence">COORDINATION</span></td>
+            <td class="mail"><span class="turn">Analysis: 반복 구조 감지 / 우연 일치 가능성 낮음.</span><br>Park: 원인 재검증 요청.<br>Miller: 과해석 중단.</td>
+            <td>Colony 심화 연구</td>
+            <td><b class="turn">“이건 조금 이상하다.”</b></td>
+          </tr>
+
+          <tr data-phase="3">
+            <td><div class="proto">P-09</div><span class="phase-tag">PATTERN</span></td>
+            <td><div class="title">SIGNAL PROPAGATION</div><div class="kick">보이지 않는 정보망</div></td>
+            <td>Signal Relay / Persistent Signal</td>
+            <td>직접 명령보다 세포 간 전달 구조를 연구하고 관찰.</td>
+            <td>한 구역에서 시작된 정보가 군집 전체 행동 변화로 확산.</td>
+            <td><span class="evidence">COORDINATION</span></td>
+            <td class="mail">System 내부 로그 일부에 <span class="turn">COMPUTE BUDGET</span> 표현이 처음 섞임.<br>설명 없음.</td>
+            <td>Signal Relay / Persistent Signal</td>
+            <td><b>“내가 모르는 대화가 내부에서 일어난다.”</b></td>
+          </tr>
+
+          <tr data-phase="3">
+            <td><div class="proto">P-10</div><span class="phase-tag">PATTERN</span></td>
+            <td><div class="title">REPEATED DISTURBANCE</div><div class="kick">기억의 재현</div></td>
+            <td>기존 위협 재조합 / 순서 변화</td>
+            <td>처음 보는 새 적보다 이미 경험한 위협을 다른 순서로 견딤.</td>
+            <td>명령 없이 과거에 효과가 있었던 방어/회피 형태를 재현.</td>
+            <td><span class="evidence">MEMORY</span><span class="evidence">COORDINATION</span></td>
+            <td class="mail">System: <span class="turn">STATE RESTORE / SIMULATION STABILITY</span> 용어 노출.<br>Park가 용어 출처를 묻기 시작.</td>
+            <td>Collective Memory 진입 조건</td>
+            <td><b class="turn">“배양 시스템인데 왜 STATE RESTORE?”</b></td>
+          </tr>
+
+          <tr data-phase="4">
+            <td><div class="proto">P-11</div><span class="phase-tag">CONTACT</span></td>
+            <td><div class="title">PREDICTIVE STRESS</div><div class="kick">학습에서 예측으로</div></td>
+            <td>주기적 환경 자극 / Pattern Recognition</td>
+            <td>반복되는 일정 패턴의 위협을 견딤.</td>
+            <td>자극 직전 방어·회피 준비. 패턴 자체로는 설명 가능한 선제 행동.</td>
+            <td><span class="evidence">PREDICTION</span></td>
+            <td class="mail">첫 UNKNOWN 데이터. 아직 언어가 아닌 바이너리/깨진 문자.<br>Park는 로그 손상으로 판단.</td>
+            <td>Pattern Recognition / Predictive Movement</td>
+            <td><b>“미리 움직인다. 하지만 패턴을 배운 거겠지.”</b></td>
+          </tr>
+
+          <tr data-phase="4">
+            <td><div class="proto">P-12</div><span class="phase-tag">CONTACT</span></td>
+            <td><div class="title">UNANNOUNCED DISTURBANCE</div><div class="kick">설명하기 어려운 예측</div></td>
+            <td>비공개 발생시점 / 비주기 자극</td>
+            <td>발생시점을 모른 채 대기. 플레이어도 자극 타이밍을 예측할 수 없음.</td>
+            <td class="horror">일부 조건에서 자극보다 먼저 동일한 방어 반응 발생.<br>eventTick 기준 선행 시간 기록.</td>
+            <td><span class="evidence">PREDICTION 확정</span></td>
+            <td class="mail"><span class="horror">Analysis: RESPONSE BEFORE STIMULUS.</span><br>Park: 시간 동기 재검증.<br>Miller: 시스템 지연 가능성 제기.</td>
+            <td>고등 예측 계열</td>
+            <td><b class="horror">“저건 어떻게 알았지?”</b><br>첫 진짜 공포.</td>
+          </tr>
+
+          <tr data-phase="4">
+            <td><div class="proto">P-13</div><span class="phase-tag">CONTACT</span></td>
+            <td><div class="title">AUTONOMOUS NETWORK</div><div class="kick">첫 접촉</div></td>
+            <td>Autonomous Signaling / Distributed Control</td>
+            <td>외부 SIGNAL 없이 군집 자체의 의사결정이 가능한 상태를 관찰.</td>
+            <td>외부 자극 전 자체 신호가 생성되고 군집 행동을 조직.</td>
+            <td><span class="evidence">AUTONOMY</span></td>
+            <td class="mail"><span class="horror">UNKNOWN: YOU</span> → 시간 간격 → <span class="horror">YOU CHANGE</span> → 이후 <span class="horror">YOU CHANGE WORLD</span></td>
+            <td>Autonomous Signaling / Distributed Control</td>
+            <td><b class="horror">“저쪽에서 나를 보고 있다.”</b></td>
+          </tr>
+
+          <tr data-phase="5">
+            <td><div class="proto">P-14</div><span class="phase-tag">REALIZATION</span></td>
+            <td><div class="title">BOUNDARY CONDITION</div><div class="kick">세계의 끝 발견</div></td>
+            <td>경계 관련 조건 / 공간적 탐색</td>
+            <td>직접 경계를 알려주지 않고 환경만 제공. 관찰이 핵심.</td>
+            <td class="horror">복수 경계 반복 탐색 → 경계선 배열 → 경계 부근 신호 교환 → 지속.</td>
+            <td><span class="evidence">AUTONOMY</span><span class="evidence">COORDINATION</span></td>
+            <td class="mail"><span class="horror">UNKNOWN: WE FOUND THE BORDER.</span><br>간격 후: NOTHING EXISTS AFTER THIS PLACE. WHY?</td>
+            <td>Boundary Discovery narrative gate</td>
+            <td><b class="horror">“얘들은 자기 세계가 닫혀 있다는 걸 안다.”</b></td>
+          </tr>
+
+          <tr data-phase="5">
+            <td><div class="proto">P-15</div><span class="phase-tag">REALIZATION</span></td>
+            <td><div class="title">RULE VARIATION</div><div class="kick">플레이어 = 세계 규칙 변경자</div></td>
+            <td>온도/산소/영양/독성/위협 등 규칙 변화</td>
+            <td>여러 환경 규칙을 순차적으로 변경. 익숙한 게임 기능의 의미를 뒤집음.</td>
+            <td>세포가 개별 현상보다 ‘외부에 의한 규칙 변화’에 대응하는 패턴을 보임.</td>
+            <td><span class="evidence">MEMORY</span><span class="evidence">PREDICTION</span><span class="evidence">AUTONOMY</span></td>
+            <td class="mail"><span class="horror">UNKNOWN: 이곳에는 규칙이 있다. 에너지. 시간. 죽음. 너는 그것들을 바꾼다.</span></td>
+            <td>Final Protocol 개방</td>
+            <td><b class="horror">“나에게는 설정, 저들에게는 자연법칙.”</b></td>
+          </tr>
+
+          <tr data-phase="6">
+            <td><div class="proto">P-16</div><span class="phase-tag">FINAL</span></td>
+            <td><div class="title">FINAL PROTOCOL</div><div class="kick">이제 아무것도 하지 마십시오</div></td>
+            <td>EQUILIBRIUM → DISTURBANCE → RECOVERY</td>
+            <td>FEED / SIGNAL / PURGE / ISOLATE / ENVIRONMENT / Trait 변경 전부 잠김. 관찰만 가능.</td>
+            <td>플레이어 도움 없이 생존·협동·회복·자율 대응을 수행.</td>
+            <td><span class="evidence">AUTONOMOUS RESPONSE</span></td>
+            <td class="mail">System: 프로젝트 완료 보고.<br><span class="horror">UNKNOWN: 네 세계에도 규칙이 있는가? 네 규칙은 누가 바꾸는가?</span></td>
+            <td>엔딩 선택: SHUT DOWN / MAINTAIN SYSTEM / OPEN CHANNEL</td>
+            <td><b>“처음에는 내가 없으면 못 살았다. 이제 나는 아무것도 할 수 없다.”</b></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="details">
+    <div class="panel detail-panel">
+      <h3>서사 인과관계 — 절대 순서를 바꾸지 않음</h3>
+      <div class="flow">
+        <div><b>1. SYSTEM</b>연구/환경/위협이 실제 시뮬레이션 규칙을 만든다.</div>
+        <div><b>2. BEHAVIOR</b>세포가 화면에서 실제 행동한다.</div>
+        <div><b>3. OBSERVATION</b>실제 eventTick과 조건을 기록한다.</div>
+        <div><b>4. NARRATIVE</b>Evidence·선행 메일·간격 조건을 판정한다.</div>
+        <div><b>5. MAIL</b>이미 일어난 사실만 언급한다.</div>
+      </div>
+    </div>
+    <div class="panel detail-panel">
+      <h3>캠페인 설계 규칙</h3>
+      <ul class="rules">
+        <li>“지능이 탄생했다”는 설명 메일을 보내지 않는다. 플레이어가 증거를 조합해 결론에 도달한다.</li>
+        <li>Miller는 악당이 아니라 결과 중심의 책임자. 이상 현상을 축소 해석하지만 진실을 완전히 알고 숨기는 인물로 만들지 않는다.</li>
+        <li>Park는 처음부터 정답을 아는 인물이 아니다. 오류 검증 → 의심 → 확신의 순서로 플레이어와 거의 함께 도달한다.</li>
+        <li>UNKNOWN의 언어는 깨진 데이터 → 단어 → 어색한 문장 → 완전한 문장으로 발전한다.</li>
+        <li>같은 고등 행동은 여러 연구 경로로 도달 가능해야 한다. 특정 연구 노드를 서사 정답으로 강제하지 않는다.</li>
+        <li>Checkpoint / FEED / ENVIRONMENT / Trait / Chamber Border처럼 이미 익숙한 기능의 의미를 후반에 뒤집는다.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="panel mailplan">
+    <h2 class="section-title">MAIL VOLUME GUIDE</h2>
+    <div class="mailbars">
+      <div class="mailbar"><b>DR. MILLER</b><strong>7–8</strong><span>공식 지시 / 결과 중심 / 이상 축소 해석</span></div>
+      <div class="mailbar"><b>J. PARK</b><strong>8–9</strong><span>관찰 / 재검증 / 플레이어와 함께 의심 증가</span></div>
+      <div class="mailbar"><b>SYSTEM</b><strong>6–7</strong><span>상태 보고 / 내부 용어 노출 / 의미 뒤틀림</span></div>
+      <div class="mailbar"><b>UNKNOWN</b><strong>6–8</strong><span>깨진 데이터 → 언어 → 세계 인식 → 마지막 질문</span></div>
+    </div>
+  </section>
+
+  <section class="panel footer">
+    <b>문서 위치:</b> Game/Docs/current/CAMPAIGN_MAP.html ·
+    <b>용도:</b> 캠페인/메일/스토리 확정 작업을 위한 시각적 마스터 맵 ·
+    <b>주의:</b> 현재는 추천 구조이며, 승인된 항목부터 GAME_DESIGN / DEVELOPMENT_SPEC / PROJECT_CONTEXT의 정식 규칙으로 승격한다.
+  </section>
+</div>
+
+<script>
+const buttons=[...document.querySelectorAll('[data-filter]')];
+const rows=[...document.querySelectorAll('tbody tr[data-phase]')];
+const search=document.getElementById('search');
+let phase='all';
+
+function apply(){
+  const q=search.value.trim().toLowerCase();
+  rows.forEach(row=>{
+    const phaseOk=phase==='all'||row.dataset.phase===phase;
+    const textOk=!q||row.textContent.toLowerCase().includes(q);
+    row.classList.toggle('hidden',!(phaseOk&&textOk));
+  });
+}
+buttons.forEach(btn=>btn.addEventListener('click',()=>{
+  buttons.forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  phase=btn.dataset.filter;
+  apply();
+}));
+search.addEventListener('input',apply);
+</script>
+</body>
+</html>

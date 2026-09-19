@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Dot.exe — B-1 Refined</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri/dist/galmuri.css">
+<style>
+:root{
+  --bg:#06110a;
+  --deep:#020805;
+  --line:#1fd66d;
+  --line2:#0d6f36;
+  --text:#8effb0;
+  --dim:#4cc477;
+  --white:#e7ffec;
+  --green:#2eff78;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#080b08;color:var(--text);font-family:Galmuri11,monospace;image-rendering:pixelated}
+body{
+  display:flex;justify-content:center;align-items:flex-start;padding:24px 14px 40px;
+  background:radial-gradient(circle at 50% -8%,#152219 0,#0a0e0b 34%,#050705 72%,#030403 100%);
+}
+.page{width:min(100%,440px)}
+.page-title{font-size:13px;color:#a9ffbf;margin:0 0 9px;font-weight:400}
+.page-note{font-size:8px;line-height:1.7;color:#688b72;margin:0 0 12px}
+.phone{
+  width:100%;aspect-ratio:9/16;padding:11px;background:linear-gradient(#171d18,#0d110e 48%,#070907);
+  border:1px solid #293029;box-shadow:0 18px 52px rgba(0,0,0,.62),inset 0 0 0 3px #0d100d;position:relative;
+}
+.screen{
+  position:relative;width:100%;height:100%;overflow:hidden;background:#020703;
+  border:1px solid #102016;box-shadow:inset 0 0 22px rgba(0,0,0,.95);
+}
+.screen:before{
+  content:"";position:absolute;inset:-2.2%;z-index:40;pointer-events:none;
+  background:radial-gradient(ellipse at center,transparent 57%,rgba(0,0,0,.08) 68%,rgba(0,0,0,.25) 83%,rgba(0,0,0,.57) 100%);
+}
+.screen:after{
+  content:"";position:absolute;inset:0;z-index:41;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,rgba(155,255,190,.035) 0 1px,transparent 1px 3px);opacity:.82;
+}
+.crt{
+  position:absolute;inset:0;
+  transform:perspective(900px) rotateX(1deg) scale(1.018,1.012);
+  transform-origin:center;
+  filter:brightness(1.22) contrast(1.03);
+}
+.edge{
+  position:absolute;inset:0;z-index:30;pointer-events:none;
+  background:
+    linear-gradient(90deg,rgba(0,0,0,.13),transparent 6%,transparent 94%,rgba(0,0,0,.18)),
+    linear-gradient(180deg,rgba(0,0,0,.10),transparent 6%,transparent 94%,rgba(0,0,0,.17));
+}
+.hud{position:absolute;left:11px;right:11px;top:9px;z-index:8}
+.top{display:flex;align-items:center;gap:7px;min-height:20px}
+.protocol{
+  display:flex;align-items:center;gap:5px;padding:2px 4px;background:transparent;border:1px solid transparent;
+  color:var(--text);font:inherit;font-size:8px;cursor:pointer
+}
+.protocol:hover{border-color:#195c35;background:rgba(7,24,13,.38)}
+.px{width:6px;height:6px;background:var(--white)}
+.arrow{font-size:7px;color:#b7ffca}
+.resources{margin-left:auto;display:flex;gap:11px;align-items:center;font-size:8px}
+.res{display:flex;gap:4px;align-items:center;white-space:nowrap}
+.ico-energy{width:6px;height:8px;background:var(--green);clip-path:polygon(45% 0,100% 0,62% 43%,100% 43%,20% 100%,42% 56%,0 56%)}
+.ico-cell{width:6px;height:6px;background:var(--white)}
+.ico-rate{width:7px;height:7px;position:relative}
+.ico-rate:before{content:"";position:absolute;left:0;bottom:0;width:2px;height:3px;background:var(--green);box-shadow:3px -2px 0 var(--green),6px -5px 0 var(--green)}
+.rule{height:1px;background:var(--line);margin-top:7px;opacity:.85}
+.details{
+  position:absolute;left:11px;right:11px;top:34px;z-index:18;padding:8px 9px;
+  border:1px solid #195c35;background:rgba(4,15,8,.96);
+  transform:scaleY(0);transform-origin:top;opacity:0;pointer-events:none;transition:.15s ease;
+}
+.details.open{transform:scaleY(1);opacity:1;pointer-events:auto}
+.details-head{display:flex;justify-content:space-between;gap:8px;margin-bottom:6px;font-size:8px;color:#baffca}
+.details-row{font-size:7px;color:#74c18d;line-height:1.65;margin-top:4px}
+.details-row b{display:block;color:#b8ffc9;font-weight:400}
+.chamber-wrap{
+  position:absolute;left:11px;right:11px;top:51px;bottom:124px;z-index:3;border:1px solid rgba(38,197,96,.8);
+  clip-path:polygon(2.4% 0,97.6% 0,100% 2.1%,100% 97.9%,97.6% 100%,2.4% 100%,0 97.9%,0 2.1%);
+}
+.chamber{
+  position:absolute;inset:0;overflow:hidden;
+  background:radial-gradient(circle at 50% 50%,rgba(29,142,69,.085),transparent 36%),linear-gradient(#09170d,#041008);
+}
+.chamber:before{
+  content:"";position:absolute;inset:0;
+  background:
+    linear-gradient(rgba(46,255,120,.014) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(46,255,120,.014) 1px,transparent 1px);
+  background-size:18px 18px;opacity:.30
+}
+.entity{position:absolute;transform:translate(-50%,-50%)}
+.cell{width:4px;height:4px;background:var(--white);box-shadow:0 0 6px rgba(231,255,236,.14)}
+.nutrient{width:2px;height:2px;background:var(--green);box-shadow:0 0 4px rgba(46,255,120,.20)}
+.logbox{position:absolute;left:11px;right:11px;bottom:75px;z-index:7}
+.logrule{height:1px;background:var(--line);opacity:.65;margin-bottom:6px}
+.log{font-size:8px;line-height:1.75;color:var(--dim)}
+.log strong{font-weight:400;color:#b8ffca}
+.research{
+  position:absolute;left:11px;right:11px;bottom:17px;height:39px;z-index:7;
+  border:1px solid var(--line);background:rgba(3,13,7,.48);color:var(--text);font:inherit;font-size:10px;cursor:pointer
+}
+.research:hover{background:rgba(8,27,14,.55)}
+.noise{position:absolute;left:0;height:1px;background:#d8ffe0;opacity:0;z-index:35;pointer-events:none}
+.screen.glitch .noise{opacity:.85;animation:noise 105ms steps(2,end)}
+.screen.glitch .crt{animation:jitter 105ms steps(2,end)}
+@keyframes noise{0%{left:7%;width:20%}50%{left:43%;width:45%}100%{left:69%;width:17%}}
+@keyframes jitter{
+  0%{transform:perspective(900px) rotateX(1deg) translateX(0) scale(1.018,1.012)}
+  50%{transform:perspective(900px) rotateX(1deg) translateX(1px) scale(1.018,1.012)}
+  100%{transform:perspective(900px) rotateX(1deg) translateX(-1px) scale(1.018,1.012)}
+}
+.caption{margin-top:10px;border:1px solid #17311f;background:#071009;padding:9px;font-size:8px;line-height:1.7;color:#789b82}
+.caption b{color:#b2ffc6;font-weight:400}
+</style>
+</head>
+<body>
+<div class="page">
+  <h1 class="page-title">Dot.exe — B-1 최신 수정안</h1>
+  <p class="page-note">프로토콜 드롭다운 / 흰색 정사각 세포 / 더 작은 초록 영양 픽셀 / 자유 이동 / 강화된 CRT 곡률·왜곡·비네팅을 반영한 검토용 화면입니다.</p>
+
+  <div class="phone">
+    <div class="screen" id="screen">
+      <div class="noise" id="noise"></div>
+      <div class="edge"></div>
+      <div class="crt">
+        <div class="hud">
+          <div class="top">
+            <button class="protocol" id="protocolBtn" aria-expanded="false">
+              <span class="px"></span>
+              <span id="protocolText">프로토콜 P-02 00:43</span>
+              <span class="arrow" id="arrow">▼</span>
+            </button>
+            <div class="resources">
+              <span class="res"><i class="ico-energy"></i><span>40</span></span>
+              <span class="res"><i class="ico-cell"></i><span>001/12</span></span>
+              <span class="res"><i class="ico-rate"></i><span>+0.8/초</span></span>
+            </div>
+          </div>
+          <div class="rule"></div>
+        </div>
+
+        <div class="details" id="details">
+          <div class="details-head"><span>프로토콜 P-02 · 세균 노출</span><span id="detailTime">자동 시작 00:43</span></div>
+          <div class="details-row"><b>목표</b>필요 개체 12 유지 · 60초 생존</div>
+          <div class="details-row"><b>예상 위협</b>급속 증식 세균 · 접촉 피해 · 국소 오염</div>
+          <div class="details-row"><b>현재 준비</b>강화 세포막 활성 · 식균 작용 활성</div>
+        </div>
+
+        <div class="chamber-wrap"><div class="chamber" id="chamber"></div></div>
+
+        <div class="logbox">
+          <div class="logrule"></div>
+          <div class="log">
+            <div>› <strong>001 감지</strong></div>
+            <div>› 자유 이동 상태 정상</div>
+            <div>› 영양 픽셀 흡수 대기_</div>
+          </div>
+        </div>
+
+        <button class="research">연구</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="caption">
+    <b>표현 규칙</b><br>
+    세포는 흰색 4×4 정사각 픽셀, 영양분은 초록색 2×2 정사각 픽셀입니다. 렌더링은 픽셀 형태지만 위치와 속도는 연속 좌표로 계산해 부드럽게 자유 이동합니다. CRT는 외곽부에서만 약하게 휘고 어두워지며 화면 중앙 판독성은 유지합니다.
+  </div>
+</div>
+
+<script>
+(function(){
+  var chamber=document.getElementById("chamber");
+  var screen=document.getElementById("screen");
+  var noise=document.getElementById("noise");
+  var btn=document.getElementById("protocolBtn");
+  var details=document.getElementById("details");
+  var arrow=document.getElementById("arrow");
+  var protocolText=document.getElementById("protocolText");
+  var detailTime=document.getElementById("detailTime");
+
+  btn.addEventListener("click",function(){
+    var open=details.classList.toggle("open");
+    btn.setAttribute("aria-expanded",open?"true":"false");
+    arrow.textContent=open?"▲":"▼";
+  });
+
+  function entity(cls,x,y){
+    var e=document.createElement("i");
+    e.className="entity "+cls;
+    e.style.left=x+"%";
+    e.style.top=y+"%";
+    chamber.appendChild(e);
+    return e;
+  }
+
+  var cells=[];
+  var positions=[[68,12],[31,37],[33,42],[37,52],[53,43],[58,48],[63,30],[44,58],[18,83],[26,82]];
+  positions.forEach(function(p,i){
+    var a=Math.random()*Math.PI*2;
+    cells.push({x:p[0],y:p[1],vx:Math.cos(a)*(0.007+Math.random()*0.008),vy:Math.sin(a)*(0.007+Math.random()*0.008),phase:Math.random()*10,el:entity("cell",p[0],p[1])});
+  });
+
+  var nutrients=[];
+  [[29,36],[33,39],[41,41],[56,46],[44,67],[16,84],[69,33]].forEach(function(p,i){
+    nutrients.push({x:p[0],y:p[1],vx:(Math.random()-.5)*0.0012,vy:(Math.random()-.5)*0.0012,phase:i,el:entity("nutrient",p[0],p[1])});
+  });
+
+  var last=performance.now();
+  function tick(now){
+    var dt=Math.min(32,now-last);last=now;
+    var t=now*0.001;
+    cells.forEach(function(c){
+      c.x+=c.vx*dt+Math.sin(t+c.phase)*0.004;
+      c.y+=c.vy*dt+Math.cos(t*0.83+c.phase)*0.004;
+      if(c.x<7||c.x>93)c.vx*=-1;
+      if(c.y<7||c.y>93)c.vy*=-1;
+      c.x=Math.max(7,Math.min(93,c.x));c.y=Math.max(7,Math.min(93,c.y));
+      c.el.style.left=c.x+"%";c.el.style.top=c.y+"%";
+    });
+    nutrients.forEach(function(n){
+      n.x+=n.vx*dt+Math.sin(t*.65+n.phase)*0.0005;
+      n.y+=n.vy*dt+Math.cos(t*.7+n.phase)*0.0005;
+      n.x=Math.max(6,Math.min(94,n.x));n.y=Math.max(6,Math.min(94,n.y));
+      n.el.style.left=n.x+"%";n.el.style.top=n.y+"%";
+    });
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  var remain=43;
+  setInterval(function(){
+    remain=remain>0?remain-1:43;
+    var time="00:"+String(remain).padStart(2,"0");
+    protocolText.textContent="프로토콜 P-02 "+time;
+    detailTime.textContent="자동 시작 "+time;
+  },1000);
+
+  function glitch(){
+    screen.classList.add("glitch");
+    noise.style.top=(15+Math.random()*65)+"%";
+    setTimeout(function(){screen.classList.remove("glitch");},105);
+    setTimeout(glitch,8000+Math.random()*6000);
+  }
+  setTimeout(glitch,2600);
+})();
+</script>
+</body>
+</html>

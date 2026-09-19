@@ -23,3 +23,5 @@
 ## UI 시안
 
 - `Design/UI/Dotexe_UI_Concepts.html` — 실제 화면 형태의 UI 방향 3안 비교 프로토타입
+
+- `Design/UI/Dotexe_UI_B_Revisions.html` — B 계측 장비 패널 기반 수정안 3종(B-1/B-2/B-3). Galmuri11, 사각 픽셀 세포, 미니멀 재화 HUD, 간헐 글리치 포함.

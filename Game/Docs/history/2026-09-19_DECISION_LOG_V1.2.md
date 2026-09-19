@@ -88,7 +88,7 @@ Hard Limit 초과만 거부한다.
 
 ---
 
-# 4. 세포 에너지와 SYSTEM ENERGY
+# 4. 세포 에너지와 ENERGY
 
 기존의 “내부 저장 한도를 넘은 에너지만 연구 자원으로 회수”하는 방식은 사용하지 않는다.
 
@@ -111,7 +111,7 @@ Net Metabolic Output
  ┌────────────────────┐
  │                    │
  ▼                    ▼
-Cell Internal Energy  SYSTEM ENERGY
+Cell Internal Energy  ENERGY
 ```
 
 ## 4.2 별도 관리 값
@@ -129,21 +129,21 @@ System Harvest Ratio
 
 ## 4.3 생존 우선 규칙
 
-세포 내부 에너지가 `Survival Reserve`보다 낮으면 SYSTEM ENERGY 회수를 중단한다.
+세포 내부 에너지가 `Survival Reserve`보다 낮으면 ENERGY 회수를 중단한다.
 
 ```text
 Cell Energy < Survival Reserve
 → 순생산 100%를 세포 내부에 배정
 
 Cell Energy >= Survival Reserve
-→ 순생산 일부를 내부 저장, 일부를 SYSTEM ENERGY로 배정
+→ 순생산 일부를 내부 저장, 일부를 ENERGY로 배정
 ```
 
 ## 4.4 Energy Storage 연구
 
 `Energy Storage`는 `Maximum Storage`만 증가시킨다.
 
-SYSTEM ENERGY 회수 기준이나 회수 비율을 직접 올리지 않는다.
+ENERGY 회수 기준이나 회수 비율을 직접 올리지 않는다.
 
 ## 4.5 분열 에너지 보존
 
@@ -165,7 +165,7 @@ SYSTEM ENERGY 회수 기준이나 회수 비율을 직접 올리지 않는다.
 ## 4.6 경계 경우
 
 - 내부 에너지가 `Maximum Storage`에 찬 세포도 섭취와 대사를 계속한다.
-- 저장하지 못한 내부 몫은 버린다. SYSTEM ENERGY로 돌리지 않는다. (돌리면 “넘친 만큼 회수” 방식이 되살아나 Energy Storage 구매가 SYSTEM ENERGY 생산을 깎는다.)
+- 저장하지 못한 내부 몫은 버린다. ENERGY로 돌리지 않는다. (돌리면 “넘친 만큼 회수” 방식이 되살아나 Energy Storage 구매가 ENERGY 생산을 깎는다.)
 - 순생산이 음수면 내부 에너지에서 뺀다.
 - 특성 변경으로 `Maximum Storage`가 줄면 넘는 몫은 바로 사라진다.
 
@@ -341,7 +341,7 @@ LAST VIABLE SAMPLE...
 체크포인트를 불러오면 **전부** 그 시점으로 돌아간다.
 
 - 세포, 적, 환경 Field
-- SYSTEM ENERGY, DATA, NUTRIENT RESERVE
+- ENERGY, DATA, NUTRIENT RESERVE
 - 연구 해금, Trait Loadout
 - Protocol 상태, Cooldown, 일시 효과
 - 메일, Narrative Flag, Observation Record, 발견 기록, Emergence Evidence
@@ -410,7 +410,7 @@ Pause 시 멈추는 것:
 - 세포 시뮬레이션
 - 적 행동
 - Protocol Timer
-- SYSTEM ENERGY 생산
+- ENERGY 생산
 - NUTRIENT 보충
 - Cooldown
 - 환경 시간 변화
@@ -781,7 +781,7 @@ SIGNAL은 받을 세포가 없으므로(Signal Detection이 MVP 연구에 없다
 MVP에도 다음 세 자원을 포함한다.
 
 ```text
-SYSTEM ENERGY
+ENERGY
 DATA
 NUTRIENT RESERVE
 ```
@@ -1376,7 +1376,7 @@ Object Pool, Worker, 병렬 처리 등은 프로파일링 결과가 필요할 �
 
 ```text
 CELLS
-SYSTEM ENERGY
+ENERGY
 ENERGY OUTPUT
 NUTRIENT RESERVE
 CULTURE NUTRIENT
@@ -1563,7 +1563,7 @@ MVP의 목적은 스토리 전체가 아니라 다음을 검증하는 것이다.
 - Observation 2Hz
 - Final Protocol 90/60/90초
 - Population Retention 비율
-- SYSTEM ENERGY harvest ratio
+- ENERGY harvest ratio
 - Division cooldown
 - Division duration
 - Cell cap
@@ -1580,9 +1580,9 @@ MVP의 목적은 스토리 전체가 아니라 다음을 검증하는 것이다.
 ## 에너지
 
 - 최초 세포가 지속 분열해도 첫 유료 연구에 도달할 수 있다.
-- Energy Storage 구매가 SYSTEM ENERGY 생산을 부자연스럽게 막지 않는다.
+- Energy Storage 구매가 ENERGY 생산을 부자연스럽게 막지 않는다.
 - 굶주리는 세포가 연구 자원을 계속 생산하지 않는다.
-- 저장량이 가득 찬 세포의 넘친 몫이 SYSTEM ENERGY로 들어가지 않는다.
+- 저장량이 가득 찬 세포의 넘친 몫이 ENERGY로 들어가지 않는다.
 - 내부 에너지가 0인 세포는 Health가 줄고, 에너지를 되찾으면 회복한다.
 
 ## Protocol

@@ -89,7 +89,7 @@ footer{border-top:1px solid var(--line);padding-top:20px;font-size:13px;color:va
 <div class="wrap">
 
 <header>
-  <span class="label">CULTURE//SYS · build pipeline</span>
+  <span class="label">Dot.exe · build pipeline</span>
   <h1>Dot.exe 출시 파이프라인</h1>
   <p>개발 명세서 v0.2의 마일스톤(#59)을 그대로 따라가서 Google Play와 App Store에 유료 앱으로 올리기까지의 순서다. 마름모는 통과하지 못하면 다음으로 넘어가지 않는 관문이다. 기간은 적지 않았다. 혼자 만드는 게임에서 의미 있는 것은 날짜보다 순서와 관문이다.</p>
   <div class="facts">
@@ -150,7 +150,7 @@ footer{border-top:1px solid var(--line);padding-top:20px;font-size:13px;color:va
       <li>화면, 콘솔 오류, 조작, 한국어 · 영어를 확인한다</li>
     </ul></div>
     <div class="gatebox"><span class="label">3차 · 사람 테스트</span><ul>
-      <li>단계마다 <code>Docs/테스트/</code>에 체크리스트를 만든다</li>
+      <li>단계마다 <code>Game/Docs/tests/</code>에 체크리스트를 만든다</li>
       <li>사람이 직접 해 보고 항목별로 판정한다</li>
       <li>재미와 느낌에 대한 관문은 사람만 판정한다</li>
     </ul></div>
@@ -165,14 +165,14 @@ footer{border-top:1px solid var(--line);padding-top:20px;font-size:13px;color:va
       <p>정본 32절이 구현 전에 준비하라고 한 문서 세 개와 개발 환경을 만든다. 모바일 출시가 목표가 됐으므로 정본 30절의 “1차 플랫폼: Windows 데스크톱”도 여기서 고친다.</p></div>
     <div class="cols">
       <div><span class="label">만드는 것</span><ul>
-        <li><code>CORE_GAME_RULES.md</code> 결정사항 v1.1의 규칙을 정식 원본으로</li>
-        <li><code>ARCHITECTURE.md</code> 시스템 책임, 의존 방향, tick 24단계, 이벤트, 저장 구조</li>
+        <li><code>Game/Docs/current/CORE_GAME_RULES.md</code> 결정사항 v1.1의 규칙을 정식 원본으로</li>
+        <li><code>Game/Docs/current/ARCHITECTURE.md</code> 시스템 책임, 의존 방향, tick 24단계, 이벤트, 저장 구조</li>
         <li><code>AGENTS.md</code>에 개발 규칙 추가 (덮어쓰지 않는다)</li>
         <li><code>git init</code>, Vite + TypeScript(strict) + Vitest</li>
         <li>커밋마다 타입 검사 · 테스트 · <code>node Locale/check.mjs</code></li>
       </ul></div>
       <div><span class="label">모바일로 바뀌며 정할 것</span><ul>
-        <li>화면은 세로 고정. 가로 216픽셀의 도트 화면을 CRT 모니터처럼 보여 준다</li>
+        <li>화면은 세로 고정. 1080×1920 기준, 216×384 논리 화면을 safe area 안에 9:16 비율로 배치하고 남는 영역은 CRT 케이스/터미널 여백으로 처리한다</li>
         <li>입력은 터치가 기본. F1~F5는 연출로만 남기고 탭 버튼으로 연다</li>
         <li>성능 기준 기기. 3~4년 된 중급 안드로이드 한 대를 정한다</li>
         <li>웹 기술을 앱으로 싸는 도구. Capacitor를 권한다</li>
@@ -216,7 +216,7 @@ footer{border-top:1px solid var(--line);padding-top:20px;font-size:13px;color:va
         <li><label><input type="checkbox" id="g1d"><span>세포 300개가 기준 기기에서 끊기지 않는다</span></label></li>
       </ul></div>
     </div>
-    <p class="note" style="margin-top:14px">프로토타입에서는 Chemotaxis를 설정으로 켜 둔다. 본편 P-01은 Chemotaxis 없이 시작한다.</p>
+    <p class="note" style="margin-top:14px">프로토타입도 본편 P-01과 같은 조건으로 시작한다. Chemotaxis OFF에서 가까운 FEED·분열을 검증하고 P-01 완료 지점에서 Chemotaxis를 지급한 뒤 전후 차이를 확인한다.</p>
   </div>
 </article>
 
@@ -293,8 +293,8 @@ footer{border-top:1px solid var(--line);padding-top:20px;font-size:13px;color:va
         <li>MailService, 메일 8~10개 (한국어 · 영어)</li>
         <li>Observation → Narrative 조건 → Mail 흐름</li>
         <li>DiscoveryService와 DATA 즉시 지급</li>
-        <li>SaveData v1, 저장 · 불러오기, ProfileData</li>
-        <li>HUD, 메일 화면, 일시정지 규칙, 개발자 디버그 패널</li>
+        <li>SaveData v1, Campaign 1슬롯, Rolling Autosave 3세대, Protocol Checkpoint, ProfileData</li>
+        <li>HUD, 메일 화면, Briefing → 제한시간 Preparing → Running 흐름, 일시정지 규칙, 개발자 디버그 패널</li>
         <li>한글 픽셀 폰트 선정과 실제 크기 확인</li>
       </ul></div>
       <div><span class="label">자동 테스트</span><ul>
@@ -321,7 +321,7 @@ footer{border-top:1px solid var(--line);padding-top:20px;font-size:13px;color:va
   <div class="no">5</div>
   <div>
     <div class="head"><span class="label">Milestone 5 · 6 · 7</span><h2>전체 캠페인</h2>
-      <p>가장 긴 구간이다. MVP에서 미룬 것을 하나씩 넣는다. 새 메커니즘을 넣을 때마다 그 규칙을 <code>CORE_GAME_RULES.md</code>에 먼저 적는다.</p></div>
+      <p>가장 긴 구간이다. MVP에서 미룬 것을 하나씩 넣는다. 새 메커니즘을 넣을 때마다 그 규칙을 <code>Game/Docs/current/CORE_GAME_RULES.md</code>에 먼저 적는다.</p></div>
     <div class="cols">
       <div><span class="label">M5 · 위협과 환경</span><ul>
         <li>Virus, Parasite, Fungus, Motile Bacteria</li>
@@ -362,7 +362,7 @@ footer{border-top:1px solid var(--line);padding-top:20px;font-size:13px;color:va
       <div><span class="label">만드는 것</span><ul>
         <li>Capacitor 프로젝트, 앱 ID (예: <code>com.이름.dotexe</code>), 버전 규칙</li>
         <li>터치 조작: 탭으로 FEED, 길게 눌러 PURGE 범위, 실수 방지 확인</li>
-        <li>노치 · 홈 바 안전 영역, 세로 고정, 여러 화면 비율</li>
+        <li>노치·홈 바 safe area, 세로 고정, 1080×1920 기준 9:16 CRT 화면, 18:9·19.5:9·20:9·3:4 적응형 shell</li>
         <li>앱이 뒤로 가면 Pause, 돌아올 때 밀린 시간 처리 없음</li>
         <li>저장 위치를 앱 전용 저장소로, 쓰기 실패 시 이전 저장본 보존</li>
         <li>아이콘, 스플래시, 기기 언어에 따른 한국어 · 영어 선택</li>

@@ -1,9 +1,9 @@
 # Dot.exe 개발 명세서
 
-> 버전: 0.2.1 (정본 `CORE_GAME_RULES.md` v1.3 반영)  
+> 버전: 0.3 (정본 `CORE_GAME_RULES.md` v1.3 반영)  
 > 대상: TypeScript 기반 구현 (Vite, Vitest)  
 > 출시 대상: Google Play · App Store. 개발 중에는 데스크톱 브라우저에서 실행하고 출시할 때 Capacitor로 감싼다. 세로 고정, 터치 입력(마우스도 같은 경로). (정본 30절)  
-> 렌더링: 모든 화면을 가로 216픽셀의 논리 화면(`PixelCanvas`, Canvas 2D)에 그려 4색 팔레트로 맞춘 뒤, `CrtDisplay`(WebGL)가 굴절·모니터 틀·주사선을 입혀 내보낸다. 터치 좌표는 `crtMath.pointerToLogical`로 논리 좌표로 바꾼다. 화면 표현 값은 `src/data/balance/ui.balance.ts`에 둔다. (정본 26.1절)  
+> 렌더링: 기준 디자인 1080×1920, 논리 화면 216×384. PixelCanvas → ResponsiveShell(safe area/화면비) → CrtDisplay(WebGL) 순서로 표시하며 터치는 역변환해 논리 좌표로 보낸다.
 > 목적: 바이브코딩 환경에서도 수정·기능 추가 시 기존 시스템이 연쇄적으로 깨지지 않도록 구조를 먼저 고정한다.  
 > 문서 간 규칙이 어긋날 경우의 우선순위는 `CORE_GAME_RULES.md` 1절을 따른다. 본문의 “정본”은 `CORE_GAME_RULES.md`다.  
 > 시뮬레이션은 화면 없이 돌릴 수 있어야 하고 개발 빌드에는 배속 설정을 둔다. 단계별 테스트 절차는 정본 30.2절을 따른다.
@@ -12,9 +12,9 @@
 
 # 1. 문서 목적
 
-작품명은 `Dot.exe`, 극중 플레이어가 연구실 컴퓨터에서 실행하는 배양 시스템 소프트웨어명은 `CULTURE//SYS`다. 두 이름을 혼용하지 않는다.
+작품명과 극중 플레이어가 실행하는 배양 시스템 소프트웨어명은 모두 `Dot.exe`다.
 
-이 문서는 CULTURE//SYS의 구현 경계를 정의한다.
+이 문서는 Dot.exe의 구현 경계를 정의한다.
 
 목표는 다음과 같다.
 
@@ -297,32 +297,13 @@ Render: requestAnimationFrame
 
 ## 5.1 Simulation Time과 UI Transaction 처리 분리
 
-`Simulation Time`(tick 진행)과 `UI/Transaction Processing`(연구 구매, Trait 변경, 메일 읽음, 설정, 저장)을 분리한다.
+- Briefing: pause, 조회 전용.
+- Preparing: live planning. simulation과 Preparation Timer가 계속 돌고 modal 화면 전환은 pause source를 추가하지 않는다. manual pause도 비활성화한다.
+- Running: 연구·Trait 변경 거부.
+- Preparing 이외의 MAIL/RESEARCH/ANALYSIS/SYSTEM/GAME OVER는 기존 pause source를 쓴다.
+- app background/OS interruption은 `systemSuspend`로 모든 시간을 멈추며 복귀 시 밀린 시간을 처리하지 않는다.
 
-CULTURE 화면 외의 전체 화면(MAIL, RESEARCH, ANALYSIS, SYSTEM, GAME OVER, 명시적 Pause)은 모두 Simulation Time을 Pause한다. Pause 중에도 Transaction은 즉시 검증·확정할 수 있다. 자세한 구분은 #32를 따른다.
-
-Pause 여부는 단일 boolean이 아니라 Pause Source 집합으로 관리한다.
-
-```ts
-type PauseSource =
-  | "manual"
-  | "mailModal"
-  | "researchModal"
-  | "analysisModal"
-  | "systemModal"
-  | "gameOver";
-
-interface PauseController {
-  sources: ReadonlySet<PauseSource>;
-  isPaused(): boolean;
-  addSource(source: PauseSource): void;
-  removeSource(source: PauseSource): void;
-}
-```
-
-여러 이유가 동시에 존재할 수 있다. 예를 들어 수동 Pause 상태에서 Mail을 열었다 닫아도 `manual`이 남아 있으면 재개되지 않는다.
-
----
+PauseController는 source 집합을 유지한다.
 
 # 6. 시뮬레이션 시스템 실행 순서
 
@@ -882,7 +863,7 @@ type ProtocolReward =
 
 ## 19.2 현지화
 
-화면에 나오는 글은 코드와 콘텐츠 데이터에 직접 적지 않는다. 데이터는 키만 갖고, 글은 `Locale/<언어 코드>.json`에서 가져온다(정본 30.1절).
+화면에 나오는 글은 코드와 콘텐츠 데이터에 직접 적지 않는다. 데이터는 키만 갖고, 글은 `Game/Locale/<언어 코드>.json`에서 가져온다(정본 30.1절).
 
 ```ts
 type LocaleKey = Brand<string, "LocaleKey">;
@@ -994,27 +975,11 @@ export interface ProtocolDefinition {
 ## 22.1 Protocol 상태 흐름
 
 ```text
-Idle
-→ Preparing
-→ Running
-→ Completed
-→ 다음 프로토콜의 Preparing (없으면 Idle)
-
-Running
-→ Failed
-→ GAME OVER 화면 (Pause)
-→ 체크포인트 전체 로드
-→ Preparing (준비 타이머 처음부터)
+Idle → Briefing → Preparing → Running → Completed
+                               ↘ Failed → GAME OVER → Checkpoint Load → Preparing
 ```
 
-`RetryPreparation` 상태는 두지 않는다. Idle에서도 시뮬레이션 시간은 흐른다.
-
-수동 시작과 자동 시작 모두 같은 전환 함수를 사용한다.
-
-```text
-수동 시작: Start Button → transitionToRunning()
-자동 시작: Preparation Timer == 0 → transitionToRunning()
-```
+다음 프로토콜이 있으면 Completed 뒤 Briefing으로 간다. Briefing은 무제한·읽기 전용이고 `beginPreparation()`이 Preparing으로 전환한다. Preparing 진입 시 checkpoint 생성 후 timer를 시작한다. 수동/자동 시작은 모두 `transitionToRunning()`을 쓴다.
 
 ## 22.2 체크포인트
 
@@ -1401,7 +1366,7 @@ type Transaction =
   | { type: "setTraitLoadout"; traitIds: CellTraitId[] }
   | { type: "markMailRead"; mailId: MailId }
   | { type: "changeSettings"; settings: SettingsPatch }
-  | { type: "save"; slot: SaveSlotId };
+  | { type: "saveNow" };
 
 type PlayerAction = SimulationCommand | Transaction;
 ```
@@ -1416,77 +1381,21 @@ InputRouter가 이를 적절한 서비스로 전달한다.
 
 # 33. Save Data
 
-런타임 객체 전체를 직렬화하지 않는다.
+런타임 객체 전체를 직렬화하지 않는다. 기본 캠페인은 활성 슬롯 1개다.
 
-명시적 SaveData를 만든다.
+저장 종류는 Campaign Save, Rolling Autosave(3세대), Protocol Checkpoint, ProfileData로 나눈다. `saveNow`는 슬롯 번호를 받지 않는다.
 
-```ts
-export interface SaveDataV1 {
-  version: 1;
-
-  simulationTick: number;
-
-  resources: ResourceSaveData;
-  research: ResearchSaveData;
-  traits: TraitLoadoutSaveData;
-
-  campaign: CampaignSaveData;
-  inbox: MailSaveData;
-
-  culture: CultureSaveData;
-
-  discoveries: DiscoverySaveData;
-  observations: ObservationSaveData;
-  emergenceEvidence: EmergenceEvidenceSaveData;
-
-  rng: RngSaveData;
-}
-```
-
-저장은 **시뮬레이션 업데이트나 Transaction 처리 중이 아닌 일관된 상태**에서 수행한다. 반드시 새 tick을 한 번 돌린 뒤 저장할 필요는 없다.
-
-체크포인트는 이 SaveData와 같은 형식을 쓰는 별도 저장본이다. 저장 데이터 안에 포함하지 않는다(`CheckpointService`, #22.2 참고). 엔딩 기록과 모드 해금 정보는 캠페인 저장과 분리된 `ProfileData`에 둔다.
-
----
+SaveDataV1에는 simulationTick, resources, research, traits, campaign, inbox, culture, discoveries, observations, emergenceEvidence, rng를 명시적으로 둔다. 저장은 update/Transaction 중간이 아닌 일관된 경계에서 확정한다.
 
 # 34. 저장 범위
 
-저장해야 하는 것(최소):
+세포·위협·환경 Field·Protocol/Preparation Timer·실행된 Action·Cooldown·자원·연구·Trait·메일·Narrative·Discovery·Observation·Emergence·RNG를 저장한다.
 
-- simulationTick
-- Cells, Cell division progress, lastDivisionTick, wander state
-- Threats
-- Environment, Scalar Fields
-- Protocol state, 이미 실행한 Protocol Action
-- Cooldowns
-- Isolation state
-- Resources
-- Research
-- Discovery Records
-- Trait Loadout
-- Mail Inbox, Mail Queue
-- Narrative Flags
-- Emergence Evidence
-- Observation Records
-- RNG state
+Autosave는 초기값 약 30초 simulation time 주기와 Protocol 완료/중요 Transaction/app background 시점에 요청하고 연속 요청은 합친다. 정상본 3세대를 순환하며 최신본이 손상되면 이전 세대로 fallback한다. Failed 상태는 정상 autosave로 덮지 않는다.
 
-tick 기준 값(`lastDivisionTick`, Cooldown 등)은 `simulationTick`과 함께 저장·복원되므로 절대 tick으로 두어도 어긋나지 않는다.
+SYSTEM → RECOVERY에서는 autosave 세대와 이전 protocol checkpoint를 선택할 수 있다. 과거 checkpoint를 복원하면 이후 campaign/autosave/checkpoint를 폐기한다. ProfileData는 rollback하지 않는다.
 
-체크포인트를 불러오면 세포, 적, 환경 Field, SYSTEM ENERGY/DATA/NUTRIENT RESERVE, 연구 해금과 Trait Loadout, Protocol 상태·Cooldown·일시 효과, 메일·Narrative Flag·Observation Record·발견 기록·Emergence Evidence, simulationTick·RNG 상태까지 전부 그 시점으로 돌아간다. "영구 진행"과 "실험 상태"를 나누지 않는다. 체크포인트와 무관하게 유지하는 것은 엔딩 기록과 모드 해금 정보(ProfileData)뿐이다.
-
-저장하지 않아도 되는 것(현재 상태로 재구성 가능한 값):
-
-- Spatial Hash
-- 화면 애니메이션 상태
-- 일회성 파티클
-- UI hover
-- 렌더링 보간값
-
-## 34.1 Event Queue
-
-단순 알림성 이벤트 큐는 저장하지 않는다. 미래 게임 결과에 영향을 주는 예약 작업은 이미 상태로 확정하거나, 별도 scheduled command로 저장한다.
-
----
+Spatial Hash, 파티클, hover, 렌더 보간값은 저장하지 않는다.
 
 # 35. Save Migration
 
@@ -2146,22 +2055,21 @@ AI에게 기능을 요청할 때 다음 형식을 권장한다.
 
 ## Milestone 1 — Simulation Core
 
-- fixed step
-- Vec2
-- Cell
-- movement
-- 배양 공간 경계 (Soft Repulsion + Hard Clamp)
-- nutrient field
-- metabolism
-- 굶주림 / Health
-- division
-- death
+fixed step, Vec2, Cell, movement, boundary, nutrient field, metabolism, starvation/Health, division, death, 216×384 PixelCanvas와 ResponsiveShell 최소 골격을 만든다.
 
-목표:
+검증 순서는 실제 P-01과 동일하다.
 
-한 점이 먹이를 찾고 움직이고 분열한다. 경계에 막히고, 굶으면 Health가 줄어든다.
+```text
+Chemotaxis OFF
+→ 가까운 FEED
+→ 먹음·분열
+→ P-01 완료에 해당하는 지점
+→ Chemotaxis 지급
+→ 더 먼 FEED
+→ 찾아가는 행동 변화
+```
 
-첫 프로토타입에서는 설정으로 Chemotaxis를 켜 두어 먹이 추적을 먼저 확인할 수 있다. 다만 이는 검증용 설정일 뿐, 본편 초기 상태(P-01)에는 Chemotaxis가 없다(#60 참고).
+Chemotaxis를 처음부터 켠 프로토타입만으로 Milestone 1을 통과할 수 없다.
 
 ## Milestone 2 — Research
 
@@ -2236,7 +2144,7 @@ MVP는 다음으로 제한한다.
 - 프로토콜 3개: P-01 CULTURE EXPANSION, P-02 RAPID BACTERIA, P-03 LIMITED NUTRIENT
 - 메일 8~10개
 - Narrative Phase 1~2. Phase 2 메일은 감염 실험 안내와 방어 연구에 대한 반응으로 한정한다(사전 반응 메일 제외)
-- 한국어·영어 현지화. 화면의 글은 처음부터 `Locale/*.json`의 키로 가져온다(#19.2)
+- 한국어·영어 현지화. 화면의 글은 처음부터 `Game/Locale/*.json`의 키로 가져온다(#19.2)
 
 전역 환경값(Temperature/pH/Oxygen), 폐기물/CONTAMINATION, Cluster 생성과 colonyId, 플레이어 SIGNAL은 MVP에서 제외한다.
 
@@ -2254,24 +2162,10 @@ MVP에서 재미를 먼저 검증한다.
 
 # 61. 첫 프로토타입에서 반드시 확인할 것
 
-가장 먼저 검증해야 할 것은 스토리가 아니라 **세포 관찰 자체의 재미**다.
+1. Chemotaxis가 없어도 초반 5~10분의 관찰·FEED·분열이 지루하지 않은가?
+2. Chemotaxis 획득 직후 같은 조작의 의미가 분명히 달라져 성장 체감이 생기는가?
 
-다음 장면이 재미없다면 기획을 더 키우지 않는다.
-
-```text
-한 점
-→ 먹이 투입
-→ 이동
-→ 먹음
-→ 분열
-→ 여러 점이 서로 다른 방향으로 이동
-→ 먹이 위치 변경
-→ 군집 흐름 변화
-```
-
-이 한 장면이 충분히 기분 좋게 보여야 한다.
-
----
+둘 중 하나라도 실패하면 P-01 또는 기본 이동/먹이 상호작용을 먼저 고친다.
 
 # 62. 기술적 충돌 점검
 

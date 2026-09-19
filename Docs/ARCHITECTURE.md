@@ -1,8 +1,8 @@
 # Dot.exe ARCHITECTURE
 
-> 버전: 0.1  
-> 근거 문서: `Docs/Dot.exe_개발명세서.md` v0.2.1, `CORE_GAME_RULES.md` v1.3  
-> 게임 규칙은 `CORE_GAME_RULES.md`가 정본이고, 세부 구현 기준은 명세서가 원본이다. 이 문서는 코드 작업 전 먼저 읽는 길잡이이며 새 규칙을 만들지 않는다.
+> 버전: 0.2  
+> 근거 문서: `Game/Docs/current/DEVELOPMENT_SPEC.md` v0.3, `Game/Docs/current/CORE_GAME_RULES.md` v1.4
+> 게임 규칙은 `Game/Docs/current/CORE_GAME_RULES.md`가 정본이고, 세부 구현 기준은 명세서가 원본이다. 이 문서는 코드 작업 전 먼저 읽는 길잡이이며 새 규칙을 만들지 않는다.
 
 ---
 
@@ -30,7 +30,7 @@ src/
 └─ tests/          integration, fixtures
 ```
 
-단위 테스트는 대상 파일 옆에 `*.test.ts`로 둔다. 여러 feature를 가로지르는 통합 테스트와 공용 fixture만 `src/tests/`에 둔다. 번역 데이터는 `src/` 밖의 `Locale/`에 있다.
+단위 테스트는 대상 파일 옆에 `*.test.ts`로 둔다. 여러 feature를 가로지르는 통합 테스트와 공용 fixture만 `src/tests/`에 둔다. 번역 데이터는 `src/` 밖의 `Game/Locale/`에 있다.
 
 자세한 하위 구조와 각 파일 역할은 명세서 #3.
 
@@ -134,14 +134,13 @@ Cell 상태는 `LifeMode`(Active/Dividing/Dormant/Dead), `Health`(0~1), `Infecti
 
 ## 5. 시간과 Pause
 
-- 고정 스텝: Simulation은 20Hz가 초기값이며(정본 10), 렌더링은 `requestAnimationFrame` 가변 프레임. 실제 주파수는 BalanceData에서 관리하고 성능 검증 후 조정한다(명세서 #5).
-- 한 프레임에 밀린 tick을 따라잡는 최대 step 수도 설정값으로 둔다. 무한정 따라잡지 않는다(#5).
-- Simulation Time과 UI/Transaction Processing을 분리한다. CULTURE 화면 외 전체 화면(MAIL/RESEARCH/ANALYSIS/SYSTEM/GAME OVER/수동 Pause)은 Simulation Time을 멈춘다. Transaction은 Pause 중에도 즉시 검증·확정한다(#5.1, 정본 9).
-- Pause는 단일 boolean이 아니라 `PauseSource` 집합으로 관리한다. 여러 이유가 동시에 있을 수 있고, 예를 들어 수동 Pause 중 Mail을 닫아도 `manual`이 남아 있으면 재개되지 않는다(#5.1, 정본 9.4).
-- 창이 비활성화되거나 앱이 뒤로 가면 Pause한다. 기본 캠페인은 오프라인 진행을 쓰지 않는다(#5, 정본 9.5, 30).
-- 헤드리스 실행과 배속: 시뮬레이션은 화면 없이 돌릴 수 있어야 하고, 개발 빌드에는 배속 설정이 있어야 한다. 배속은 tick을 더 자주 돌리는 것이며 tick 하나의 계산은 바꾸지 않는다(정본 30.2).
-
----
+- Briefing은 무제한·읽기 전용 pause 상태다.
+- Preparing은 live-planning 상태다. simulation과 Preparation Timer가 진행되며 RESEARCH/MAIL/ANALYSIS/SYSTEM 화면 전환으로 멈추지 않는다.
+- Preparing에서는 일반 manual pause를 받지 않는다.
+- app background/OS interruption은 `systemSuspend`로 Preparing까지 포함해 pause하며 복귀 시 밀린 시간을 처리하지 않는다.
+- Preparing 이외의 MAIL/RESEARCH/ANALYSIS/SYSTEM/GAME OVER는 기존 PauseSource를 사용한다.
+- SimulationCommand는 pause 중 거부하고 Transaction은 상태별 허용 규칙을 따른다.
+- 개발 빌드는 헤드리스 실행과 배속을 지원한다.
 
 ## 6. 이벤트 목록
 
@@ -170,20 +169,29 @@ Cell 상태는 `LifeMode`(Active/Dividing/Dormant/Dead), `Health`(0~1), `Infecti
 
 ## 7. 저장
 
-- SaveData 버전은 현재 1(`SaveDataV1`)이다. 버전 필드는 반드시 있어야 하며 switch문 기반으로 구버전을 변환한다. 기존 SaveData 타입을 무리하게 재사용하지 않는다(#33, #35).
-- 저장 범위(최소): simulationTick, Cells(분열 진행도·`lastDivisionTick`·wander state 포함), Threats, Environment/Scalar Field, Protocol 상태와 이미 실행한 Action, Cooldown, Isolation state, Resources, Research, Discovery Records, Trait Loadout, Mail Inbox/Queue, Narrative Flags, Emergence Evidence, Observation Records, RNG state. tick 기준 값은 `simulationTick`과 함께 저장되므로 절대 tick으로 둬도 어긋나지 않는다(#34, 정본 23.1). Spatial Hash, 화면 연출, UI hover, 렌더 보간값 등 현재 상태로 재구성 가능한 값은 저장하지 않는다.
-- 체크포인트: 프로토콜이 `Preparing`에 들어가는 순간 정확히 한 번 생성한다. 일반 저장과 같은 형식의 별도 저장본이며 저장 데이터 안에 포함하지 않는다. 이전 체크포인트도 지우지 않는다. 실패하면 GAME OVER 화면(Pause) 후 체크포인트를 통째로 불러오고 `Preparing`으로 돌아가며 준비 타이머는 처음부터 돈다. 별도의 `RetryPreparation` 상태는 없다(#22.2, #33, 정본 6.2, 7.1). 복원 범위는 세포·적·환경·자원·연구·Trait Loadout·Protocol 상태·메일·Narrative Flag·Observation Record·발견 기록·Emergence Evidence·simulationTick·RNG 전부다.
-- ProfileData: 엔딩 기록과 모드 해금 정보는 캠페인 저장·체크포인트와 분리된 `ProfileData`에 둔다. 체크포인트를 불러와도 이 값은 유지된다(#33, 정본 7.1).
-- migration 규칙: 버전을 반드시 갖고, 구버전 변환은 별도 migration 함수에서만 수행한다(#35).
+저장은 네 계층으로 나눈다.
 
----
+| 계층 | 역할 |
+|---|---|
+| Campaign Save | 활성 캠페인 1개, CONTINUE 대상 |
+| Rolling Autosave | 최근 정상본 3세대, 손상 시 fallback |
+| Protocol Checkpoint | Preparing 진입 시 생성하는 별도 회귀 지점 |
+| ProfileData | 엔딩 기록과 모드 해금 |
+
+- saveNow는 슬롯 번호를 받지 않는다.
+- autosave는 일관된 state boundary에서 확정하고 연속 요청은 합친다.
+- Failed 상태를 정상 autosave로 덮어쓰지 않는다.
+- 이전 protocol checkpoint는 SYSTEM → RECOVERY에서 선택할 수 있다.
+- 과거 checkpoint 복원 시 그 지점 뒤의 campaign/autosave/checkpoint를 폐기한다.
+- 저장 실패 시 직전 정상본을 보존한다.
+- SaveData 변경은 version + migration + test를 동반한다.
 
 ## 8. 데이터 디렉터리 규칙
 
 - `src/data/` 구성: `research/`, `protocols/`, `threats/`, `mail/`, `narrative/`, `balance/`(#3).
 - 숫자 하드코딩 금지: 성장 시간, 연구 비용, 적 증식률, 산소 소비량, 신호 반경, 프로토콜 시간, 메일 발생 조건 등은 모두 데이터 파일에서 관리한다(#2.4).
 - 시작 시 데이터 검증: 존재하지 않는 prerequisite, 순환 prerequisite, 존재하지 않는 Trait ID, 음수 비용, 중복 ID, 존재하지 않는 Mail trigger, Protocol phase 시간 역전 등을 게임 시작 시 검사한다. 가능하면 Zod 같은 런타임 스키마 도구를 쓴다(#41).
-- 현지화 키: 화면에 나오는 글은 코드와 콘텐츠 데이터에 직접 적지 않고 키만 두며, 글은 `Locale/<언어 코드>.json`에서 가져온다. 기준 파일은 `en.json`이고 새 언어는 JSON 파일 하나 추가로 끝나야 한다. 자리표시자는 `{count}` 형식이며 이름은 바꾸지 않는다. 없는 키는 조용히 빈 문자열로 넘기지 않고 개발 중에는 키 이름을 노출하며 로그를 남긴다(#19.2). 콘텐츠가 가리키는 키가 `en.json`에 있는지는 시작 시 데이터 검증(#41)에서, 언어 파일 사이의 키·자리표시자 일치는 `node Locale/check.mjs`로 검사한다(`Locale/README.md`). Domain 계층은 `Localizer`를 쓰지 않는다.
+- 현지화 키: 화면에 나오는 글은 코드와 콘텐츠 데이터에 직접 적지 않고 키만 두며, 글은 `Game/Locale/<언어 코드>.json`에서 가져온다. 기준 파일은 `en.json`이고 새 언어는 JSON 파일 하나 추가로 끝나야 한다. 자리표시자는 `{count}` 형식이며 이름은 바꾸지 않는다. 없는 키는 조용히 빈 문자열로 넘기지 않고 개발 중에는 키 이름을 노출하며 로그를 남긴다(#19.2). 콘텐츠가 가리키는 키가 `en.json`에 있는지는 시작 시 데이터 검증(#41)에서, 언어 파일 사이의 키·자리표시자 일치는 `node Locale/check.mjs`로 검사한다(`Game/Locale/README.md`). Domain 계층은 `Localizer`를 쓰지 않는다.
 
 ---
 
@@ -217,4 +225,15 @@ Cell 상태는 `LifeMode`(Active/Dividing/Dormant/Dead), `Health`(0~1), `Infecti
 
 Vitest를 쓴다(정본 30). 게임 규칙을 테스트하고 렌더링은 테스트하지 않는다(#39). 에너지, Movement, Research, Protocol, 발견/Data, Pause/UI, Division, Trait, Narrative, Save, Performance 영역의 구현 전 필수 시나리오는 명세서 #39와 정본 35에 있다. 통합 테스트로 최소 두 흐름을 자동화한다: 새 게임→세포 생성→먹이 공급→연구 해금→특성 활성→Preparing(Checkpoint 생성)→시작→완료→보상→메일→저장→로드, 그리고 Preparing(Checkpoint 생성)→시작→실패→GAME OVER→Checkpoint 전체 로드→Preparing(#40).
 
-단계별 테스트는 `Docs/Dot.exe_개발_파이프라인.html`의 단계마다 다음 3차 절차를 순서대로 거치고 사람이 승인해야 다음 단계로 간다(정본 30.2). 1) 에이전트 배속 테스트: 자동 테스트 전체와, 화면 없이 빠르게 돌려 규칙을 확인하는 헤드리스 시나리오. 2) 브라우저 배속 테스트: 메인 에이전트가 Chrome에 실제 화면을 띄워 배속으로 돌리며 화면·콘솔 오류·조작을 확인한다. 3) 사람 테스트: `Docs/테스트/`의 체크리스트로 사람이 직접 판정한다. 재미와 느낌에 대한 관문은 사람만 판정한다. 이를 위해 시뮬레이션은 화면 없이 돌 수 있어야 하고 개발 빌드에는 배속 설정이 있어야 하며, 배속은 tick 하나의 계산을 바꾸지 않는다.
+단계별 테스트는 `Game/Docs/current/DEVELOPMENT_PIPELINE.html`의 단계마다 다음 3차 절차를 순서대로 거치고 사람이 승인해야 다음 단계로 간다(정본 30.2). 1) 에이전트 배속 테스트: 자동 테스트 전체와, 화면 없이 빠르게 돌려 규칙을 확인하는 헤드리스 시나리오. 2) 브라우저 배속 테스트: 메인 에이전트가 Chrome에 실제 화면을 띄워 배속으로 돌리며 화면·콘솔 오류·조작을 확인한다. 3) 사람 테스트: `Game/Docs/tests/`의 체크리스트로 사람이 직접 판정한다. 재미와 느낌에 대한 관문은 사람만 판정한다. 이를 위해 시뮬레이션은 화면 없이 돌 수 있어야 하고 개발 빌드에는 배속 설정이 있어야 하며, 배속은 tick 하나의 계산을 바꾸지 않는다.
+
+
+## 12. 모바일 Viewport 경계
+
+- 기준 디자인: 1080×1920 세로.
+- 논리 화면: 216×384.
+- PixelCanvas는 고정 논리 화면만 책임진다.
+- ResponsiveShell은 safe area, 화면비, 중앙 배치, 외부 CRT 케이스 여백을 책임진다.
+- CrtDisplay는 shell 안의 게임 화면에 후처리를 적용한다.
+- 화면비는 simulation chamber 좌표나 게임 규칙을 바꾸지 않는다.
+- InputRouter는 physical → shell local → inverse CRT → logical 순으로 좌표를 변환한다.
